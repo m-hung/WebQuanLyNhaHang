@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt Bàn Sang Trọng - Celesté House</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/bookingStyle.css">
+</head>
+<body>
+    <nav class="navbar-dark">
+        <div class="logo">CELESTÉ HOUSE</div>
+        <ul class="nav-links">
+            <li><a href="../index.html">Trang Chủ</a></li>
+            <li><a href="./menu.html">Thực Đơn</a></li>
+            <li><a href="./team.html">Nhà Hàng</a></li>
+            <li><a href="./booking.html" class="active">Đặt Bàn</a></li>
+            <li><a href="./blog.html">Blog</a></li>
+            <li><a href="./contact.html">Liên Hệ</a></li>
+        </ul>
+    </nav>
+
+    <div class="split-container">
+        <div class="booking-visual">
+            <div class="visual-inner">
+                <img src="../img/booking-side.jpg" alt="Restaurant Interior" class="main-img">
+                <div class="visual-text">
+                    <h2>Trải Nghiệm Đẳng Cấp</h2>
+                    <div class="gold-line"></div>
+                    <p>Mỗi bữa tối là một hành trình nghệ thuật tại Celesté House.</p>
+                </div>
+                <div class="corner-pattern"></div>
+            </div>
+        </div>
+
+        <div class="booking-content">
+            <div class="form-wrapper">
+                <h1 class="form-title">Yêu Cầu Đặt Bàn</h1>
+                <p class="form-subtitle">Vui lòng điền thông tin chi tiết để chúng tôi chuẩn bị tốt nhất.</p>
+
+                <form id="booking-form">
+                    <div class="input-group">
+                        <label>Họ và Tên *</label>
+                        <input type="text" placeholder="Nhập tên của bạn" required>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Số điện thoại *</label>
+                            <input type="tel" placeholder="090..." required>
+                        </div>
+                        <div class="input-group">
+                            <label>Email</label>
+                            <input type="email" placeholder="example@mail.com">
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Ngày đến *</label>
+                            <input type="date" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Số người *</label>
+                            <select required>
+                                <option value="2">2 Người</option>
+                                <option value="4">4 Người</option>
+                                <option value="6">6+ Người</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                     <label>Khung giờ *</label>
+                     <div class="time-slots" id="time-slots">
+                        <button type="button" class="time-btn">10:00</button>
+                        <button type="button" class="time-btn">11:30</button>
+                        <button type="button" class="time-btn">13:00</button>
+                        <button type="button" class="time-btn">17:00</button>
+                        <button type="button" class="time-btn">19:00</button>
+                        <button type="button" class="time-btn">20:30</button>
+                        <button type="button" class="time-btn">22:00</button>
+                    </div>
+    <input type="hidden" name="booking-time" id="selected-time" value="19:00">
+</div>
+
+                    <div class="menu-preorder">
+                        <label class="section-label">Thực đơn chọn trước</label>
+                        <div class="preorder-list">
+                            <div class="preorder-card">
+                                <img src="../img/menu/wayguA5.jpg" alt="Wagyu">
+                                <div class="item-detail">
+                                    <h4>Wagyu A5</h4>
+                                    <p>2.500.000đ</p>
+                                </div>
+                                <input type="number" min="0" value="0" class="qty-input">
+                            </div>
+                            
+                            <div class="preorder-card">
+                                <img src="../img/menu/DuckConfit.jpg" alt="Duck">
+                                <div class="item-detail">
+                                    <h4>Duck Confit</h4>
+                                    <p>850.000đ</p>
+                                </div>
+                                <input type="number" min="0" value="0" class="qty-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-confirm">Xác Nhận Đặt Bàn</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="../script/booking.js"></script>
+</body>
+</html>

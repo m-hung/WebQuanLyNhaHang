@@ -1,0 +1,180 @@
+
+/* 1. Banner Hero */
+.menu-hero {
+    height: 100vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+                url('https://i.pinimg.com/1200x/18/4f/ef/184fef5f941f9d0a6bcf9061a65b5cf8.jpg') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+}
+.hero-content2 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    text-align: center;
+    color: #fff;
+    padding-top: 60px;  
+}
+
+.hero-content2 h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 54px;       
+    color: var(--gold);
+    margin-bottom: 15px;
+    letter-spacing: 3px;  
+    text-transform: uppercase;
+}
+
+.hero-content2 .line {
+    width: 100px;           /* Độ dài đường gạch ngang dưới tiêu đề */
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 20px;    /* Căn giữa đường gạch */
+}
+
+.hero-content2 p {
+    font-size: 18px;
+    color: #ccc;
+    font-style: italic;  
+}
+
+/* 2. Container chính */
+.menu-page-section {
+    padding: 100px 10%;
+    background-color: var(--dark-bg);
+}
+
+.menu-category {
+    margin-bottom: 120px; 
+}
+
+.category-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    color: var(--gold);
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+/* 3. Grid và Card */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 35px;
+    margin-top: 50px;
+}
+
+.menu-card {
+    background: var(--card-bg);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: 0.4s ease;
+    border: 1px solid #222;
+}
+
+.menu-card:hover {
+    transform: translateY(-10px);
+    border-color: var(--gold);
+}
+
+/* 4. Căn chỉnh ảnh - Chống méo hình */
+.menu-img-container {
+    width: 100%;
+    height: 240px; /* Cố định chiều cao ảnh để tất cả card bằng nhau */
+    overflow: hidden;
+}
+
+.menu-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Quan trọng: Ảnh phủ kín khung mà không bị bóp méo */
+    transition: 0.8s ease;
+}
+
+.menu-card:hover .menu-img-container img {
+    transform: scale(1.1);
+}
+
+/* 5. Nội dung Card */
+.card-body {
+    padding: 25px;
+    flex-grow: 1; /* Giúp các card cùng hàng luôn cao bằng nhau */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.card-body p {
+    font-size: 14px;
+    color: var(--text-gray);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    /* Giới hạn nội dung tối đa 3 dòng để giữ layout sạch sẽ */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.price {
+    font-weight: 600;
+    color: var(--gold);
+    font-size: 17px;
+    border-top: 1px solid #333;
+    padding-top: 15px;
+    letter-spacing: 1px;
+}
+
+/* 6. Responsive */
+@media (max-width: 768px) {
+    .menu-page-section { padding: 60px 5%; }
+    .category-title { font-size: 30px; }
+    .menu-grid { gap: 20px; }
+}
+.cta {
+    padding: 100px 10%;
+    text-align: center;
+    background-color: #0d0d0d; /* Nền tối hơn một chút để tách biệt */
+    border-top: 1px solid #222;
+}
+
+.cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: #fff;
+    margin-bottom: 20px;
+    border: none !important; /* Đảm bảo không có gạch chân mặc định của h2 */
+}
+
+.cta p {
+    color: var(--text-gray);
+    margin-bottom: 40px;   
+}
+
+/* Nút đặt bàn vàng nổi bật */
+.btn-gold {
+    background-color: var(--gold);
+    color: #000;
+    padding: 15px 40px;
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-gold:hover {
+    background-color: #b38f4d; 
+    transform: scale(1.05);    /* Phóng to nhẹ nút khi di chuột */
+}

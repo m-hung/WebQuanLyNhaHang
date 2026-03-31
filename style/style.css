@@ -1,0 +1,383 @@
+/* Biến màu sắc chủ đạo */
+:root {
+    --gold: #c5a059;
+    --dark-bg: #0a0a0a;
+    --card-bg: #161616;
+    --text-gray: #a0a0a0;
+    --accent-red: #d63031;
+}
+
+/* Reset cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Header & Banner chính */
+/* --- HIỆU ỨNG MENU ACTIVE & HOVER --- */
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+    position: relative; 
+    padding-bottom: 5px;
+}
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--gold) !important; 
+}
+.nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0; 
+    height: 2px;
+    background-color: var(--gold);
+    transition: width 0.3s ease;
+}
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100%; /* Gạch chân dài hết chữ */
+}
+.home-hero {
+    height: 100vh;
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 10%;
+    width: 100%;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+
+.nav-links a:hover { 
+    color: var(--gold); 
+}
+
+/* Nội dung giữa Banner */
+.hero-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 100px;
+}
+
+.hero-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    color: var(--gold);
+    margin-bottom: 10px;
+    letter-spacing: 10px;
+}
+
+.hero-content p {
+    font-size: 18px;
+    margin-bottom: 40px;
+    font-style: italic;
+    color: #ddd;
+}
+
+.btn-group {
+    display: flex;
+    gap: 20px;
+}
+
+.btn {
+    padding: 15px 35px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    transition: 0.3s;
+}
+.btn-group {
+    display: flex;
+    justify-content: center; /* Căn giữa 2 nút */
+    gap: 20px;               /* Khoảng cách giữa 2 nút */
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 15px 35px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.btn-all {
+    background-color: #c5a059; /* Màu vàng Gold */
+    color: #000;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+}
+.btn-all {background: var(--gold); color: #000;}
+.btn-gold { background: var(--gold); color: #000; }
+.btn-outline { background: transparent; border: 1px solid #fff; color: #fff; }
+.btn:hover { opacity: 0.8; transform: translateY(-5px); }
+/* Khi màn hình nhỏ hơn 480px (điện thoại) button*/
+@media (max-width: 480px) {
+    .btn-group {
+        flex-direction: column; 
+        align-items: center;  
+        padding: 0 20px;     
+        gap: 15px;          
+    }
+    .btn-all, .btn-outline {
+        width: 100%;           
+        padding: 18px 0;     
+        box-sizing: border-box;
+    }
+}
+/* Định dạng chung cho các Section */
+section { padding: 100px 10%; text-align: center; }
+
+h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--gold);
+    margin-bottom: 50px;
+}
+
+h2::after {
+    content: "";
+    display: block;
+    width: 50px;
+    height: 2px;
+    background: var(--gold);
+    margin: 15px auto;
+}
+
+/* Features - Đặc điểm nhà hàng */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+}
+
+.feature-item .icon {
+    font-size: 35px;
+    color: var(--accent-red);
+    margin-bottom: 20px;
+    display: inline-block;
+    background: rgba(214, 48, 49, 0.1);
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    border-radius: 50%;
+}
+
+.feature-item h3 { font-size: 16px; margin-bottom: 10px; }
+.feature-item p { font-size: 13px; color: var(--text-gray); }
+
+/* About Section Styles */
+.about {
+    padding: 100px 10%;
+    background-color: #0a0a0a; /* Nền tối */
+    color: #fff;
+}
+
+.about-container {
+    display: flex;
+    align-items: center;
+    gap: 60px; /* Khoảng cách giữa ảnh và chữ */
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Hiệu ứng hình ảnh */
+.about-image {
+    flex: 1;
+    position: relative;
+}
+
+.about-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    box-shadow: 20px 20px 0px rgba(197, 160, 89, 0.2); /* Tạo viền bóng mờ màu gold */
+}
+
+/* Nội dung chữ */
+.about-content {
+    flex: 1;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.about-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: #c5a059; /* Màu Gold */
+    margin-bottom: 25px;
+    position: relative;
+}
+
+/* Đường gạch dưới tiêu đề */
+.about-title::after {
+    content: "";
+    display: block;
+    width: 80px;
+    height: 2px;
+    background: #c5a059;
+    margin-top: 10px;
+}
+
+.about-text {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #a0a0a0;
+    margin-bottom: 20px;
+}
+
+.btn-more {
+    color: #c5a059;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-more:hover {
+    letter-spacing: 1px;
+    color: #fff;
+}
+
+/* Responsive cho thiết kế di động */
+@media (max-width: 992px) {
+    .about-container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .about-title::after {
+        margin: 10px auto;
+    }
+    .about-content {
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Menu Card */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.menu-card {
+    background: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+    text-align: left;
+    transition: 0.4s;
+}
+
+.menu-card:hover { transform: translateY(-10px); }
+
+.menu-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.menu-card:hover img { transform: scale(1.05); }
+
+.card-body { padding: 25px; }
+.card-body h3 { font-family: 'Playfair Display', serif; margin-bottom: 10px; }
+.card-body p { font-size: 14px; color: var(--text-gray); margin-bottom: 15px; }
+.price { color: var(--gold); font-weight: bold; font-size: 18px; }
+
+.view-more {
+    background: #c5a059;
+    color: black;
+    padding: 15px 40px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+.view-more:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+}
+.view-more:active {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Footer CTA */
+.cta {
+    background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), 
+                url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070');
+    background-attachment: fixed;
+    padding: 80px 10%;
+}
+
+/* Responsive cho điện thoại */
+@media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hero-content h1 { font-size: 3rem; }
+    .btn-group { flex-direction: column; width: 100%; }
+    section { padding: 60px 5%; }
+}

@@ -1,0 +1,173 @@
+
+/* 1. Banner Hero */
+.contact-hero {
+    height: 80vh;
+    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
+                url('https://i.pinimg.com/1200x/06/f5/74/06f5741bfc9a8e3b30f62dd80e76df23.jpg') no-repeat center center/cover;
+    display: flex;
+    flex-direction: column;
+}
+.hero-content2 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    text-align: center;
+    color: #fff;
+    padding-top: 60px;  
+}
+
+.hero-content2 h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 54px;       
+    color: var(--gold);
+    margin-bottom: 15px;
+    letter-spacing: 3px;  
+    text-transform: uppercase;
+}
+
+.hero-content2 .line {
+    width: 100px;           /* Độ dài đường gạch ngang dưới tiêu đề */
+    height: 2px;
+    background: var(--gold);
+    margin: 0 auto 20px;    /* Căn giữa đường gạch */
+}
+
+.hero-content2 p {
+    font-size: 18px;
+    color: #ccc;
+    font-style: italic;  
+}
+/* 2. Layout Container */
+.contact-section {
+    padding: 100px 10%;
+    background-color: var(--dark-bg);
+}
+
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Chia 2 cột bằng nhau */
+    gap: 80px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.contact-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--gold);
+    margin-bottom: 40px;
+    text-align: center;      /* Đảm bảo chữ luôn ở giữa */
+    position: relative;
+    padding-bottom: 15px;    /* Tạo khoảng cách với đường gạch */
+}
+
+.contact-title::after {
+    content: "";
+    position: absolute;
+    left: 50%;            
+    transform: translateX(-50%); 
+    bottom: 0;  
+    width: 60px;      
+    height: 2px;        
+    background: var(--gold);
+}
+
+/* 3. Thông tin bên trái */
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.info-item .icon {
+    font-size: 20px;
+    margin-right: 20px;
+}
+
+.info-item p {
+    color: var(--text-gray);
+    font-size: 15px;
+}
+
+.map-container {
+    margin-top: 40px;
+    border: 1px solid #333;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* 4. Form bên phải */
+.contact-form .form-group {
+    margin-bottom: 20px;
+}
+
+.contact-form input, 
+.contact-form textarea {
+    width: 100%;
+    padding: 15px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    outline: none;
+    transition: 0.3s;
+}
+
+.contact-form input:focus, 
+.contact-form textarea:focus {
+    border-color: var(--gold);
+}
+
+.contact-form .btn-gold {
+    width: 100%;
+    margin-top: 10px;
+}
+.cta {
+    padding: 100px 10%;
+    text-align: center;
+    background-color: #0d0d0d; /* Nền tối hơn một chút để tách biệt */
+    border-top: 1px solid #222;
+}
+
+.cta h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: #fff;
+    margin-bottom: 20px;
+    border: none !important; /* Đảm bảo không có gạch chân mặc định của h2 */
+}
+
+.cta p {
+    color: var(--text-gray);
+    margin-bottom: 40px;    /* Tạo khoảng cách rộng hơn với nút bấm */
+}
+
+/* Nút đặt bàn vàng nổi bật */
+.btn-gold {
+    background-color: var(--gold);
+    color: #000;
+    padding: 15px 40px;
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-gold:hover {
+    background-color: #b38f4d; /* Màu vàng đậm hơn khi hover */
+    transform: scale(1.05);    /* Phóng to nhẹ nút khi di chuột */
+}
+/* 5. Responsive */
+@media (max-width: 992px) {
+    .contact-container {
+        grid-template-columns: 1fr; /* Chuyển về 1 cột trên điện thoại */
+        gap: 50px;
+    }
+    
+    .contact-section {
+        padding: 60px 5%;
+    }
+}
