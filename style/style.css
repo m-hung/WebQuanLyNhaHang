@@ -439,28 +439,36 @@ h2::after {
 
 /* --- NÚT ĐĂNG NHẬP TRÊN NAVBAR --- */
 .btn-login-nav {
-  display: flex; /* Thêm dòng này để căn chỉnh icon và chữ */
-  align-items: center; /* Thêm dòng này */
-  gap: 6px; /* Thêm khoảng cách giữa icon và chữ */
-  background: transparent;
-  border: 1px solid #c5a059;
-  color: #c5a059;
-  padding: 6px 14px;
-  cursor: pointer;
-  transition: 0.3s;
-  font-weight: bold;
-  border-radius: 4px;
-  font-family: inherit;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  background: transparent !important;
+  border: 1px solid #c5a059 !important;
+  color: #c5a059 !important;
+
+  /* Ép cứng kích thước, font chữ và chiều cao tuyệt đối */
+  font-family: "Montserrat", sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  padding: 0 18px !important;
+  height: 38px !important; /* Ép chiều cao cố định, không sợ bị lùn đi */
+  line-height: 1 !important;
+
+  border-radius: 4px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
 }
 
 .btn-login-nav:hover {
-  background: #c5a059;
-  color: #000;
+  background: #c5a059 !important;
+  color: #000 !important;
 }
 
-/* Chỉnh kích thước cho icon avatar */
 .avatar-icon {
-  font-size: 20px;
+  font-size: 20px !important;
 }
 
 /* --- MODAL ĐĂNG NHẬP (KHUNG ẨN) --- */
