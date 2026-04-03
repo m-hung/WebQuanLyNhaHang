@@ -7,87 +7,33 @@
     --input-bg: #1a1a1a;
     --text-gray: #888;
     --transition: all 0.3s ease;
-    
-    /* Font mới: Cormorant Garamond cho cảm giác xa hoa */
     --font-luxury: 'Cormorant Garamond', serif; 
     --font-heading: 'Playfair Display', serif;
     --font-body: 'Montserrat', sans-serif;
 }
 
 /* --- LAYOUT CHUNG --- */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-color: var(--bg-dark);
-    font-family: var(--font-body);
-    color: #fff;
-    overflow: hidden;
-}
 
 /* Navbar */
-.navbar-dark {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 80px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 50px;
-    background: rgba(13, 13, 13, 0.95);
-    border-bottom: 1px solid rgba(197, 160, 89, 0.2);
-    z-index: 1000;
-    box-sizing: border-box;
-}
-
-.logo {
-    color: var(--gold);
-    font-family: var(--font-luxury);
-    font-size: 28px;
-    font-weight: bold;
-    letter-spacing: 3px;
-}
-
-.nav-links {
-    display: flex;
-    list-style: none;
-    gap: 30px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #fff;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: var(--transition);
-}
-
-.nav-links a:hover, .nav-links a.active {
-    color: var(--gold);
-}
-
 .split-container {
     display: flex;
     height: 100vh;
-    padding-top: 80px;
-    box-sizing: border-box;
+    padding-top: 90px; /* Khớp đúng chiều cao nav ở Bước 1 */
+    background-color: #0d0d0d;
 }
-
-/* --- PHẦN BÊN TRÁI (VISUAL) --- */
+.nav-links a:hover, .nav-links a.active {
+    color: var(--gold);
+}
 .booking-visual {
     flex: 1.2;
     position: relative;
-    padding: 30px;
-    box-sizing: border-box;
+    padding: 20px; 
 }
 
 .visual-inner {
     position: relative;
     height: 100%;
-    overflow: hidden;
-    border: 1px solid rgba(197, 160, 89, 0.3);
+    border: 1px solid rgba(197, 160, 89, 0.2); 
 }
 
 .main-img {
