@@ -1,252 +1,283 @@
 .team-section {
-    padding: 100px 10%;
-    text-align: center;
+  padding: 100px 10%;
+  text-align: center;
 }
 
 .section-header h2 {
-    font-size: 42px;
-    color: var(--gold);
-    margin-bottom: 10px;
+  font-size: 42px;
+  color: var(--gold);
+  margin-bottom: 10px;
 }
 
 .team-group {
-    margin-top: 80px;
+  margin-top: 80px;
 }
 
 .team-group h3 {
-    font-size: 28px;
-    color: var(--gold);
-    margin-bottom: 10px;
+  font-size: 28px;
+  color: var(--gold);
+  margin-bottom: 10px;
 }
 
 .sub-desc {
-    color: var(--text-gray);
-    font-size: 14px;
-    max-width: 600px;
-    margin: 0 auto 50px;
+  color: var(--text-gray);
+  font-size: 14px;
+  max-width: 600px;
+  margin: 0 auto 50px;
 }
 
 /* Chef Grid */
 .chef-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
 }
 
 .chef-card {
-    background: var(--card-bg);
-    text-align: left;
-    transition: 0.4s;
-    border: 1px solid #222;
+  background: var(--card-bg);
+  text-align: left;
+  transition: 0.4s;
+  border: 1px solid #222;
 }
 
 .chef-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--gold);
+  transform: translateY(-10px);
+  border-color: var(--gold);
 }
 
 .chef-img {
-    height: 450px;
-    overflow: hidden;
+  height: 450px;
+  overflow: hidden;
 }
 
 .chef-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.chef-info { padding: 25px; }
+.chef-info {
+  padding: 25px;
+}
 
 .info-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.info-top h4 { color: var(--gold); font-size: 20px; }
-.rating { color: var(--gold); letter-spacing: 2px; }
+.info-top h4 {
+  color: var(--gold);
+  font-size: 20px;
+}
+.rating {
+  color: var(--gold);
+  letter-spacing: 2px;
+}
 
-.role { color: #888; font-size: 13px; margin: 5px 0 15px; }
-.desc { color: #ccc; font-size: 14px; margin-bottom: 20px; }
+.role {
+  color: #888;
+  font-size: 13px;
+  margin: 5px 0 15px;
+}
+.desc {
+  color: #ccc;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
 
 .tags span {
-    display: inline-block;
-    border: 1px solid #444;
-    color: var(--gold);
-    padding: 4px 12px;
-    font-size: 11px;
-    margin-right: 8px;
-    border-radius: 2px;
+  display: inline-block;
+  border: 1px solid #444;
+  color: var(--gold);
+  padding: 4px 12px;
+  font-size: 11px;
+  margin-right: 8px;
+  border-radius: 2px;
 }
 
 /* Staff Grid */
 .staff-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
 }
 
 .staff-card {
-    background: var(--card-bg);
-    padding: 30px 15px;
+  background: var(--card-bg);
+  padding: 30px 15px;
 }
 
 .staff-img {
-    height: 280px;
-    background: #222;
-    margin-bottom: 20px;
+  height: 280px;
+  background: #222;
+  margin-bottom: 20px;
 }
 
-.staff-card h4 { font-size: 18px; margin-bottom: 5px; }
-.staff-card p { color: var(--text-gray); font-size: 13px; }
+.staff-card h4 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.staff-card p {
+  color: var(--text-gray);
+  font-size: 13px;
+}
 
 /* Awards Section */
 .awards-section {
-    margin-top: 100px;
-    padding-top: 80px;
-    border-top: 1px solid #222;
+  margin-top: 100px;
+  padding-top: 80px;
+  border-top: 1px solid #222;
 }
 
-.award-icon { 
-    font-size: 80px; 
-    color: var(--gold); 
-    margin-bottom: 15px; 
-    width: 70px;
-    height: 70px;
+.award-icon {
+  font-size: 80px;
+  color: var(--gold);
+  margin-bottom: 15px;
+  width: 70px;
+  height: 70px;
 }
 
 .awards-grid {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
 }
 
 .award-item {
-    background: #111;
-    padding: 30px;
-    flex: 1;
-    max-width: 250px;
+  background: #111;
+  padding: 30px;
+  flex: 1;
+  max-width: 250px;
 }
 
 .award-item .val {
-    font-size: 32px;
-    font-family: 'Playfair Display', serif;
-    color: var(--gold);
-    display: block;
+  font-size: 32px;
+  font-family: "Playfair Display", serif;
+  color: var(--gold);
+  display: block;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .awards-grid { flex-direction: column; align-items: center; }
-    .award-item { width: 100%; max-width: none; }
-    .team-section { padding: 60px 5%; }
+  .awards-grid {
+    flex-direction: column;
+    align-items: center;
+  }
+  .award-item {
+    width: 100%;
+    max-width: none;
+  }
+  .team-section {
+    padding: 60px 5%;
+  }
 }
 /* --- HERO SECTION --- */
 .team-hero {
-    height:80vh; /* Chiều cao banner */
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                url('https://i.pinimg.com/1200x/9c/57/d4/9c57d4fa326d11e68607e99d943364ad.jpg'); 
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    flex-direction: column;
-    position: relative;
+  height: 80vh; /* Chiều cao banner */
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+    url("https://i.pinimg.com/1200x/9c/57/d4/9c57d4fa326d11e68607e99d943364ad.jpg");
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .hero-content2 {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #fff;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #fff;
 }
 
 .hero-content2 h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 48px;
-    color: var(--gold);
-    margin-bottom: 10px;
+  font-family: "Playfair Display", serif;
+  font-size: 48px;
+  color: var(--gold);
+  margin-bottom: 10px;
 }
 
 .line {
-    width: 80px;
-    height: 2px;
-    background: var(--gold);
-    margin-bottom: 20px;
+  width: 80px;
+  height: 2px;
+  background: var(--gold);
+  margin-bottom: 20px;
 }
 
 .hero-content2 p {
-    font-size: 16px;
-    letter-spacing: 1px;
-    color: #ccc;
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: #ccc;
 }
 
 /* --- PHẦN NỘI DUNG BÊN DƯỚI --- */
 .team-container {
-    padding: 80px 10%;
-    background-color: #111; /* Nền tối nhẹ cho phần nội dung */
+  padding: 80px 10%;
+  background-color: #111; /* Nền tối nhẹ cho phần nội dung */
 }
 
 .team-group h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 32px;
-    color: var(--gold);
-    text-align: center;
+  font-family: "Playfair Display", serif;
+  font-size: 32px;
+  color: var(--gold);
+  text-align: center;
 }
 
 .line-small {
-    width: 50px;
-    height: 1px;
-    background: var(--gold);
-    margin: 15px auto;
+  width: 50px;
+  height: 1px;
+  background: var(--gold);
+  margin: 15px auto;
 }
 
 .sub-text {
-    text-align: center;
-    color: #888;
-    margin-bottom: 50px;
-    font-size: 14px;
+  text-align: center;
+  color: #888;
+  margin-bottom: 50px;
+  font-size: 14px;
 }
 
 /*dau bep*/
 
 .chef-grid {
-    display: flex;
-    justify-content: center; 
-    flex-wrap: wrap;       
-    gap: 40px;         
-    max-width: 1000px;
-    margin: 0 auto;   
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 .chef-card {
-    flex: 0 1 calc(50% - 40px); 
-    min-width: 320px;     
-    max-width: 450px;    
+  flex: 0 1 calc(50% - 40px);
+  min-width: 320px;
+  max-width: 450px;
 
-    background: var(--card-bg);
-    text-align: left;
-    transition: 0.4s;
-    border: 1px solid #222;
+  background: var(--card-bg);
+  text-align: left;
+  transition: 0.4s;
+  border: 1px solid #222;
 }
 
 /* --- ĐỐI VỚI NHÂN VIÊN PHỤC VỤ --- */
 .staff-img {
-    height: 300px;
-    width: 100%;
-    overflow: hidden;
-    margin-bottom: 20px;
-    background: #222; 
+  height: 300px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: #222;
 }
 
 .staff-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-    object-position: top center; 
-    display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
 }

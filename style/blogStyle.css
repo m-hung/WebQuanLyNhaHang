@@ -1,179 +1,186 @@
-
 /* 1. Banner Hero */
 .blog-hero {
-    height: 80vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), 
-                url('https://i.pinimg.com/1200x/c5/59/4d/c5594d34f1bd44d727cb85cd7baa9ac7.jpg') no-repeat center center/cover;
-    display: flex;
-    flex-direction: column;
+  height: 80vh;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)),
+    url("https://i.pinimg.com/1200x/c5/59/4d/c5594d34f1bd44d727cb85cd7baa9ac7.jpg")
+      no-repeat center center/cover;
+  display: flex;
+  flex-direction: column;
 }
 .hero-content2 {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;  
-    text-align: center;
-    color: #fff;
-    padding-top: 60px;  
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  padding-top: 60px;
 }
 
 .hero-content2 h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 54px;       
-    color: var(--gold);
-    margin-bottom: 15px;
-    letter-spacing: 3px;  
-    text-transform: uppercase;
+  font-family: "Playfair Display", serif;
+  font-size: 54px;
+  color: var(--gold);
+  margin-bottom: 15px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 
 .hero-content2 .line {
-    width: 100px;           /* Độ dài đường gạch ngang dưới tiêu đề */
-    height: 2px;
-    background: var(--gold);
-    margin: 0 auto 20px;    /* Căn giữa đường gạch */
+  width: 100px; /* Độ dài đường gạch ngang dưới tiêu đề */
+  height: 2px;
+  background: var(--gold);
+  margin: 0 auto 20px; /* Căn giữa đường gạch */
 }
 
 .hero-content2 p {
-    font-size: 18px;
-    color: #ccc;
-    font-style: italic;  
+  font-size: 18px;
+  color: #ccc;
+  font-style: italic;
 }
 /* 2. Layout Container */
 .blog-section {
-    padding: 100px 10%;
-    background-color: var(--dark-bg);
+  padding: 100px 10%;
+  background-color: var(--dark-bg);
 }
 
 .blog-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* 3. Bài viết (Post Card) */
 .blog-post {
-    background: var(--card-bg);
-    border: 1px solid #222;
-    transition: 0.4s ease;
+  background: var(--card-bg);
+  border: 1px solid #222;
+  transition: 0.4s ease;
 }
 
 .blog-post:hover {
-    transform: translateY(-10px);
-    border-color: var(--gold);
+  transform: translateY(-10px);
+  border-color: var(--gold);
 }
 
 .blog-img {
-    position: relative;
-    height: 250px;
-    overflow: hidden;
+  position: relative;
+  height: 250px;
+  overflow: hidden;
 }
 
 .blog-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Chống méo ảnh */
-    transition: 0.6s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Chống méo ảnh */
+  transition: 0.6s ease;
 }
 
 .blog-post:hover .blog-img img {
-    transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .blog-date {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    background: var(--gold);
-    color: #000;
-    padding: 5px 12px;
-    font-size: 12px;
-    font-weight: 600;
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  background: var(--gold);
+  color: #000;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 /* 4. Nội dung bài viết */
 .blog-info {
-    padding: 30px;
+  padding: 30px;
 }
 
 .blog-info h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
-    color: var(--gold);
-    margin-bottom: 15px;
-    line-height: 1.4;
+  font-family: "Playfair Display", serif;
+  font-size: 22px;
+  color: var(--gold);
+  margin-bottom: 15px;
+  line-height: 1.4;
 }
 
 .blog-info p {
-    font-size: 14px;
-    color: var(--text-gray);
-    line-height: 1.8;
-    margin-bottom: 20px;
-    /* Giới hạn nội dung 3 dòng */
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  font-size: 14px;
+  color: var(--text-gray);
+  line-height: 1.8;
+  margin-bottom: 20px;
+  /* Giới hạn nội dung 3 dòng */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .read-more {
-    color: #fff;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: 0.3s;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: 0.3s;
 }
 
 .read-more:hover {
-    color: var(--gold);
-    padding-left: 5px;
+  color: var(--gold);
+  padding-left: 5px;
 }
 
 /* 5. Subscribe Form ở Footer */
 .subscribe-form {
-    display: flex;
-    justify-content: center;
-    max-width: 500px;
-    margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 .subscribe-form input {
-    flex: 1;
-    padding: 15px;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    color: #fff;
-    outline: none;
+  flex: 1;
+  padding: 15px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #fff;
+  outline: none;
 }
 
 .subscribe-form .btn-gold {
-    padding: 0 30px;
+  padding: 0 30px;
 }
 .cta {
-    padding: 100px 10%;
-    text-align: center;
-    background-color: #0d0d0d; /* Nền tối hơn một chút để tách biệt */
-    border-top: 1px solid #222;
+  padding: 100px 10%;
+  text-align: center;
+  background-color: #0d0d0d; /* Nền tối hơn một chút để tách biệt */
+  border-top: 1px solid #222;
 }
 
 .cta h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 36px;
-    color: #fff;
-    margin-bottom: 20px;
-    border: none !important; /* Đảm bảo không có gạch chân mặc định của h2 */
+  font-family: "Playfair Display", serif;
+  font-size: 36px;
+  color: #fff;
+  margin-bottom: 20px;
+  border: none !important; /* Đảm bảo không có gạch chân mặc định của h2 */
 }
 
 .cta p {
-    color: var(--text-gray);
-    margin-bottom: 40px;    /* Tạo khoảng cách rộng hơn với nút bấm */
+  color: var(--text-gray);
+  margin-bottom: 40px; /* Tạo khoảng cách rộng hơn với nút bấm */
 }
+
 /* 6. Responsive */
 @media (max-width: 768px) {
-    .blog-section { padding: 60px 5%; }
-    .subscribe-form { flex-direction: column; gap: 15px; }
+  .blog-section {
+    padding: 60px 5%;
+  }
+  .subscribe-form {
+    flex-direction: column;
+    gap: 15px;
+  }
 }
