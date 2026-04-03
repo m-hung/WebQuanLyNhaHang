@@ -1,137 +1,223 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thực Đơn - Celesté House</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="../style/style.css">
-    <link rel="stylesheet" href="../style/menuStyle.css">
-</head>
-<body>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../style/style.css" />
+    <link rel="stylesheet" href="../style/menuStyle.css" />
+  </head>
+  <body>
     <header class="menu-hero">
-        <nav>
-            <div class="logo">CELESTÉ HOUSE</div>
-            <ul class="nav-links">
-                <li><a href="../index.html">Trang Chủ</a></li>
-                <li><a href="./menu.html" class="active">Thực Đơn</a></li>
-                <li><a href="./team.html">Nhà Hàng</a></li>
-                <li><a href="./booking.html">Đặt Bàn</a></li>
-                <li><a href="./blog.html">Blog</a></li>
-                <li><a href="./contact.html">Liên Hệ</a></li>
-            </ul>
-        </nav>
-        <div class="hero-content">
-            <h1>Thực Đơn Tinh Hoa</h1>
-            <p>Khám phá nghệ thuật ẩm thực Châu Âu giữa lòng thành phố</p>
-            <div class="gold-line-center"></div>
-        </div>
+      <nav>
+        <div class="logo">CELESTÉ HOUSE</div>
+        <ul class="nav-links">
+          <li><a href="../index.html">Trang Chủ</a></li>
+          <li><a href="./menu.html" class="active">Thực Đơn</a></li>
+          <li><a href="./team.html">Nhà Hàng</a></li>
+          <li><a href="./booking.html">Đặt Bàn</a></li>
+          <li><a href="./blog.html">Blog</a></li>
+          <li><a href="./contact.html">Liên Hệ</a></li>
+          <li>
+            <button id="openLoginBtn" class="btn-login-nav">
+              <span class="material-symbols-outlined avatar-icon"
+                >account_circle</span
+              >
+              ĐĂNG NHẬP
+            </button>
+          </li>
+        </ul>
+      </nav>
+      <div class="hero-content">
+        <h1>Thực Đơn Tinh Hoa</h1>
+        <p>Khám phá nghệ thuật ẩm thực Châu Âu giữa lòng thành phố</p>
+        <div class="gold-line-center"></div>
+      </div>
     </header>
 
     <div class="filter-section">
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" id="menu-search" placeholder="Bạn đang tìm món ăn nào?">
-        </div>
-        
-        <div class="filter-tabs">
-            <button class="filter-btn active" data-filter="all">Tất Cả</button>
-            <button class="filter-btn" data-filter="khai-vi">Khai Vị</button>
-            <button class="filter-btn" data-filter="mon-chinh">Món Chính</button>
-            <button class="filter-btn" data-filter="do-uong">Đồ Uống</button>
-            <button class="filter-btn" data-filter="trang-mieng">Tráng Miệng</button>
-        </div>
+      <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input
+          type="text"
+          id="menu-search"
+          placeholder="Bạn đang tìm món ăn nào?"
+        />
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-btn active" data-filter="all">Tất Cả</button>
+        <button class="filter-btn" data-filter="khai-vi">Khai Vị</button>
+        <button class="filter-btn" data-filter="mon-chinh">Món Chính</button>
+        <button class="filter-btn" data-filter="do-uong">Đồ Uống</button>
+        <button class="filter-btn" data-filter="trang-mieng">
+          Tráng Miệng
+        </button>
+      </div>
     </div>
 
     <section class="menu-display">
-        <div class="menu-grid" id="main-menu-grid">
-            
-            <div class="menu-card" data-category="khai-vi">
-                <div class="badge-status">Phổ Biến</div>
-                <div class="menu-img"><img src="../img/menu/soup.jpg" alt="Soup"></div>
-                <div class="card-info">
-                    <h3>Súp Bí Đỏ Pháp</h3>
-                    <p>Súp bí đỏ sánh mịn, béo bùi từ kem tươi và hạt dẻ nướng.</p>
-                    <span class="price">250,000 VND</span>
-                </div>
-            </div>
-            <div class="menu-card" data-category="mon-chinh">
-                <div class="badge-status">Thượng Hạng</div>
-                <div class="menu-img"><img src="../img/menu/wayguA5.jpg" alt="Wagyu"></div>
-                <div class="card-info">
-                    <h3>Wagyu Beef A5</h3>
-                    <p>Thịt bò nướng đá muối, giữ trọn vị mềm tan thượng hạng.</p>
-                    <span class="price">2,500,000 VND</span>
-                </div>
-            </div>
-            <div class="menu-card" data-category="khai-vi">
-                <div class="menu-img"><img src="../img/menu/cheese.jpg" alt="Cheese"></div>
-                <div class="card-info">
-                    <h3>Cheese Platter</h3>
-                    <p>Một khay gồm nhiều loại phô mai (mềm, cứng, xanh), ăn kèm trái cây, hạt và bánh mì. Thường dùng trong nhà hàng cao cấp.</p>
-                    <span class="price">250,000 VND</span>
-                </div>
-            </div>
-
-            <div class="menu-card" data-category="khai-vi">
-                <div class="menu-img"><img src="../img/menu/banhTart.jpg" alt="Tart"></div>
-                <div class="card-info">
-                    <h3>Bánh Tart Mặn</h3>
-                    <p>Phô mai Roquefort quyện cùng hành tây caramen ngọt dịu.</p>
-                    <span class="price">320,000 VND</span>
-                </div>
-            </div>
-            <div class="menu-card" data-category="mon-chinh">
-                <div class="menu-img"><img src="../img/menu/thanBo.jpg" alt="Steak"></div>
-                <div class="card-info">
-                <h3>Thăn Bò Mỹ Nướng</h3>
-                <p>Thăn bò nướng kèm khoai tây bi và sốt tiêu đen đặc biệt.</p>
-                <span class="price">1,200,000 VND</span>
-            </div>
-        </div>
-            
-            <div class="menu-card" data-category="do-uong">
-                <div class="menu-img"><img src="../img/menu/mojito.jpg" alt="Mojito"></div>
-                <div class="card-info">
-                <h3>Classic Mojito</h3>
-                <p>Sự kết hợp sảng khoái của bạc hà, chanh và rượu Rum.</p>
-                <span class="price">150,000 VND</span>
-                </div>
-            </div>
-            <div class="menu-card" data-category="do-uong">
-                <div class="menu-img"><img src="../img/menu/ruou1.jpg" alt="Wine"></div>
-                <div class="card-info">
-                    <h3>Château Margaux</h3>
-                    <p>Vang đỏ vùng Bordeaux với hương thơm quý tộc cổ điển.</p>
-                    <span class="price">4,500,000 VND</span>
-                </div>
-            </div>
-
-            <div class="menu-card" data-category="trang-mieng">
-                <div class="menu-img"><img src="../img/menu/tiramisu.jpg" alt="Tiramisu"></div>
-                <div class="card-info">
-                    <h3>Tiramisu Cổ Điển</h3>
-                    <p>Lớp kem Mascarpone béo ngậy và cốt bánh đẫm cafe Ý.</p>
-                    <span class="price">210,000 VND</span>
-                </div>
-            </div>
-            <div class="menu-card" data-category="trang-mieng">
-                <div class="menu-img"><img src="../img/menu/macaron.jpg" alt="Macaron"></div>
-                <div class="card-info">
-                <h3>Bộ 5 Bánh Macaron</h3>
-                <p>Bánh Macaron đủ vị: Dâu, Socola, Trà xanh, Vani, Chanh leo.</p>
+      <div class="menu-grid" id="main-menu-grid">
+        <div class="menu-card" data-category="khai-vi">
+          <div class="badge-status">Phổ Biến</div>
+          <div class="menu-img">
+            <img src="../img/menu/soup.jpg" alt="Soup" />
+          </div>
+          <div class="card-info">
+            <h3>Súp Bí Đỏ Pháp</h3>
+            <p>Súp bí đỏ sánh mịn, béo bùi từ kem tươi và hạt dẻ nướng.</p>
             <span class="price">250,000 VND</span>
-    </div>
-</div>
+          </div>
         </div>
+        <div class="menu-card" data-category="mon-chinh">
+          <div class="badge-status">Thượng Hạng</div>
+          <div class="menu-img">
+            <img src="../img/menu/wayguA5.jpg" alt="Wagyu" />
+          </div>
+          <div class="card-info">
+            <h3>Wagyu Beef A5</h3>
+            <p>Thịt bò nướng đá muối, giữ trọn vị mềm tan thượng hạng.</p>
+            <span class="price">2,500,000 VND</span>
+          </div>
+        </div>
+        <div class="menu-card" data-category="khai-vi">
+          <div class="menu-img">
+            <img src="../img/menu/cheese.jpg" alt="Cheese" />
+          </div>
+          <div class="card-info">
+            <h3>Cheese Platter</h3>
+            <p>
+              Một khay gồm nhiều loại phô mai (mềm, cứng, xanh), ăn kèm trái
+              cây, hạt và bánh mì. Thường dùng trong nhà hàng cao cấp.
+            </p>
+            <span class="price">250,000 VND</span>
+          </div>
+        </div>
+
+        <div class="menu-card" data-category="khai-vi">
+          <div class="menu-img">
+            <img src="../img/menu/banhTart.jpg" alt="Tart" />
+          </div>
+          <div class="card-info">
+            <h3>Bánh Tart Mặn</h3>
+            <p>Phô mai Roquefort quyện cùng hành tây caramen ngọt dịu.</p>
+            <span class="price">320,000 VND</span>
+          </div>
+        </div>
+        <div class="menu-card" data-category="mon-chinh">
+          <div class="menu-img">
+            <img src="../img/menu/thanBo.jpg" alt="Steak" />
+          </div>
+          <div class="card-info">
+            <h3>Thăn Bò Mỹ Nướng</h3>
+            <p>Thăn bò nướng kèm khoai tây bi và sốt tiêu đen đặc biệt.</p>
+            <span class="price">1,200,000 VND</span>
+          </div>
+        </div>
+
+        <div class="menu-card" data-category="do-uong">
+          <div class="menu-img">
+            <img src="../img/menu/mojito.jpg" alt="Mojito" />
+          </div>
+          <div class="card-info">
+            <h3>Classic Mojito</h3>
+            <p>Sự kết hợp sảng khoái của bạc hà, chanh và rượu Rum.</p>
+            <span class="price">150,000 VND</span>
+          </div>
+        </div>
+        <div class="menu-card" data-category="do-uong">
+          <div class="menu-img">
+            <img src="../img/menu/ruou1.jpg" alt="Wine" />
+          </div>
+          <div class="card-info">
+            <h3>Château Margaux</h3>
+            <p>Vang đỏ vùng Bordeaux với hương thơm quý tộc cổ điển.</p>
+            <span class="price">4,500,000 VND</span>
+          </div>
+        </div>
+
+        <div class="menu-card" data-category="trang-mieng">
+          <div class="menu-img">
+            <img src="../img/menu/tiramisu.jpg" alt="Tiramisu" />
+          </div>
+          <div class="card-info">
+            <h3>Tiramisu Cổ Điển</h3>
+            <p>Lớp kem Mascarpone béo ngậy và cốt bánh đẫm cafe Ý.</p>
+            <span class="price">210,000 VND</span>
+          </div>
+        </div>
+        <div class="menu-card" data-category="trang-mieng">
+          <div class="menu-img">
+            <img src="../img/menu/macaron.jpg" alt="Macaron" />
+          </div>
+          <div class="card-info">
+            <h3>Bộ 5 Bánh Macaron</h3>
+            <p>Bánh Macaron đủ vị: Dâu, Socola, Trà xanh, Vani, Chanh leo.</p>
+            <span class="price">250,000 VND</span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <footer class="cta-section">
-        <h2>Sẵn Sàng Cho Một Bữa Tối Tuyệt Vời?</h2>
-        <a href="./booking.html" class="btn-primary-gold">Đặt Bàn Ngay</a>
+      <h2>Sẵn Sàng Cho Một Bữa Tối Tuyệt Vời?</h2>
+      <a href="./booking.html" class="btn-primary-gold">Đặt Bàn Ngay</a>
     </footer>
 
+    <div id="loginModal" class="modal-overlay">
+      <div class="modal-content">
+        <span id="closeModalBtn" class="close-btn">&times;</span>
+        <h2 class="modal-title">ĐĂNG NHẬP</h2>
+        <button class="btn-google">
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google icon"
+          />
+          Đăng nhập với Google
+        </button>
+        <div class="divider">
+          <span>hoặc</span>
+        </div>
+        <form id="loginForm">
+          <div class="input-group">
+            <input
+              type="text"
+              placeholder="Số điện thoại hoặc Email"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <input type="password" placeholder="Mật khẩu" required />
+          </div>
+          <div class="forgot-password">
+            <a href="#">Quên mật khẩu?</a>
+          </div>
+          <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
+        </form>
+        <div class="register-link">
+          Bạn chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+        </div>
+        <div class="policy-text">
+          Bằng việc đăng nhập, bạn đồng ý với
+          <a href="src/policy.html">Chính sách & Điều khoản</a> của CELESTÉ
+          HOUSE.
+        </div>
+      </div>
+    </div>
+
+    <script src="../script/script.js"></script>
     <script src="../script/menu.js"></script>
-</body>
+  </body>
 </html>

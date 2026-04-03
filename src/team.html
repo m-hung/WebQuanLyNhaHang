@@ -20,6 +20,14 @@
                 <li><a href="./booking.html">Đặt Bàn</a></li>
                 <li><a href="./blog.html">Blog</a></li>
                 <li><a href="./contact.html">Liên Hệ</a></li>
+                <li>
+            <button id="openLoginBtn" class="btn-login-nav">
+              <span class="material-symbols-outlined avatar-icon"
+                >account_circle</span
+              >
+              ĐĂNG NHẬP
+            </button>
+          </li>
             </ul>
         </nav>
          <div class="hero-content2">
@@ -145,5 +153,47 @@
         </div>
     </section>
 
+    <div id="loginModal" class="modal-overlay">
+      <div class="modal-content">
+        <span id="closeModalBtn" class="close-btn">&times;</span>
+        <h2 class="modal-title">ĐĂNG NHẬP</h2>
+        <button class="btn-google">
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Google icon"
+          />
+          Đăng nhập với Google
+        </button>
+        <div class="divider">
+          <span>hoặc</span>
+        </div>
+        <form id="loginForm">
+          <div class="input-group">
+            <input
+              type="text"
+              placeholder="Số điện thoại hoặc Email"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <input type="password" placeholder="Mật khẩu" required />
+          </div>
+          <div class="forgot-password">
+            <a href="#">Quên mật khẩu?</a>
+          </div>
+          <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
+        </form>
+        <div class="register-link">
+          Bạn chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+        </div>
+        <div class="policy-text">
+          Bằng việc đăng nhập, bạn đồng ý với
+          <a href="src/policy.html">Chính sách & Điều khoản</a> của CELESTÉ
+          HOUSE.
+        </div>
+      </div>
+    </div>
+
+    <script src="../script/script.js"></script>
 </body>
 </html>
