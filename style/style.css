@@ -420,19 +420,53 @@ h2::after {
 
 /* Responsive cho điện thoại */
 @media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-  .hero-content h1 {
-    font-size: 3rem;
-  }
-  .btn-group {
-    flex-direction: column;
-    width: 100%;
-  }
-  section {
-    padding: 60px 5%;
-  }
+    /* Điều chỉnh thanh điều hướng nằm ngang */
+    nav {
+        flex-direction: row !important; /* Ép nằm ngang */
+        justify-content: space-between !important; /* Đẩy Logo sang trái, nút sang phải */
+        align-items: center;
+        padding: 0 20px;
+        height: 80px;
+        position: absolute;
+    }
+
+    /* Đảm bảo Logo không bị căn giữa */
+    .logo {
+        margin: 0; 
+        text-align: left;
+    }
+
+    /* Nút 3 gạch */
+    .menu-toggle {
+        display: block;
+        order: 2; /* Luôn nằm sau logo */
+        background: none;
+        border: none;
+        color: var(--gold);
+        cursor: pointer;
+    }
+
+    /* Menu ẩn trượt từ phải sang (giữ nguyên logic cũ của bạn) */
+    .nav-links {
+        display: flex;
+        position: fixed;
+        top: 0;
+        right: -100%; /* Ẩn đi */
+        width: 70%;
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.98);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 25px;
+        transition: 0.4s ease-in-out;
+        z-index: 1000;
+    }
+
+    /* Khi có class active từ JS */
+    .nav-links.active {
+        right: 0;
+    }
 }
 
 /* --- NÚT ĐĂNG NHẬP TRÊN NAVBAR --- */
@@ -483,8 +517,6 @@ h2::after {
   justify-content: center;
   align-items: center;
 }
-
-/* THAY LINK ẢNH LUXURY CỦA BẠN VÀO ĐÂY */
 .modal-content {
   position: relative;
   width: 100%;
@@ -730,4 +762,128 @@ h2::after {
   height: 2px;
   background: #c5a059;
   margin: 0 auto; /* Căn giữa cái gạch vàng */
+}
+@media (max-width: 1024px) {
+    nav {
+        padding: 0 5%;
+    }
+    .nav-links {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        height: auto;
+        padding: 15px 0;
+        background: rgba(0,0,0,0.9); /* Làm nền đậm hơn trên mobile */
+        position: relative;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .nav-links a {
+        font-size: 12px;
+        letter-spacing: 1px;
+    }
+
+    .hero-content h1 {
+        font-size: 3.5rem; /* Giảm size tiêu đề chính */
+        letter-spacing: 5px;
+    }
+
+    .about-container {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .about-image img {
+        box-shadow: 10px 10px 0px rgba(197, 160, 89, 0.2);
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-content {
+        width: 95%;
+        padding: 30px 20px;
+    }
+}
+/* 1. Mặc định ẩn nút hamburger trên máy tính */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--gold);
+  cursor: pointer;
+}
+
+.menu-toggle span {
+  font-size: 35px;
+}
+/* --- THIẾT LẬP NAV CHUNG (CHO CẢ DESKTOP & MOBILE) --- */
+nav {
+  display: flex;
+  justify-content: space-between; /* Đẩy Logo sang trái, cụm menu sang phải */
+  align-items: center;
+  padding: 0 5%; 
+  width: 100%;
+  height: 90px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Ẩn nút 3 gạch trên máy tính */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--gold);
+  cursor: pointer;
+  z-index: 1001; /* Luôn nằm trên menu khi mở */
+}
+
+.menu-toggle span {
+  font-size: 35px;
+}
+
+/* --- RESPONSIVE CHO MOBILE (Dưới 768px) --- */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block; /* Hiện nút 3 gạch bên phải */
+  }
+
+  .nav-links {
+    /* Biến danh sách thành menu trượt từ phải sang */
+    position: fixed;
+    top: 0;
+    right: -100%; 
+    width: 70%;
+    height: 100vh;
+    background: rgba(10, 10, 10, 0.98);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    transition: 0.4s ease-in-out;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
+    display: flex; /* Đảm bảo nó là flex để căn giữa các mục */
+  }
+
+  /* Khi bấm nút, JS sẽ thêm class này để hiện menu */
+  .nav-links.active {
+    right: 0;
+  }
+
+  .nav-links a {
+    font-size: 18px;
+  }
 }

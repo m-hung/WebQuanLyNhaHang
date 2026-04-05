@@ -246,3 +246,27 @@
 .menu-card {
     display: none; 
 }
+@media (max-width: 768px) {
+    .filter-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+        text-align: center;
+    }
+
+    .filter-btn {
+        display: inline-block;
+        margin: 0 5px;
+    }
+
+    .menu-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .menu-img {
+        height: 200px;
+    }
+}
