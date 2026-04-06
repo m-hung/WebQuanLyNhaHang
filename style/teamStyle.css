@@ -250,3 +250,24 @@
     object-position: top center; 
     display: block;
 }
+
+@media (max-width: 850px) {
+    .chef-card {
+        flex: 0 1 100%; /* Chiếm toàn bộ chiều ngang */
+        max-width: 100%;
+    }
+
+    .chef-img {
+        height: 350px;
+    }
+
+    .awards-grid {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .award-item {
+        max-width: 100%;
+        width: 100%;
+    }
+}

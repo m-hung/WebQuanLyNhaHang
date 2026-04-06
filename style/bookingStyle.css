@@ -228,3 +228,39 @@ input:focus { border-color: var(--gold); background: #1f1f1f; }
     .booking-content { padding: 40px 5%; flex: none; }
     .input-row { flex-direction: column; gap: 0; }
 }
+@media (max-width: 992px) {
+    .split-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .booking-visual {
+        height: 350px; /* Thu hẹp phần ảnh */
+    }
+
+    .visual-text h2 {
+        font-size: 38px;
+    }
+
+    .booking-content {
+        padding: 40px 5%;
+    }
+
+    .form-wrapper {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .input-row {
+        flex-direction: column;
+    }
+    
+    .time-slots {
+        grid-template-columns: repeat(3, 1fr); /* 3 cột nút giờ trên mobile */
+    }
+
+    .preorder-card {
+        padding: 10px;
+    }
+}
