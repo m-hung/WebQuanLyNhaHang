@@ -3,6 +3,7 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Tables from "./pages/Tables";
+import Reservations from "./pages/ReservationList";
 
 export default function App() {
   const [page, setPage] = React.useState("dashboard");
@@ -13,6 +14,8 @@ export default function App() {
         return <Categories />;
       case "tables":
         return <Tables />;
+      case "reservations":
+        return <Reservations />;
       default:
         return <Dashboard />;
     }

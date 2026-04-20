@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, X, LayoutDashboard, List, LayoutGrid } from "lucide-react"; // Cài đặt bằng: npm install lucide-react
+import { Menu, X, LayoutDashboard, List, LayoutGrid, Calendar} from "lucide-react"; // Cài đặt bằng: npm install lucide-react
 
 export default function Sidebar({ setPage }) {
   const [isOpen, setIsOpen] = React.useState(false); // Trạng thái đóng/mở menu trên mobile
@@ -9,6 +9,7 @@ export default function Sidebar({ setPage }) {
     { id: "dashboard", label: "Thống kê", icon: <LayoutDashboard size={20} /> },
     { id: "categories", label: "Danh mục món", icon: <List size={20} /> },
     { id: "tables", label: "Quản lý bàn", icon: <LayoutGrid size={20} /> },
+    { id: "reservations", label: "Lịch đặt bàn", icon: <Calendar size={20} /> },
   ];
 
   // Hàm xử lý chuyển trang và tự động đóng menu trên mobile
