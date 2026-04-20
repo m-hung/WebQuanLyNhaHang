@@ -44,78 +44,70 @@
                 <p class="form-subtitle">Vui lòng điền thông tin chi tiết để chúng tôi chuẩn bị tốt nhất.</p>
 
                 <form id="booking-form">
-                    <div class="input-group">
-                        <label>Họ và Tên *</label>
-                        <input type="text" placeholder="Nhập tên của bạn" required>
-                    </div>
+    <div class="input-group">
+        <label>Họ và Tên *</label>
+        <input type="text" id="cust-name" placeholder="Nhập tên của bạn" required>
+    </div>
 
-                    <div class="input-row">
-                        <div class="input-group">
-                            <label>Số điện thoại *</label>
-                            <input type="tel" placeholder="090..." required>
-                        </div>
-                        <div class="input-group">
-                            <label>Email</label>
-                            <input type="email" placeholder="example@mail.com">
-                        </div>
-                    </div>
+    <div class="input-row">
+        <div class="input-group">
+            <label>Số điện thoại *</label>
+            <input type="tel" id="cust-phone" placeholder="090..." required>
+        </div>
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="cust-email" placeholder="example@mail.com">
+        </div>
+    </div>
 
-                    <div class="input-row">
-                        <div class="input-group">
-                            <label>Ngày đến *</label>
-                            <input type="date" required>
-                        </div>
-                        <div class="input-group">
-                            <label>Số người *</label>
-                            <select required>
-                                <option value="2">2 Người</option>
-                                <option value="4">4 Người</option>
-                                <option value="6">6+ Người</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                     <label>Khung giờ *</label>
-                     <div class="time-slots" id="time-slots">
-                        <button type="button" class="time-btn">10:00</button>
-                        <button type="button" class="time-btn">11:30</button>
-                        <button type="button" class="time-btn">13:00</button>
-                        <button type="button" class="time-btn">17:00</button>
-                        <button type="button" class="time-btn">19:00</button>
-                        <button type="button" class="time-btn">20:30</button>
-                        <button type="button" class="time-btn">22:00</button>
-                    </div>
-    <input type="hidden" name="booking-time" id="selected-time" value="19:00">
+    <label class="section-label">Thông tin đặt chỗ</label>
+    <div class="search-bar-inline">
+    <div class="search-input-item">
+        <input type="date" id="book-date" required>
+    </div>
+    <div class="search-input-item">
+        <input type="time" id="book-time" required>
+    </div>
+    <div class="search-input-item">
+        <select id="book-guests" required>
+            <option value="" disabled selected>Số người</option>
+            <option value="2">2 Người</option>
+            <option value="4">4 Người</option>
+            <option value="6">6+ Người</option>
+        </select>
+    </div>
+    <button type="button" id="btn-find-table" class="btn-find" disabled>Tìm bàn</button>
 </div>
 
-                    <div class="menu-preorder">
-                        <label class="section-label">Thực đơn chọn trước</label>
-                        <div class="preorder-list">
-                            <div class="preorder-card">
-                                <img src="../img/menu/wayguA5.jpg" alt="Wagyu">
-                                <div class="item-detail">
-                                    <h4>Wagyu A5</h4>
-                                    <p>2.500.000đ</p>
-                                </div>
-                                <input type="number" min="0" value="0" class="qty-input">
-                            </div>
-                            
-                            <div class="preorder-card">
-                                <img src="../img/menu/DuckConfit.jpg" alt="Duck">
-                                <div class="item-detail">
-                                    <h4>Duck Confit</h4>
-                                    <p>850.000đ</p>
-                                </div>
-                                <input type="number" min="0" value="0" class="qty-input">
-                            </div>
-                        </div>
-                    </div>
+    <div id="available-tables-section" class="hidden-section">
+        <label class="section-label">Chọn bàn còn trống</label>
+        <div class="time-slots" id="table-list">
+            <button type="button" class="time-btn table-select">Bàn Cửa Sổ (Vip)</button>
+            <button type="button" class="time-btn table-select">Bàn Sân Thượng</button>
+            <button type="button" class="time-btn table-select">Bàn Trung Tâm</button>
+            <button type="button" class="time-btn table-select">Bàn Đơn 01</button>
+        </div>
+    </div>
 
-                    <button type="submit" class="btn-confirm">Xác Nhận Đặt Bàn</button>
-                </form>
+    <button type="submit" id="btn-confirm-final" class="btn-confirm disabled" disabled>Xác Nhận Đặt Bàn</button>
+</form>
             </div>
         </div>
     </div>
+    <div id="success-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="success-icon">
+            <span class="material-symbols-outlined">check_circle</span>
+        </div>
+            <h2>Đặt bàn thành công!</h2>
+            <p>Cảm ơn quý khách đã lựa chọn <strong>Celesté House</strong>.</p>
+            <div class="modal-details">
+            <p>Thông tin xác nhận đã được gửi đến email của bạn.</p>
+            <p>Chúng tôi sẽ liên hệ lại qua SĐT để xác nhận lần cuối.</p>
+        </div>
+        <button id="btn-close-modal" class="btn-modal-close">Quay lại trang chủ</button>
+    </div>
+</div>
     <script src="../script/booking.js"></script>
     <script src="../script/main.js"></script>
 </body>
