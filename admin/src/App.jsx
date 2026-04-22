@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Sidebar from "./components/Sidebar";
-import DashBoard1 from "./pages/DashBoard1";
+import DashBoard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
-import Tables from "./pages/Tables";
 import Reservations from "./pages/ReservationList";
 import Pos from "./pages/Pos";
 import Checkout from "./pages/Checkout";
+import Statistics from "./pages/Statistics";
 
 export default function App() {
   const [page, setPage] = React.useState("main_dashboard");
@@ -93,7 +93,7 @@ export default function App() {
       case "main_dashboard":
         // Truyền danh sách hóa đơn xuống DashBoard1 để hiển thị
         return (
-          <DashBoard1
+          <DashBoard
             setPage={setPage}
             invoices={invoices}
             onEditInvoice={handleEditInvoice}
@@ -101,19 +101,20 @@ export default function App() {
             onCheckout={handleCheckout}
           />
         );
+      case "statistics":
+        return <Statistics invoices={invoices} />;
       case "categories":
         return <Categories />;
-      case "tables":
-        return <Tables />;
       case "reservations":
         return <Reservations />;
       default:
         return (
-          <DashBoard1
+          <DashBoard
             setPage={setPage}
             invoices={invoices}
             onEditInvoice={handleEditInvoice}
             onCreateNew={handleCreateNew}
+            onCheckout={handleCheckout}
           />
         );
     }
