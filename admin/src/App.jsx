@@ -6,6 +6,7 @@ import Reservations from "./pages/ReservationList";
 import Pos from "./pages/Pos";
 import Checkout from "./pages/Checkout";
 import Statistics from "./pages/Statistics";
+import InvoiceHistory from "./pages/InvoiceHistory";
 
 export default function App() {
   const [page, setPage] = React.useState("main_dashboard");
@@ -107,6 +108,8 @@ export default function App() {
         return <Categories />;
       case "reservations":
         return <Reservations />;
+      case "invoice_history":
+        return <InvoiceHistory />;
       default:
         return (
           <DashBoard
