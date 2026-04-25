@@ -1,5 +1,5 @@
 import React from "react";
-import { Menu, X, LayoutDashboard, List, Calendar, Home, Utensils } from "lucide-react"; // Đã thêm Utensils icon
+import { Menu, X, LayoutDashboard, List, Calendar, Home, Receipt, Utensils } from "lucide-react";
 
 export default function Sidebar({ setPage }) {
   const [isOpen, setIsOpen] = React.useState(false); // Trạng thái đóng/mở menu trên mobile
@@ -14,6 +14,7 @@ export default function Sidebar({ setPage }) {
     { id: "categories", label: "Quản lý danh mục", icon: <List size={20} /> },
     { id: "foods", label: "Quản lý món ăn", icon: <Utensils size={20} /> }, 
     { id: "reservations", label: "Lịch đặt bàn", icon: <Calendar size={20} /> },
+    { id: "invoice_history", label: "Lịch sử hóa đơn", icon: <Receipt size={20} /> },
   ];
 
   const handleNav = (id) => {

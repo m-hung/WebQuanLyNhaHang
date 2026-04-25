@@ -7,6 +7,7 @@ import Foods from "./pages/Foods";
 import Pos from "./pages/Pos";
 import Checkout from "./pages/Checkout";
 import Statistics from "./pages/Statistics";
+import InvoiceHistory from "./pages/InvoiceHistory";
 
 export default function App() {
   const [page, setPage] = React.useState("main_dashboard");
@@ -63,6 +64,8 @@ export default function App() {
         return <Foods />;
       case "reservations":
         return <Reservations />;
+      case "invoice_history":
+        return <InvoiceHistory />;
       default:
         return <DashBoard setPage={setPage} invoices={invoices} onEditInvoice={handleEditInvoice} onCreateNew={handleCreateNew} onCheckout={handleCheckout} />;
     }
