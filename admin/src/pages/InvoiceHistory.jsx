@@ -8,7 +8,6 @@ export default function InvoiceHistory() {
         table: "Bàn 5",
         customerName: "Nguyễn A",
         customerPhone: "0111111111",
-        paymentStatus: "Đang chờ xử lý",
         paymentMethod: "Tiền mặt",
         total: "107.001 đ",
       },
@@ -18,7 +17,6 @@ export default function InvoiceHistory() {
         table: "Bàn 12",
         customerName: "Trần A",
         customerPhone: "0222222222",
-        paymentStatus: "Đã thanh toán",
         paymentMethod: "Chuyển khoản",
         total: "76.001 đ",
       },
@@ -28,7 +26,6 @@ export default function InvoiceHistory() {
         table: "Bàn 2",
         customerName: "Lê A",
         customerPhone: "0333333333",
-        paymentStatus: "Đã thanh toán",
         paymentMethod: "Tiền mặt",
         total: "21.003 đ",
       },
@@ -38,7 +35,6 @@ export default function InvoiceHistory() {
         table: "Bàn 1",
         customerName: "Phạm A",
         customerPhone: "0444444444",
-        paymentStatus: "Chưa cập nhật",
         paymentMethod: "Chuyển khoản",
         total: "150.000 đ",
       },
@@ -48,7 +44,6 @@ export default function InvoiceHistory() {
         table: "Bàn 8",
         customerName: "Võ A",
         customerPhone: "0555555555",
-        paymentStatus: "Đang chờ xử lý",
         paymentMethod: "Tiền mặt",
         total: "151.201 đ",
       },
@@ -58,7 +53,6 @@ export default function InvoiceHistory() {
           table: "Bàn 10",
           customerName: "Vũ A",
           customerPhone: "0666666666",
-          paymentStatus: "Đang chờ xử lý",
           paymentMethod: "Tiền mặt",
           total: "173.501 đ",
         },
@@ -81,13 +75,17 @@ export default function InvoiceHistory() {
         <h2 className="text-xl font-bold text-blue-800">Lịch sử hóa đơn</h2>
       </div>
 
-      <div className="flex justify-end items-center mb-4 text-sm text-gray-600">
-        <div className="flex items-center gap-2">
-          <span>Search:</span>
+      {/* Thanh tìm kiếm */}
+      <div className="flex justify-end mb-6">
+        <div className="flex w-full md:w-[450px] border border-gray-300 rounded-md overflow-hidden bg-white">
           <input 
             type="text" 
-            className="border border-gray-300 rounded-sm p-1.5 focus:outline-none focus:border-blue-500 w-48 md:w-64"
+            placeholder="Tìm kiếm theo tên KH, SĐT" 
+            className="flex-1 px-4 py-2 outline-none text-sm text-gray-700 placeholder-gray-400"
           />
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 text-sm transition-colors">
+            Tìm
+          </button>
         </div>
       </div>
 
@@ -99,7 +97,6 @@ export default function InvoiceHistory() {
               <th className="border border2-gray-600 px-4 py-3 font-medium">Mã HĐ</th>
               <th className="border border2-gray-600 px-4 py-3 font-medium">Bàn số</th>
               <th className="border border2-gray-600 px-4 py-3 font-medium">Thông tin KH</th>
-              <th className="border border2-gray-600 px-4 py-3 font-medium">Trạng thái TT</th>
               <th className="border border2-gray-600 px-4 py-3 font-medium">Phương thức TT</th>
               <th className="border border2-gray-600 px-4 py-3 font-medium">Tổng tiền</th>
               <th className="border border2-gray-600 px-4 py-3 font-medium text-center">Hành động</th>
@@ -119,7 +116,6 @@ export default function InvoiceHistory() {
                     <span className="text-gray-500 text-xs mt-0.5">{item.customerPhone}</span>
                   </div>
                 </td>
-                <td className="border border2-gray-600 px-4 py-3 text-gray-800">{item.paymentStatus}</td>
                 <td className="border border2-gray-600 px-4 py-3 text-gray-800">{item.paymentMethod}</td>
                 <td className="border border2-gray-600 px-4 py-3 text-gray-800">{item.total}</td>
                 <td className="border border2-gray-600 px-4 py-3 text-center">
