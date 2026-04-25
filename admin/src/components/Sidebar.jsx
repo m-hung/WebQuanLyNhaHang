@@ -1,10 +1,9 @@
 import React from "react";
-import { Menu, X, LayoutDashboard, List, Calendar, Home } from "lucide-react"; // Cài đặt bằng: npm install lucide-react
+import { Menu, X, LayoutDashboard, List, Calendar, Home, Utensils } from "lucide-react"; // Đã thêm Utensils icon
 
 export default function Sidebar({ setPage }) {
   const [isOpen, setIsOpen] = React.useState(false); // Trạng thái đóng/mở menu trên mobile
 
-  // Cấu trúc các mục menu để dễ quản lý
   const menuItems = [
     { id: "main_dashboard", label: "Dashboard", icon: <Home size={20} /> },
     {
@@ -12,11 +11,11 @@ export default function Sidebar({ setPage }) {
       label: "Thống kê",
       icon: <LayoutDashboard size={20} />,
     },
-    { id: "categories", label: "Danh mục món", icon: <List size={20} /> },
+    { id: "categories", label: "Quản lý danh mục", icon: <List size={20} /> },
+    { id: "foods", label: "Quản lý món ăn", icon: <Utensils size={20} /> }, 
     { id: "reservations", label: "Lịch đặt bàn", icon: <Calendar size={20} /> },
   ];
 
-  // Hàm xử lý chuyển trang và tự động đóng menu trên mobile
   const handleNav = (id) => {
     setPage(id);
     setIsOpen(false);
@@ -27,18 +26,15 @@ export default function Sidebar({ setPage }) {
       {/* 1. Header cho Mobile (Chỉ hiện khi màn hình nhỏ hơn 768px) */}
       <div className="md:hidden bg-gray-800 text-white p-4 flex justify-between items-center sticky top-0 z-50">
         <h2 className="font-bold text-lg">Admin Panel</h2>
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="p-1 hover:bg-gray-700 rounded transition-colors"
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
+        <button onClick={() => setIsOpen(!isOpen)} className="p-1">
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
-      {/* 2. Lớp phủ (Overlay) khi mở menu trên mobile */}
+      {/* 2. Lớp nền mờ khi mở Sidebar trên Mobile */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden transition-opacity"
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
@@ -64,7 +60,7 @@ export default function Sidebar({ setPage }) {
               <li key={item.id}>
                 <button
                   onClick={() => handleNav(item.id)}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group text-left"
                 >
                   <span className="text-gray-400 group-hover:text-white">
                     {item.icon}
@@ -76,9 +72,9 @@ export default function Sidebar({ setPage }) {
           </ul>
         </nav>
 
-        {/* Chân trang Sidebar (Tùy chọn) */}
-        <div className="p-4 border-t border-gray-700 text-xs text-gray-400 text-center">
-          © 2024 Management System
+        {/* Phần chân Sidebar (Tùy chọn) */}
+        <div className="p-4 border-t border-gray-700 text-sm text-gray-400 text-center">
+          © 2024 Admin Dashboard
         </div>
       </aside>
     </>
