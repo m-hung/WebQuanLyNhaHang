@@ -5,7 +5,7 @@
 -- INSERT INTO categories (name) VALUES ('Món chính');
 -- INSERT INTO categories (name) VALUES ('Đồ uống');
 
-INSERT INTO restaurant_tables (table_number, capacity, status) VALUES
+INSERT IGNORE INTO restaurant_tables (table_number, capacity, status) VALUES
 ('1', 2, 'Available'),
 ('2', 2, 'Available'),
 ('3', 4, 'Available'),

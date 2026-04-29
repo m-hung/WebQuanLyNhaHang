@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             // Gọi API lấy danh sách bàn trống từ Backend
-            const response = await fetch('http://localhost:8080/api/retaurant_tables');
+            const response = await fetch('http://localhost:8080/api/tables');
             if (!response.ok) throw new Error('Kết nối thất bại');
             
             const allTables = await response.json();
