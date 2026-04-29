@@ -66,27 +66,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableList.innerHTML = '<p style="color: #888; width: 100%; text-align: center;">Rất tiếc, hiện tại không có loại bàn phù hợp.</p>';
             } else {
                 // Hiển thị danh sách bàn đã lọc
-                filteredTables.forEach(table => {
+                tables.forEach(table => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'table-select';
+                    const tableNum = table.tableNumber || table.table_number || "N/A";
+                    const cap = table.capacity || table.Capacity || 0;
+                    const id = table.id || table.maBan || table.MaBan;
 
-                    const name = table.tenBan || table.TenBan || `Bàn ${table.table_number}`;
-                    const type = table.loaiBan || table.LoaiBan || `Sức chứa: ${table.capacity}`;
-                    const id = table.maBan || table.MaBan || table.id;
-
-                    btn.innerText = `${name} (${type})`;
-                    
+                    btn.innerText = `Bàn ${tableNum} (Sức chứa: ${cap})`;
+    
                     btn.onclick = () => {
-                        document.querySelectorAll('.table-select').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        selectedTableId = id; 
-                        
-                        btnConfirm.disabled = false;
-                        btnConfirm.classList.remove('disabled');
+                    document.querySelectorAll('.table-select').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedTableId = id; 
+        
+                    btnConfirm.disabled = false;
+                    btnConfirm.classList.remove('disabled');
                     };
-                    tableList.appendChild(btn);
-                });
+                tableList.appendChild(btn);
+            });
             }
 
             availableSection.style.display = 'block';

@@ -175,21 +175,29 @@ input:focus { border-color: var(--gold); background: #1f1f1f; }
     margin-top: 15px;
 }
 
+/* Tìm đến id table-list hoặc class time-slots của bạn */
+#table-list {
+    display: grid;
+    /* Chia làm 2 cột bằng nhau, mỗi cột chiếm 1 phần (1fr) */
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 15px; /* Khoảng cách giữa các bàn */
+    margin-top: 20px;
+    width: 100%;
+}
+
 .table-select {
-    flex: 1; /* Tự động giãn đều */
-    min-width: fit-content; /* Đảm bảo chiều ngang vừa khít với chữ */
-    white-space: nowrap; /* TUYỆT ĐỐI KHÔNG CHO XUỐNG DÒNG */
-    padding: 15px 25px !important; /* Tăng padding ngang để chữ "thở" */
-    background: #1a1a1a;
-    border: 1px solid #333;
-    color: #fff;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 4px;
-    font-family: var(--font-body);
-    transition: all 0.3s ease;
+    width: 100%; /* Đảm bảo nút bấm lấp đầy ô lưới */
+    padding: 15px !important;
+    white-space: nowrap; /* Giữ chữ trên một dòng */
     text-align: center;
+    /* Giữ nguyên các style màu sắc/border cũ của bạn */
+}
+
+/* Trên điện thoại di động thì hiện 1 cột để tránh bị quá bé */
+@media (max-width: 480px) {
+    #table-list {
+        grid-template-columns: 1fr;
+    }
 }
 
 .table-select:hover {
