@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 tableList.innerHTML = '<p style="color: #888; width: 100%; text-align: center;">Rất tiếc, hiện tại không có loại bàn phù hợp.</p>';
             } else {
                 // Hiển thị danh sách bàn đã lọc
-                tables.forEach(table => {
+                filteredTables.forEach(table => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'table-select';
