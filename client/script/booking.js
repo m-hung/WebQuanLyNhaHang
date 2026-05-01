@@ -15,9 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let selectedTableId = null; 
 
-    /**
-     * HÀM KIỂM TRA ĐIỀU KIỆN ĐỂ BẬT NÚT TÌM BÀN
-     */
     function validateSearchInputs() {
         const isDateFilled = bookDate.value !== "";
         const isTimeFilled = bookTime.value !== "";
@@ -30,90 +27,84 @@ document.addEventListener('DOMContentLoaded', () => {
     bookGuests.addEventListener('change', validateSearchInputs);
 
     /**
-     * XỬ LÝ LẤY DỮ LIỆU BÀN TRỐNG VÀ LỌC THEO SỐ KHÁCH
-     * Dựa trên capacity: 2 người -> bàn 1,2 | 4 người -> bàn 3,4 | 6+ người -> bàn 5,6
+     * XỬ LÝ LẤY DỮ LIỆU BÀN TRỐNG
      */
     btnFind.addEventListener('click', async () => {
         if (btnFind.disabled) return;
 
-        const requestedGuests = parseInt(bookGuests.value); // Lấy số khách từ dropdown
+        const requestedGuests = parseInt(bookGuests.value);
         btnFind.innerHTML = '<span class="loading-dots">Đang truy vấn SQL...</span>';
         
         try {
-            // Gọi API lấy danh sách bàn trống từ Backend
             const response = await fetch('http://localhost:8080/api/tables');
             if (!response.ok) throw new Error('Kết nối thất bại');
             
             const allTables = await response.json();
-
-            // Xóa sạch danh sách bàn hiển thị cũ
             tableList.innerHTML = '';
 
-            // --- LOGIC LỌC BÀN THEO YÊU CẦU ---
             const filteredTables = allTables.filter(table => {
-                const capacity = parseInt(table.capacity || table.Capacity || 0);
-                
-                if (requestedGuests <= 2) {
-                    return capacity === 2; // Hiện bàn 1, 2 (sức chứa 2)
-                } else if (requestedGuests <= 4) {
-                    return capacity === 4; // Hiện bàn 3, 4 (sức chứa 4)
-                } else {
-                    return capacity >= 6;  // Hiện bàn 5, 6 (sức chứa 10)
-                }
+                const capacity = parseInt(table.capacity || table.table_capacity || 0);
+                if (requestedGuests <= 2) return capacity === 2;
+                if (requestedGuests <= 4) return capacity === 4;
+                return capacity >= 6;
             });
 
             if (filteredTables.length === 0) {
                 tableList.innerHTML = '<p style="color: #888; width: 100%; text-align: center;">Rất tiếc, hiện tại không có loại bàn phù hợp.</p>';
             } else {
-                // Hiển thị danh sách bàn đã lọc
                 filteredTables.forEach(table => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'table-select';
+                    
+                    // Khớp biến từ Backend (thường là camelCase từ cột table_number)
                     const tableNum = table.tableNumber || table.table_number || "N/A";
-                    const cap = table.capacity || table.Capacity || 0;
-                    const id = table.id || table.maBan || table.MaBan;
+                    const cap = table.capacity || table.table_capacity || 0;
+                    const id = table.id || table.tableId || table.table_id;
 
                     btn.innerText = `Bàn ${tableNum} (Sức chứa: ${cap})`;
     
                     btn.onclick = () => {
-                    document.querySelectorAll('.table-select').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    selectedTableId = id; 
-        
-                    btnConfirm.disabled = false;
-                    btnConfirm.classList.remove('disabled');
+                        document.querySelectorAll('.table-select').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        selectedTableId = id; 
+                        btnConfirm.disabled = false;
+                        btnConfirm.classList.remove('disabled');
                     };
-                tableList.appendChild(btn);
-            });
+                    tableList.appendChild(btn);
+                });
             }
 
             availableSection.style.display = 'block';
             window.scrollTo({ top: availableSection.offsetTop - 100, behavior: 'smooth' });
 
         } catch (error) {
-            console.error("Lỗi kết nối Server:", error);
-            alert("Lỗi: Không thể kết nối với Backend 8080. Hãy kiểm tra CORS trong Java.");
+            console.error("Lỗi:", error);
+            alert("Lỗi kết nối Backend.");
         } finally {
             btnFind.innerHTML = 'Tìm bàn';
         }
     });
 
     /**
-     * XỬ LÝ GỬI THÔNG TIN ĐẶT BÀN VỀ BACKEND
+     * XỬ LÝ GỬI THÔNG TIN ĐẶT BÀN (ĐÃ SỬA BIẾN KHỚP VỚI DATABASE)
      */
     if (bookingForm) {
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
+            // KẾT HỢP NGÀY VÀ GIỜ THÀNH ĐỊNH DẠNG DATETIME CHO MYSQL
+            const fullReservationTime = `${bookDate.value}T${bookTime.value}:00`;
+
             const formData = {
-                tenKhach: document.getElementById('cust-name').value,
-                sdt: document.getElementById('cust-phone').value,
-                email: document.getElementById('cust-email').value,
-                ngayDat: bookDate.value,
-                gioDat: bookTime.value,
-                soKhach: bookGuests.value,
-                maBan: selectedTableId
+                customerName: document.getElementById('cust-name').value, // Khớp customer_name
+                phone: document.getElementById('cust-phone').value,        // Khớp phone
+                email: document.getElementById('cust-email').value,        // Khớp email
+                reservationTime: fullReservationTime,                      // Khớp reservation_time[cite: 2]
+                guestCount: parseInt(bookGuests.value),                    // Khớp guest_count[cite: 2]
+                table: { 
+                    tableId: selectedTableId // Phải là tableId khớp với TableEntity.java
+                }              
             };
 
             try {
@@ -127,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     successModal.style.display = 'flex';
                     document.body.style.overflow = 'hidden'; 
                 } else {
-                    alert("Có lỗi xảy ra khi lưu thông tin. Hãy kiểm tra log server.");
+                    const errorData = await response.json();
+                    alert("Lỗi server: " + (errorData.message || "Không thể lưu đặt chỗ."));
                 }
             } catch (error) {
                 alert("Không thể kết nối tới server để gửi thông tin.");
