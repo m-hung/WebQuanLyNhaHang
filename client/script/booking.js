@@ -1,118 +1,147 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. KHAI BÁO CÁC PHẦN TỬ
+    // 1. KHAI BÁO CÁC BIẾN VÀ PHẦN TỬ TRÊN GIAO DIỆN
     const bookingForm = document.getElementById('booking-form');
     const btnFind = document.getElementById('btn-find-table');
     const btnConfirm = document.getElementById('btn-confirm-final');
     const availableSection = document.getElementById('available-tables-section');
-    const tableBtns = document.querySelectorAll('.table-select');
+    const tableList = document.getElementById('table-list'); 
     
-    // Các ô nhập liệu cần kiểm tra để mở nút "Tìm bàn"
     const bookDate = document.getElementById('book-date');
     const bookTime = document.getElementById('book-time');
     const bookGuests = document.getElementById('book-guests');
 
-    // Các phần tử của Modal thành công
     const successModal = document.getElementById('success-modal');
     const btnCloseModal = document.getElementById('btn-close-modal');
 
+    let selectedTableId = null; 
+
     /**
-     * HÀM KIỂM TRA ĐIỀU KIỆN NÚT TÌM BÀN
-     * Nút tìm bàn chỉ hoạt động khi điền đủ: Ngày + Giờ + Số người
+     * HÀM KIỂM TRA ĐIỀU KIỆN ĐỂ BẬT NÚT TÌM BÀN
      */
     function validateSearchInputs() {
         const isDateFilled = bookDate.value !== "";
         const isTimeFilled = bookTime.value !== "";
         const isGuestsSelected = bookGuests.value !== "";
-
-        if (isDateFilled && isTimeFilled && isGuestsSelected) {
-            btnFind.disabled = false;
-        } else {
-            btnFind.disabled = true;
-        }
+        btnFind.disabled = !(isDateFilled && isTimeFilled && isGuestsSelected);
     }
 
-    // Lắng nghe sự kiện thay đổi trên các ô nhập liệu của thanh tìm kiếm
     bookDate.addEventListener('input', validateSearchInputs);
     bookTime.addEventListener('input', validateSearchInputs);
     bookGuests.addEventListener('change', validateSearchInputs);
 
     /**
-     * XỬ LÝ KHI NHẤN NÚT "TÌM BÀN"
+     * XỬ LÝ LẤY DỮ LIỆU BÀN TRỐNG VÀ LỌC THEO SỐ KHÁCH
+     * Dựa trên capacity: 2 người -> bàn 1,2 | 4 người -> bàn 3,4 | 6+ người -> bàn 5,6
      */
-    btnFind.addEventListener('click', () => {
+    btnFind.addEventListener('click', async () => {
         if (btnFind.disabled) return;
 
-        // Hiệu ứng giả lập đang tải cho chuyên nghiệp
-        btnFind.innerHTML = '<span class="loading-dots">Đang kiểm tra...</span>';
+        const requestedGuests = parseInt(bookGuests.value); // Lấy số khách từ dropdown
+        btnFind.innerHTML = '<span class="loading-dots">Đang truy vấn SQL...</span>';
         
-        setTimeout(() => {
-            // Hiển thị phần danh sách bàn trống
-            availableSection.style.display = 'block';
-            btnFind.innerHTML = 'Tìm bàn';
+        try {
+            // Gọi API lấy danh sách bàn trống từ Backend
+            const response = await fetch('http://localhost:8080/api/tables');
+            if (!response.ok) throw new Error('Kết nối thất bại');
             
-            // Cuộn xuống phần chọn bàn một cách mượt mà
-            window.scrollTo({
-                top: availableSection.offsetTop - 100,
-                behavior: 'smooth'
+            const allTables = await response.json();
+
+            // Xóa sạch danh sách bàn hiển thị cũ
+            tableList.innerHTML = '';
+
+            // --- LOGIC LỌC BÀN THEO YÊU CẦU ---
+            const filteredTables = allTables.filter(table => {
+                const capacity = parseInt(table.capacity || table.Capacity || 0);
+                
+                if (requestedGuests <= 2) {
+                    return capacity === 2; // Hiện bàn 1, 2 (sức chứa 2)
+                } else if (requestedGuests <= 4) {
+                    return capacity === 4; // Hiện bàn 3, 4 (sức chứa 4)
+                } else {
+                    return capacity >= 6;  // Hiện bàn 5, 6 (sức chứa 10)
+                }
             });
-        }, 800);
-    });
 
-    /**
-     * XỬ LÝ KHI CHỌN MỘT BÀN CỤ THỂ
-     */
-    tableBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-            // Xóa trạng thái active của các bàn khác
-            tableBtns.forEach(b => b.classList.remove('active'));
-            
-            // Thêm trạng thái active cho bàn vừa chọn
-            this.classList.add('active');
+            if (filteredTables.length === 0) {
+                tableList.innerHTML = '<p style="color: #888; width: 100%; text-align: center;">Rất tiếc, hiện tại không có loại bàn phù hợp.</p>';
+            } else {
+                // Hiển thị danh sách bàn đã lọc
+                filteredTables.forEach(table => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'table-select';
+                    const tableNum = table.tableNumber || table.table_number || "N/A";
+                    const cap = table.capacity || table.Capacity || 0;
+                    const id = table.id || table.maBan || table.MaBan;
 
-            // MỞ KHÓA NÚT XÁC NHẬN CUỐI CÙNG
-            if (btnConfirm) {
-                btnConfirm.disabled = false;
-                btnConfirm.classList.remove('disabled'); // Xóa class mờ (nếu có)
-                btnConfirm.style.boxShadow = '0 0 20px rgba(197, 160, 89, 0.4)';
+                    btn.innerText = `Bàn ${tableNum} (Sức chứa: ${cap})`;
+    
+                    btn.onclick = () => {
+                    document.querySelectorAll('.table-select').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedTableId = id; 
+        
+                    btnConfirm.disabled = false;
+                    btnConfirm.classList.remove('disabled');
+                    };
+                tableList.appendChild(btn);
+            });
             }
-        });
+
+            availableSection.style.display = 'block';
+            window.scrollTo({ top: availableSection.offsetTop - 100, behavior: 'smooth' });
+
+        } catch (error) {
+            console.error("Lỗi kết nối Server:", error);
+            alert("Lỗi: Không thể kết nối với Backend 8080. Hãy kiểm tra CORS trong Java.");
+        } finally {
+            btnFind.innerHTML = 'Tìm bàn';
+        }
     });
 
     /**
-     * XỬ LÝ KHI NHẤN "XÁC NHẬN ĐẶT BÀN" (HIỆN MODAL)
+     * XỬ LÝ GỬI THÔNG TIN ĐẶT BÀN VỀ BACKEND
      */
     if (bookingForm) {
-        bookingForm.addEventListener('submit', (e) => {
-            e.preventDefault(); // Ngăn trang tải lại
+        bookingForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
             
-            // Hiển thị Modal thành công thay vì alert
-            if (successModal) {
-                successModal.style.display = 'flex';
-                // Ngăn cuộn trang khi đang hiện modal
-                document.body.style.overflow = 'hidden'; 
+            const formData = {
+                tenKhach: document.getElementById('cust-name').value,
+                sdt: document.getElementById('cust-phone').value,
+                email: document.getElementById('cust-email').value,
+                ngayDat: bookDate.value,
+                gioDat: bookTime.value,
+                soKhach: bookGuests.value,
+                maBan: selectedTableId
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/reservations', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    successModal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden'; 
+                } else {
+                    alert("Có lỗi xảy ra khi lưu thông tin. Hãy kiểm tra log server.");
+                }
+            } catch (error) {
+                alert("Không thể kết nối tới server để gửi thông tin.");
             }
         });
     }
 
-    /**
-     * ĐÓNG MODAL VÀ QUAY VỀ TRANG CHỦ
-     */
     if (btnCloseModal) {
         btnCloseModal.addEventListener('click', () => {
-            // Cho phép cuộn lại
             document.body.style.overflow = 'auto'; 
-            // Chuyển hướng về trang chủ
             window.location.href = "../index.html"; 
         });
     }
 
-    // --- KHỞI TẠO TRẠNG THÁI BAN ĐẦU ---
-    // Kiểm tra ngay khi load để nút luôn đúng trạng thái khóa/mở
     validateSearchInputs();
-    
-    // Nút xác nhận luôn khóa cho đến khi chọn bàn
-    if (btnConfirm) {
-        btnConfirm.disabled = true;
-        btnConfirm.classList.add('disabled');
-    }
+    if (btnConfirm) btnConfirm.disabled = true; 
 });
