@@ -186,11 +186,17 @@ input:focus { border-color: var(--gold); background: #1f1f1f; }
 }
 
 .table-select {
-    width: 100%; /* Đảm bảo nút bấm lấp đầy ô lưới */
-    padding: 15px !important;
-    white-space: nowrap; /* Giữ chữ trên một dòng */
-    text-align: center;
-    /* Giữ nguyên các style màu sắc/border cũ của bạn */
+    background-color: #1a1a1a; /* Nền đen xám để tiệp với màu web */
+    color: #c5a059;            /* Chữ màu vàng đồng */
+    border: 1px solid #c5a059; /* Viền màu vàng đồng */
+    padding: 15px;
+    font-family: 'Montserrat', sans-serif; letter-spacing: 2px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Hiệu ứng mượt mà khi hover/click */
+    border-radius: 4px;        /* Bo góc nhẹ */
+    text-transform: uppercase; /* Chữ in hoa cho chuyên nghiệp */
+    letter-spacing: 1px;
 }
 
 /* Trên điện thoại di động thì hiện 1 cột để tránh bị quá bé */
@@ -199,19 +205,19 @@ input:focus { border-color: var(--gold); background: #1f1f1f; }
         grid-template-columns: 1fr;
     }
 }
-
+ 
 .table-select:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(197, 160, 89, 0.05);
+    background-color: #c5a059;
+    color: #000;
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
 }
-
 .table-select.active {
-    background: var(--gold) !important;
-    border-color: var(--gold) !important;
-    color: #000 !important;
-    font-weight: 700;
-    box-shadow: 0 5px 15px rgba(197, 160, 89, 0.3);
+    background-color: #c5a059; /* Đổi hẳn sang nền vàng đồng */
+    color: #1a1a1a;            /* Chữ chuyển sang đen */
+    border-color: #fff;        /* Viền trắng sáng để nổi bật */
+    font-weight: bold;
+    box-shadow: 0 0 20px rgba(197, 160, 89, 0.5);
+    transform: scale(1.02);    /* Phóng to nhẹ để khách biết mình đang chọn bàn này */
 }
 
 /* Responsive cho thiết bị di động */
