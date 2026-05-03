@@ -99,12 +99,12 @@ export default function Categories() {
   return (
     <div className="p-6 bg-gray-50 min-h-screen font-sans">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-xl font-bold text-gray-800">Quan ly danh muc</h1>
+        <h1 className="text-xl font-bold text-gray-800">Quản lý danh mục</h1>
         <button
           onClick={handleOpenModal}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors flex items-center gap-2 shadow-sm"
         >
-          <span className="text-xl">+</span> Them danh muc
+          <span className="text-xl">+</span> Thêm danh mục
         </button>
       </div>
 
@@ -112,9 +112,9 @@ export default function Categories() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-100 border-b">
-              <th className="p-4 font-semibold text-gray-600">Ten danh muc</th>
-              <th className="p-4 font-semibold text-gray-600 text-center">Hien thi</th>
-              <th className="p-4 font-semibold text-gray-600 text-right">Hanh dong</th>
+              <th className="p-4 font-semibold text-gray-600">Tên danh mục</th>
+              <th className="p-4 font-semibold text-gray-600 text-center">Hiển thị</th>
+              <th className="p-4 font-semibold text-gray-600 text-right">Hành động</th>
             </tr>
           </thead>
           <tbody>
@@ -136,13 +136,13 @@ export default function Categories() {
                     onClick={() => handleEdit(cat)}
                     className="text-blue-600 hover:text-blue-800 mr-4 font-medium text-sm"
                   >
-                    Sua
+                    Sửa
                   </button>
                   <button
                     onClick={() => handleDelete(cat.categoryId)}
                     className="text-red-500 hover:text-red-700 font-medium text-sm"
                   >
-                    Xoa
+                    Xóa
                   </button>
                 </td>
               </tr>
@@ -150,7 +150,7 @@ export default function Categories() {
           </tbody>
         </table>
         {categories.length === 0 && (
-          <div className="p-10 text-center text-gray-400">Khong co du lieu danh muc.</div>
+          <div className="p-10 text-center text-gray-400">Không có dữ liệu danh mục.</div>
         )}
       </div>
 
@@ -163,7 +163,7 @@ export default function Categories() {
           <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-lg font-bold text-gray-800">
-                {editingId ? "Sua danh muc" : "Them danh muc"}
+                {editingId ? "Sửa danh mục" : "Thêm danh mục"}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -175,18 +175,18 @@ export default function Categories() {
             <div className="p-6 space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Ten danh muc <span className="text-red-500">*</span>
+                  Tên danh mục <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Nhap ten danh muc..."
+                  placeholder="Nhập tên danh mục..."
                   className="w-full border border-gray-300 rounded-md p-2.5 outline-none focus:ring-2 focus:ring-blue-500/20"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-700">Hien thi</span>
+                <span className="text-sm font-semibold text-gray-700">Hiển thị</span>
                 <button
                   onClick={() => setFormData({ ...formData, active: !formData.active })}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formData.active ? "bg-blue-600" : "bg-gray-200"}`}
@@ -202,13 +202,13 @@ export default function Categories() {
                 onClick={() => setIsModalOpen(false)}
                 className="px-5 py-2 border rounded text-gray-600 hover:bg-white"
               >
-                Huy
+                Hủy
               </button>
               <button
                 onClick={handleSave}
                 className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
               >
-                {editingId ? "Cap nhat" : "Them moi"}
+                {editingId ? "Cập nhật" : "Thêm mới"}
               </button>
             </div>
           </div>
