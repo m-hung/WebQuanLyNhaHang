@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import DashBoard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
-import Reservations from "./pages/ReservationList";
+import Reservations from "./pages/Reservations";
 import Foods from "./pages/Foods";
 import Pos from "./pages/Pos";
 import Checkout from "./pages/Checkout";
