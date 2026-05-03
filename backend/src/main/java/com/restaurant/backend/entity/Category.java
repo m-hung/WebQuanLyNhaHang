@@ -2,8 +2,7 @@ package com.restaurant.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.awt.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 @Entity
@@ -19,6 +18,10 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<MenuItem> menuItems;
 }
