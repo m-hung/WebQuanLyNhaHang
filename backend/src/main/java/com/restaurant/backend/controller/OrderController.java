@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -24,5 +25,16 @@ public class OrderController {
     @PostMapping
     public Order createOrder(@RequestBody Order order) {
         return orderRepository.save(order);
+    }
+
+    @PutMapping("/{id}/status")
+    public org.springframework.http.ResponseEntity<Order> updateOrderStatus(
+            @PathVariable Long id, 
+            @RequestBody Map<String, String> body) {
+            
+        return orderRepository.findById(id).map(order -> {
+            order.setStatus(body.get("status")); // Cập nhật thành "Đã hủy"
+            return org.springframework.http.ResponseEntity.ok(orderRepository.save(order));
+        }).orElseGet(() -> org.springframework.http.ResponseEntity.notFound().build());
     }
 }

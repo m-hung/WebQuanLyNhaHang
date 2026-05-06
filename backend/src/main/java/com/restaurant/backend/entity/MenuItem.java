@@ -3,6 +3,7 @@ package com.restaurant.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "menu_items")
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 public class MenuItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty("id")
     private Long itemId;
 
     @ManyToOne

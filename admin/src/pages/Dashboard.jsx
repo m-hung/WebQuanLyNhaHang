@@ -7,10 +7,56 @@ export default function DashBoard({
   onEditInvoice,
   onCreateNew,
   onCheckout,
+  onRefresh, // Thêm prop này (nếu có) để gọi cha load lại data sau khi hủy
 }) {
+  // =========================================================
+  // HÀM XỬ LÝ HỦY ĐƠN & DỌN TRỐNG BÀN
+  // =========================================================
+  const handleCancelOrder = (invoice) => {
+    // 1. Hỏi xác nhận tránh bấm nhầm
+    if (
+      !window.confirm(
+        `Bạn có chắc chắn muốn HỦY đơn của ${invoice.tableName} không?`,
+      )
+    ) {
+      return;
+    }
+
+    // 2. Bắn API cập nhật trạng thái Hóa đơn -> "Đã hủy"
+    fetch(`http://localhost:8080/api/orders/${invoice.id}/status`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "Đã hủy" }),
+    })
+      .then(() => {
+        // 3. Bắn API cập nhật trạng thái Bàn -> "Trống"
+        return fetch(
+          `http://localhost:8080/api/tables/${invoice.tableId}/status`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ status: "Trống" }),
+          },
+        );
+      })
+      .then(() => {
+        alert("Đã hủy đơn và dọn trống bàn thành công!");
+
+        // 4. Cập nhật lại giao diện để xóa thẻ bàn này đi
+        if (onRefresh) {
+          onRefresh(); // Nếu component cha có truyền hàm load lại dữ liệu
+        } else {
+          window.location.reload(); // Chữa cháy: F5 load lại trang luôn cho lẹ
+        }
+      })
+      .catch((err) => {
+        console.error("Lỗi khi hủy đơn:", err);
+        alert("Có lỗi xảy ra khi hủy đơn! Vui lòng kiểm tra console.");
+      });
+  };
+
   return (
     <div className="p-6">
-      {/* flex-wrap giúp các ô tự động xuống dòng nếu màn hình hẹp, gap-4 tạo khoảng cách */}
       <div className="flex flex-wrap gap-4">
         {/* Ô 1: Thêm hóa đơn mới (Luôn hiển thị) */}
         <div
@@ -33,15 +79,18 @@ export default function DashBoard({
             key={invoice.id}
             className="w-72 h-36 bg-teal-100 border-2 border-teal-200 relative flex flex-col justify-center p-4 rounded"
           >
-            {/* Nhãn Hoàn tất ở góc phải trên */}
-            <span className="absolute top-2 right-2 bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded">
-              Hoàn tất
-            </span>
+            {/* ĐÃ SỬA CHỖ NÀY: Thay <span> bằng <button> Hủy */}
+            <button
+              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white text-xs font-semibold px-3 py-1 rounded cursor-pointer shadow-sm transition"
+              onClick={() => handleCancelOrder(invoice)}
+            >
+              Hủy
+            </button>
 
             {/* Thông tin hóa đơn */}
             <div className="text-center mt-2">
               <p className="text-gray-500 font-medium text-base flex items-center justify-center gap-2">
-                HD: {invoice.tableName}
+                HD: {invoice.table?.tableId}
                 <button
                   className="bg-gray-600 text-white text-xs px-2 py-1 rounded hover:bg-gray-700"
                   onClick={() => onEditInvoice(invoice)}
@@ -50,7 +99,7 @@ export default function DashBoard({
                 </button>
               </p>
               <p className="text-gray-500 text-base mt-2">
-                Tổng tiền:{invoice.totalPrice} VNĐ
+                Tổng tiền: {invoice.totalPrice.toLocaleString()} VNĐ
               </p>
             </div>
 
