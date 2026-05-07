@@ -6,7 +6,7 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
   const [customerPhone, setCustomerPhone] = useState("");
   const [currentTime, setCurrentTime] = useState("");
 
-  const [paymentMethod, setPaymentMethod] = useState("Tiền mặt");
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
 
   // Lấy thời gian hiện tại khi mở trang thanh toán
   useEffect(() => {
@@ -144,8 +144,8 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
             <input
               type="radio"
               name="payment"
-              value="Tiền mặt"
-              checked={paymentMethod === "Tiền mặt"}
+              value="Cash"
+              checked={paymentMethod === "Cash"}
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="form-radio w-4 h-4 text-emerald-500 focus:ring-emerald-500"
             />
@@ -208,7 +208,7 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
                   {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ status: "Đã thanh toán" }),
+                    body: JSON.stringify({ status: "Paid" }),
                   },
                 );
               })
@@ -221,7 +221,7 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
                   {
                     method: "PUT",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ status: "Trống" }),
+                    body: JSON.stringify({ status: "Available" }),
                   },
                 );
               })

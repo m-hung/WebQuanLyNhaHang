@@ -21,6 +21,9 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
+
   // ==============================================================
   // GỌI API LẤY DỮ LIỆU TỪ SPRING BOOT
   // ==============================================================
@@ -40,9 +43,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
       .then((res) => res.json())
       .then((data) => {
         // Đã sửa cho khớp với Entity Java: dùng trường status === 'Trống'
-        const freeTables = data.filter(
-          (table) => table.status === "Trống" || table.status === "Available",
-        );
+        const freeTables = data.filter((table) => table.status === "Available");
         setAvailableTables(freeTables);
 
         if (freeTables.length > 0 && !editingInvoice) {
@@ -52,6 +53,21 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
       })
       .catch((err) => console.error("Lỗi lấy bàn:", err));
   }, [editingInvoice]);
+
+  // HÀM LỌC SẢN PHẨM (TÌM KIẾM + DANH MỤC)
+  const filteredProducts = products.filter((product) => {
+    // 1. Lọc theo chữ gõ trong ô tìm kiếm (Không phân biệt hoa/thường)
+    const matchSearch = product.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    // 2. Lọc theo nút Danh mục
+    const matchCategory =
+      selectedCategory === "Tất cả" ||
+      (product.category && product.category.name === selectedCategory);
+
+    return matchSearch && matchCategory;
+  });
 
   // ==============================================================
   // CÁC HÀM XỬ LÝ GIỎ HÀNG
@@ -110,13 +126,25 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
         <div className="lg:w-2/3 flex flex-col h-full">
           <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
             <div className="flex gap-2 flex-wrap">
-              <button className="bg-blue-600 text-white px-4 py-2 rounded shadow-sm">
+              <button
+                className={`px-4 py-2 rounded shadow-sm transition ${
+                  selectedCategory === "Tất cả"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white"
+                }`}
+                onClick={() => setSelectedCategory("Tất cả")}
+              >
                 Tất cả
               </button>
               {categories.map((category) => (
                 <button
                   key={category.id}
-                  className="bg-gray-100 text-gray-700 hover:bg-blue-600 hover:text-white px-4 py-2 rounded transition"
+                  className={`px-4 py-2 rounded transition ${
+                    selectedCategory === category.name
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white"
+                  }`}
+                  onClick={() => setSelectedCategory(category.name)}
                 >
                   {category.name}
                 </button>
@@ -125,7 +153,9 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
             <div className="flex w-full sm:w-auto">
               <input
                 type="text"
-                placeholder="Tìm kiếm..."
+                placeholder="Tìm kiếm món ăn..."
+                value={searchTerm} // <--- Gắn biến lưu từ khóa vào đây
+                onChange={(e) => setSearchTerm(e.target.value)} // <--- Cập nhật khi gõ phím
                 className="w-full sm:w-64 border border-gray-300 px-3 py-2 rounded-l outline-none focus:border-blue-500"
               />
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-r transition">
@@ -135,9 +165,9 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
           </div>
 
           <div className="flex-1 bg-gray-50/50 p-4 rounded shadow-inner border border-gray-100 overflow-y-auto max-h-[calc(100vh-220px)] custom-scrollbar">
-            {products.length > 0 ? (
+            {filteredProducts.length > 0 ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                {products.map((product) => (
+                {filteredProducts.map((product) => (
                   <div
                     key={product.id}
                     onClick={() => handleAddToCart(product)}
@@ -301,18 +331,22 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                 onChange={(e) => setSelectedTable(e.target.value)}
                 disabled={isTableFull}
               >
-                {editingInvoice ? (
+                {/* 1. Luôn hiển thị bàn hiện tại trên cùng (nếu đang sửa) */}
+                {editingInvoice && (
                   <option value={editingInvoice.tableName}>
-                    {editingInvoice.tableName}
+                    {editingInvoice.tableName} (Bàn hiện tại)
                   </option>
-                ) : availableTables.length > 0 ? (
-                  // Đã sửa: Map qua availableTables và lấy tableId, tableNumber
-                  availableTables.map((table) => (
-                    <option key={table.tableId} value={table.tableNumber}>
-                      {table.tableNumber}
-                    </option>
-                  ))
-                ) : (
+                )}
+
+                {/* 2. Đổ thêm danh sách các bàn trống ở dưới để có thể chọn đổi */}
+                {availableTables.map((table) => (
+                  <option key={table.tableId} value={table.tableNumber}>
+                    {table.tableNumber}
+                  </option>
+                ))}
+
+                {/* 3. Nếu hết bàn trống và không phải đang sửa */}
+                {availableTables.length === 0 && !editingInvoice && (
                   <option value="">Hết bàn trống</option>
                 )}
               </select>
@@ -341,7 +375,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                     {
                       method: "PUT",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ status: "Đang có khách" }),
+                      body: JSON.stringify({ status: "Occupied" }),
                     },
                   )
                     .then(() => {
@@ -349,7 +383,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                         table: { tableId: selectedTableObj.tableId },
                         orderDate: new Date().toISOString(),
                         totalAmount: calculatedTotal,
-                        status: "Đang phục vụ",
+                        status: "Serving",
                       };
 
                       return fetch("http://localhost:8080/api/orders", {
@@ -378,7 +412,6 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
 
                       // Đợi lưu xong món ăn thì mới gọi onSaveInvoice
                       return Promise.all(itemPromises).then(() => {
-                        alert("Lưu hóa đơn vào Database thành công!");
                         if (onSaveInvoice) {
                           onSaveInvoice({
                             id: savedOrder.orderId,
@@ -402,10 +435,15 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                   // CẬP NHẬT HÓA ĐƠN CŨ (Đã thêm cashierName vào đây)
                   // ==========================================================
                   if (onSaveInvoice) {
+                    const newTableObj = availableTables.find(
+                      (t) => t.tableNumber === selectedTable,
+                    );
+                    const finalTableId = newTableObj
+                      ? newTableObj.tableId
+                      : editingInvoice.tableId || editingInvoice.table?.tableId;
                     onSaveInvoice({
                       id: editingInvoice.id,
-                      tableId:
-                        editingInvoice.tableId || editingInvoice.table?.tableId,
+                      tableId: finalTableId,
                       tableName: selectedTable,
                       totalPrice: calculatedTotal,
                       cart: cart,
@@ -415,7 +453,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                 }
               }}
             >
-              Thanh Toán
+              Lưu
             </button>
             <button
               className="flex-1 bg-gray-800 hover:bg-gray-900 text-white py-3.5 rounded-lg font-bold transition shadow-sm"

@@ -24,9 +24,7 @@ export default function App() {
       .then((res) => res.json())
       .then((data) => {
         // Lọc ra những hóa đơn chưa thanh toán (Đang phục vụ)
-        const activeOrders = data.filter(
-          (order) => order.status === "Đang phục vụ",
-        );
+        const activeOrders = data.filter((order) => order.status === "Serving");
 
         // Format lại dữ liệu cho khớp với những gì file DashBoard.jsx đang cần
         const formattedInvoices = activeOrders.map((order) => ({

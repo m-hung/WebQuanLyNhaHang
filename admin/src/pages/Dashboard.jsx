@@ -26,7 +26,7 @@ export default function DashBoard({
     fetch(`http://localhost:8080/api/orders/${invoice.id}/status`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "Đã hủy" }),
+      body: JSON.stringify({ status: "Cancelled" }),
     })
       .then(() => {
         // 3. Bắn API cập nhật trạng thái Bàn -> "Trống"
@@ -35,13 +35,11 @@ export default function DashBoard({
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status: "Trống" }),
+            body: JSON.stringify({ status: "Available" }),
           },
         );
       })
       .then(() => {
-        alert("Đã hủy đơn và dọn trống bàn thành công!");
-
         // 4. Cập nhật lại giao diện để xóa thẻ bàn này đi
         if (onRefresh) {
           onRefresh(); // Nếu component cha có truyền hàm load lại dữ liệu
@@ -90,7 +88,7 @@ export default function DashBoard({
             {/* Thông tin hóa đơn */}
             <div className="text-center mt-2">
               <p className="text-gray-500 font-medium text-base flex items-center justify-center gap-2">
-                HD: {invoice.table?.tableId}
+                HD: Bàn {invoice.tableName}
                 <button
                   className="bg-gray-600 text-white text-xs px-2 py-1 rounded hover:bg-gray-700"
                   onClick={() => onEditInvoice(invoice)}
