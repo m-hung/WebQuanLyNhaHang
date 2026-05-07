@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // <--- 1. Thêm useEffect ở đây
 import Sidebar from "./components/Sidebar";
 import DashBoard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
@@ -16,9 +16,39 @@ export default function App() {
   const [checkoutInvoice, setCheckoutInvoice] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
 
+  // =========================================================================
+  // 2. THÊM ĐOẠN NÀY VÀO: Tự động tải hóa đơn "Đang phục vụ" khi mở web hoặc F5
+  // =========================================================================
+  useEffect(() => {
+    fetch("http://localhost:8080/api/orders")
+      .then((res) => res.json())
+      .then((data) => {
+        // Lọc ra những hóa đơn chưa thanh toán (Đang phục vụ)
+        const activeOrders = data.filter((order) => order.status === "Serving");
+
+        // Format lại dữ liệu cho khớp với những gì file DashBoard.jsx đang cần
+        const formattedInvoices = activeOrders.map((order) => ({
+          id: order.orderId,
+          tableId: order.table?.tableId,
+          tableName: order.table?.tableNumber,
+          totalPrice: order.totalAmount,
+          cashierName: order.cashierName || "Thu ngân",
+          cart: order.orderItems || [],
+        }));
+
+        setInvoices(formattedInvoices);
+      })
+      .catch((err) => console.error("Lỗi khi tải hóa đơn:", err));
+  }, []);
+  // =========================================================================
+
   const handleSaveInvoice = (invoiceData) => {
     if (editingInvoice) {
-      setInvoices(invoices.map((inv) => inv.id === editingInvoice.id ? invoiceData : inv));
+      setInvoices(
+        invoices.map((inv) =>
+          inv.id === editingInvoice.id ? invoiceData : inv,
+        ),
+      );
     } else {
       setInvoices([...invoices, invoiceData]);
     }
@@ -51,11 +81,31 @@ export default function App() {
   const renderPage = () => {
     switch (page) {
       case "checkout":
-        return <Checkout setPage={setPage} invoice={checkoutInvoice} onPaymentSuccess={handlePaymentSuccess} />;
+        return (
+          <Checkout
+            setPage={setPage}
+            invoice={checkoutInvoice}
+            onPaymentSuccess={handlePaymentSuccess}
+          />
+        );
       case "pos":
-        return <Pos setPage={setPage} onSaveInvoice={handleSaveInvoice} editingInvoice={editingInvoice} />;
+        return (
+          <Pos
+            setPage={setPage}
+            onSaveInvoice={handleSaveInvoice}
+            editingInvoice={editingInvoice}
+          />
+        );
       case "main_dashboard":
-        return <DashBoard setPage={setPage} invoices={invoices} onEditInvoice={handleEditInvoice} onCreateNew={handleCreateNew} onCheckout={handleCheckout} />;
+        return (
+          <DashBoard
+            setPage={setPage}
+            invoices={invoices}
+            onEditInvoice={handleEditInvoice}
+            onCreateNew={handleCreateNew}
+            onCheckout={handleCheckout}
+          />
+        );
       case "statistics":
         return <Statistics invoices={invoices} />;
       case "categories":
@@ -67,7 +117,15 @@ export default function App() {
       case "invoice_history":
         return <InvoiceHistory />;
       default:
-        return <DashBoard setPage={setPage} invoices={invoices} onEditInvoice={handleEditInvoice} onCreateNew={handleCreateNew} onCheckout={handleCheckout} />;
+        return (
+          <DashBoard
+            setPage={setPage}
+            invoices={invoices}
+            onEditInvoice={handleEditInvoice}
+            onCreateNew={handleCreateNew}
+            onCheckout={handleCheckout}
+          />
+        );
     }
   };
 
@@ -75,12 +133,22 @@ export default function App() {
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
       <Sidebar setPage={setPage} />
       <main className="flex-1 p-4 md:p-8 overflow-auto">{renderPage()}</main>
-      
+
       {toastMessage && (
         <div className="fixed top-4 right-4 z-50 bg-[#63b365] text-white px-4 py-3 rounded shadow-lg flex items-center gap-3 animate-fade-in-down">
           <div className="bg-white/20 rounded-full p-1">
-            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path>
+            <svg
+              className="w-5 h-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="3"
+                d="M5 13l4 4L19 7"
+              ></path>
             </svg>
           </div>
           <div>
