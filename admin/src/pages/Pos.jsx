@@ -199,7 +199,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
             ) : (
               <div className="h-full flex flex-col items-center justify-center text-gray-400">
                 <p className="text-lg font-medium text-gray-500 mb-1">
-                  Đang tải dữ liệu...
+                  Chưa có dữ liệu
                 </p>
               </div>
             )}
@@ -432,23 +432,69 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                     });
                 } else {
                   // ==========================================================
-                  // CẬP NHẬT HÓA ĐƠN CŨ (Đã thêm cashierName vào đây)
+                  // CẬP NHẬT HÓA ĐƠN CŨ (Kèm logic dọn bàn cũ, khóa bàn mới)
                   // ==========================================================
                   if (onSaveInvoice) {
+                    // Lấy ID bàn cũ
+                    const oldTableId =
+                      editingInvoice.tableId || editingInvoice.table?.tableId;
+
+                    // Tìm ID bàn mới (nếu có chọn)
                     const newTableObj = availableTables.find(
                       (t) => t.tableNumber === selectedTable,
                     );
                     const finalTableId = newTableObj
                       ? newTableObj.tableId
-                      : editingInvoice.tableId || editingInvoice.table?.tableId;
-                    onSaveInvoice({
-                      id: editingInvoice.id,
-                      tableId: finalTableId,
-                      tableName: selectedTable,
-                      totalPrice: calculatedTotal,
-                      cart: cart,
-                      cashierName: selectedCashier, // Bổ sung thu ngân ở đây nữa
-                    });
+                      : oldTableId;
+
+                    // NẾU CÓ ĐỔI BÀN MỚI
+                    if (oldTableId !== finalTableId && newTableObj) {
+                      // Bước 1: Nhả bàn cũ về Trống (Available)
+                      fetch(
+                        `http://localhost:8080/api/tables/${oldTableId}/status`,
+                        {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ status: "Available" }),
+                        },
+                      )
+                        .then(() => {
+                          // Bước 2: Khóa bàn mới (Occupied)
+                          return fetch(
+                            `http://localhost:8080/api/tables/${finalTableId}/status`,
+                            {
+                              method: "PUT",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({ status: "Occupied" }),
+                            },
+                          );
+                        })
+                        .then(() => {
+                          // Bước 3: Cập nhật giao diện React
+                          onSaveInvoice({
+                            id: editingInvoice.id,
+                            tableId: finalTableId,
+                            tableName: selectedTable,
+                            totalPrice: calculatedTotal,
+                            cart: cart,
+                            cashierName: selectedCashier,
+                          });
+                        })
+                        .catch((err) => {
+                          console.error("Lỗi khi chuyển bàn:", err);
+                        });
+                    }
+                    // NẾU KHÔNG ĐỔI BÀN (Chỉ thêm bớt món ăn)
+                    else {
+                      onSaveInvoice({
+                        id: editingInvoice.id,
+                        tableId: finalTableId,
+                        tableName: selectedTable,
+                        totalPrice: calculatedTotal,
+                        cart: cart,
+                        cashierName: selectedCashier,
+                      });
+                    }
                   }
                 }
               }}
