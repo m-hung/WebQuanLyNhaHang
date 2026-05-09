@@ -33,7 +33,26 @@ public class OrderController {
             @RequestBody Map<String, String> body) {
             
         return orderRepository.findById(id).map(order -> {
-            order.setStatus(body.get("status")); // Cập nhật thành "Đã hủy"
+            order.setStatus(body.get("status")); // Cập nhật trạng thái
+            return org.springframework.http.ResponseEntity.ok(orderRepository.save(order));
+        }).orElseGet(() -> org.springframework.http.ResponseEntity.notFound().build());
+    }
+
+    // ĐÂY LÀ ĐOẠN API MỚI THÊM VÀO ĐỂ CẬP NHẬT BÀN VÀ TỔNG TIỀN
+    @PutMapping("/{id}")
+    public org.springframework.http.ResponseEntity<Order> updateOrder(
+            @PathVariable Long id, 
+            @RequestBody Order orderDetails) {
+            
+        return orderRepository.findById(id).map(order -> {
+            // Nếu có đổi bàn thì cập nhật bàn mới
+            if (orderDetails.getTable() != null) {
+                order.setTable(orderDetails.getTable());
+            }
+            // Cập nhật lại tổng tiền (nếu khách gọi thêm món/bớt món)
+            if (orderDetails.getTotalAmount() != null) {
+                order.setTotalAmount(orderDetails.getTotalAmount());
+            }
             return org.springframework.http.ResponseEntity.ok(orderRepository.save(order));
         }).orElseGet(() -> org.springframework.http.ResponseEntity.notFound().build());
     }

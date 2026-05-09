@@ -432,14 +432,14 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                     });
                 } else {
                   // ==========================================================
-                  // CẬP NHẬT HÓA ĐƠN CŨ (Kèm logic dọn bàn cũ, khóa bàn mới)
+                  // CẬP NHẬT HÓA ĐƠN CŨ (Dọn bàn cũ, Khóa bàn mới, Cập nhật Order DB)
                   // ==========================================================
                   if (onSaveInvoice) {
                     // Lấy ID bàn cũ
                     const oldTableId =
                       editingInvoice.tableId || editingInvoice.table?.tableId;
 
-                    // Tìm ID bàn mới (nếu có chọn)
+                    // Tìm ID bàn mới
                     const newTableObj = availableTables.find(
                       (t) => t.tableNumber === selectedTable,
                     );
@@ -447,9 +447,15 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                       ? newTableObj.tableId
                       : oldTableId;
 
+                    // Gói hàng để báo Spring Boot cập nhật lại bảng 'orders'
+                    const updateOrderPayload = {
+                      table: { tableId: finalTableId },
+                      totalAmount: calculatedTotal,
+                    };
+
                     // NẾU CÓ ĐỔI BÀN MỚI
                     if (oldTableId !== finalTableId && newTableObj) {
-                      // Bước 1: Nhả bàn cũ về Trống (Available)
+                      // Bước 1: Nhả bàn cũ về Trống
                       fetch(
                         `http://localhost:8080/api/tables/${oldTableId}/status`,
                         {
@@ -459,7 +465,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                         },
                       )
                         .then(() => {
-                          // Bước 2: Khóa bàn mới (Occupied)
+                          // Bước 2: Khóa bàn mới
                           return fetch(
                             `http://localhost:8080/api/tables/${finalTableId}/status`,
                             {
@@ -470,7 +476,18 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                           );
                         })
                         .then(() => {
-                          // Bước 3: Cập nhật giao diện React
+                          // Bước 3: Cầm HÓA ĐƠN sang gắn vào BÀN MỚI trong Database (API vừa viết)
+                          return fetch(
+                            `http://localhost:8080/api/orders/${editingInvoice.id}`,
+                            {
+                              method: "PUT",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify(updateOrderPayload),
+                            },
+                          );
+                        })
+                        .then(() => {
+                          // Bước 4: Về trang chủ Dashboard
                           onSaveInvoice({
                             id: editingInvoice.id,
                             tableId: finalTableId,
@@ -480,20 +497,34 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                             cashierName: selectedCashier,
                           });
                         })
-                        .catch((err) => {
-                          console.error("Lỗi khi chuyển bàn:", err);
-                        });
+                        .catch((err) =>
+                          console.error("Lỗi khi chuyển bàn:", err),
+                        );
                     }
-                    // NẾU KHÔNG ĐỔI BÀN (Chỉ thêm bớt món ăn)
+                    // NẾU KHÔNG ĐỔI BÀN (Chỉ thêm/bớt món ăn)
                     else {
-                      onSaveInvoice({
-                        id: editingInvoice.id,
-                        tableId: finalTableId,
-                        tableName: selectedTable,
-                        totalPrice: calculatedTotal,
-                        cart: cart,
-                        cashierName: selectedCashier,
-                      });
+                      // Chỉ cần cập nhật lại giá tiền vào bảng orders là xong
+                      fetch(
+                        `http://localhost:8080/api/orders/${editingInvoice.id}`,
+                        {
+                          method: "PUT",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify(updateOrderPayload),
+                        },
+                      )
+                        .then(() => {
+                          onSaveInvoice({
+                            id: editingInvoice.id,
+                            tableId: finalTableId,
+                            tableName: selectedTable,
+                            totalPrice: calculatedTotal,
+                            cart: cart,
+                            cashierName: selectedCashier,
+                          });
+                        })
+                        .catch((err) =>
+                          console.error("Lỗi cập nhật hóa đơn:", err),
+                        );
                     }
                   }
                 }
