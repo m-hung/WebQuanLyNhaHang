@@ -3,7 +3,7 @@ package com.restaurant.backend.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "order_items")
@@ -17,7 +17,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Order order;
 
     @ManyToOne
