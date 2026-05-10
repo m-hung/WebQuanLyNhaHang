@@ -93,7 +93,7 @@ export default function InvoiceHistory() {
                     <h2 className="text-2xl font-bold text-gray-800">Lịch sử hóa đơn</h2>
                 </div>
                 {/* Thanh tìm kiếm */}
-                <div className="flex w-full md:w-95 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                <div className="flex w-full md:w-110 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                     <input type="text" placeholder="Tìm kiếm theo Số hóa đơn, Số bàn..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} className="flex-1 px-4 py-3 outline-none text-sm text-gray-700"/>
                     <button onClick={handleSearch} className="bg-blue-600 hover:bg-blue-700 text-white px-6 transition-colors cursor-pointer">Tìm</button>
                     <button onClick={() => {setSearchTerm("");setFilteredOrders(orders);setCurrentPage(1);}}className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 text-sm transition-colors cursor-pointer">Reset</button>
@@ -128,7 +128,7 @@ export default function InvoiceHistory() {
                                     <td className="px-5 py-4 text-right font-bold text-gray-800">{formatCurrency(item.totalAmount)}</td>
                                     <td className="px-5 py-4 text-center">
                                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.payment ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
-                                            {item.payment ? "Đã thanh toán" : "Chưa thanh toán"}
+                                            {item.status === "Paid" ? "Đã thanh toán" : item.status === "Serving" ? "Đang phục vụ" : "Đã hủy"}
                                         </span>
                                     </td>
                                     <td className="px-5 py-4 text-center text-gray-500">
@@ -188,15 +188,15 @@ export default function InvoiceHistory() {
                                 </h3>
                                 <p className="text-sm text-gray-500 mt-1">
                                     {formatDateTime(
-                                        selectedOrder.payment?.paymentTime ||
+                                        selectedOrder.status?.paymentTime ||
                                         selectedOrder.orderDate
                                     )}
                                 </p>
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedOrder.payment ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
-                                    {selectedOrder.payment
+                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedOrder.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
+                                    {selectedOrder.status
                                         ? "Đã thanh toán"
                                         : "Chưa thanh toán"}
                                 </span>
@@ -265,11 +265,11 @@ export default function InvoiceHistory() {
                                                     {item.quantity}
                                                 </td>
                                                 <td className="px-4 py-4 text-right">
-                                                    {formatCurrency(item.price)}
+                                                    {formatCurrency(item.menuItem?.price)}
                                                 </td>
                                                 <td className="px-4 py-4 text-right font-semibold">
                                                     {formatCurrency(
-                                                        item.subtotal || item.price * item.quantity
+                                                        item.subtotal || item.menuItem?.price * item.quantity
                                                     )}
                                                 </td>
                                             </tr>
