@@ -10,10 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookTime = document.getElementById('book-time');
     const bookGuests = document.getElementById('book-guests');
 
-    const successModal = document.getElementById('success-modal');
-    const btnCloseModal = document.getElementById('btn-close-modal');
-
-    let selectedTableId = null; 
+    let selectedTableId = null;
+    let selectedTableName = null; // Lưu tên bàn để hiển thị trên trang thanh toán
 
     function validateSearchInputs() {
         const isDateFilled = bookDate.value !== "";
@@ -57,17 +55,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.type = 'button';
                     btn.className = 'table-select';
                     
-                    // Khớp biến từ Backend (thường là camelCase từ cột table_number)
                     const tableNum = table.tableNumber || table.table_number || "N/A";
                     const cap = table.capacity || table.table_capacity || 0;
                     const id = table.id || table.tableId || table.table_id;
+                    const displayName = `Bàn ${tableNum} (Sức chứa: ${cap})`;
 
-                    btn.innerText = `Bàn ${tableNum} (Sức chứa: ${cap})`;
+                    btn.innerText = displayName;
     
                     btn.onclick = () => {
                         document.querySelectorAll('.table-select').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
-                        selectedTableId = id; 
+                        selectedTableId = id;
+                        selectedTableName = displayName;
                         btnConfirm.disabled = false;
                         btnConfirm.classList.remove('disabled');
                     };
@@ -87,23 +86,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /**
-     * XỬ LÝ GỬI THÔNG TIN ĐẶT BÀN (ĐÃ SỬA BIẾN KHỚP VỚI DATABASE)
+     * XỬ LÝ GỬI THÔNG TIN ĐẶT BÀN → CHUYỂN SANG TRANG THANH TOÁN
      */
     if (bookingForm) {
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault(); 
             
-            // KẾT HỢP NGÀY VÀ GIỜ THÀNH ĐỊNH DẠNG DATETIME CHO MYSQL
             const fullReservationTime = `${bookDate.value}T${bookTime.value}:00`;
 
             const formData = {
-                customerName: document.getElementById('cust-name').value, // Khớp customer_name
-                phone: document.getElementById('cust-phone').value,        // Khớp phone
-                email: document.getElementById('cust-email').value,        // Khớp email
-                reservationTime: fullReservationTime,                      // Khớp reservation_time[cite: 2]
-                guestCount: parseInt(bookGuests.value),                    // Khớp guest_count[cite: 2]
+                customerName: document.getElementById('cust-name').value,
+                phone: document.getElementById('cust-phone').value,
+                email: document.getElementById('cust-email').value,
+                reservationTime: fullReservationTime,
+                guestCount: parseInt(bookGuests.value),
                 table: { 
-                    tableId: selectedTableId // Phải là tableId khớp với TableEntity.java
+                    tableId: selectedTableId
                 }              
             };
 
@@ -115,8 +113,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    successModal.style.display = 'flex';
-                    document.body.style.overflow = 'hidden'; 
+                    // ============================================
+                    // CHUYỂN HƯỚNG SANG TRANG THANH TOÁN
+                    // Truyền thông tin qua URL params + localStorage
+                    // ============================================
+                    const name     = formData.customerName;
+                    const phone    = formData.phone;
+                    const guests   = formData.guestCount;
+                    const table    = selectedTableName || `Bàn #${selectedTableId}`;
+
+                    // Format ngày giờ hiển thị thân thiện
+                    const dtObj    = new Date(fullReservationTime);
+                    const datetime = dtObj.toLocaleString('vi-VN', {
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+
+                    // Lưu vào localStorage làm backup
+                    localStorage.setItem('bk_name',     name);
+                    localStorage.setItem('bk_phone',    phone);
+                    localStorage.setItem('bk_datetime', datetime);
+                    localStorage.setItem('bk_guests',   guests);
+                    localStorage.setItem('bk_table',    table);
+
+                    // Redirect sang trang thanh toán kèm query params
+                    const params = new URLSearchParams({
+                        name, phone, datetime, guests, table
+                    });
+                    window.location.href = `./payment.html?${params.toString()}`;
+
                 } else {
                     const errorData = await response.json();
                     alert("Lỗi server: " + (errorData.message || "Không thể lưu đặt chỗ."));
@@ -124,13 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 alert("Không thể kết nối tới server để gửi thông tin.");
             }
-        });
-    }
-
-    if (btnCloseModal) {
-        btnCloseModal.addEventListener('click', () => {
-            document.body.style.overflow = 'auto'; 
-            window.location.href = "../index.html"; 
         });
     }
 
