@@ -12,18 +12,20 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+ @Id
+ @GeneratedValue(strategy = GenerationType.IDENTITY)
+ private Long orderId;
 
-    @ManyToOne
-    @JoinColumn(name = "table_id")
-    private TableEntity table;
+ @ManyToOne
+ @JoinColumn(name = "table_id")
+ private TableEntity table;
 
-    private LocalDateTime orderDate;
-    private BigDecimal totalAmount;
-    private String status; // Đang phục vụ, Đã thanh toán, Đã hủy
+ private LocalDateTime orderDate;
+ private BigDecimal totalAmount;
+ private String status; // Đang phục vụ, Đã thanh toán, Đã hủy
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> orderItems;
+ @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+ @ToString.Exclude // Khóa chốt từ 2 đầu cho chắc ăn
+ @EqualsAndHashCode.Exclude
+ private List<OrderItem> orderItems;
 }

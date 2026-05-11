@@ -11,20 +11,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderItemId;
+ @Id
+ @GeneratedValue(strategy = GenerationType.IDENTITY)
+ private Long orderItemId;
 
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Order order;
+ @ManyToOne
+ @JoinColumn(name = "order_id")
+ @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+ @ToString.Exclude
+ @EqualsAndHashCode.Exclude
+ private Order order;
 
-    @ManyToOne
-    @JoinColumn(name = "item_id")
-    private MenuItem menuItem;
+ @ManyToOne
+ @JoinColumn(name = "item_id")
+ private MenuItem menuItem;
 
-    private Integer quantity;
-    private BigDecimal subtotal;
-    private String note;
+ private Integer quantity;
+ private BigDecimal subtotal;
+ private String note;
 }

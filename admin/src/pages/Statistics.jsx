@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   DollarSign,
   ShoppingCart,
   CalendarDays,
   CreditCard,
 } from "lucide-react";
-// Import các thành phần vẽ biểu đồ từ Recharts
 import {
   BarChart,
   Bar,
@@ -16,39 +15,31 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export default function Statistics({ invoices = [] }) {
-  // 1. ĐƯA TOÀN BỘ DỮ LIỆU VỀ 0 NHƯ YÊU CẦU
-  const todayOrders = 0;
-  const todayRevenue = 0;
-  const monthlyOrders = 0;
-  const monthlyRevenue = 0;
+export default function Statistics() {
+  const [stats, setStats] = useState({
+    todayOrders: 0,
+    todayRevenue: 0,
+    monthlyOrders: 0,
+    monthlyRevenue: 0,
+    weeklyData: [],
+    topDishes: [],
+  });
 
-  // 2. Dữ liệu cho biểu đồ cột (Tuần này) - Tất cả đều là 0
-  const weeklyData = [
-    { name: "10/09", revenue: 0 },
-    { name: "11/09", revenue: 0 },
-    { name: "12/09", revenue: 0 },
-    { name: "13/09", revenue: 0 },
-    { name: "14/09", revenue: 0 },
-    { name: "15/09", revenue: 0 },
-    { name: "16/09", revenue: 0 },
-  ];
+  useEffect(() => {
+    fetch("http://localhost:8080/api/statistics")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.topDishes) {
+          const formattedDishes = data.topDishes.map((dish, index) => ({
+            ...dish,
+            rank: index + 1,
+          }));
+          setStats({ ...data, topDishes: formattedDishes });
+        }
+      })
+      .catch((err) => console.error("Lỗi lấy dữ liệu thống kê:", err));
+  }, []);
 
-  // 3. Danh sách món ăn - Dữ liệu cũng về 0
-  const topDishes = [
-    { rank: 1, name: "Gà rán giòn", qty: 0, revenue: "0" },
-    { rank: 2, name: "Trà sữa trân châu", qty: 0, revenue: "0" },
-    { rank: 3, name: "Bún bò Huế", qty: 0, revenue: "0" },
-    { rank: 4, name: "Cơm chiên hải sản", qty: 0, revenue: "0" },
-    { rank: 5, name: "Pizza hải sản", qty: 0, revenue: "0" },
-    { rank: 6, name: "Mì xào bò", qty: 0, revenue: "0" },
-    { rank: 7, name: "Trà đào cam sả", qty: 0, revenue: "0" },
-    { rank: 8, name: "Lẩu thái", qty: 0, revenue: "0" },
-    { rank: 9, name: "Hamburger", qty: 0, revenue: "0" },
-    { rank: 10, name: "Khoai tây chiên", qty: 0, revenue: "0" },
-  ];
-
-  // Hàm render huy chương
   const renderRank = (rank) => {
     if (rank === 1) return "🥇 1";
     if (rank === 2) return "🥈 2";
@@ -56,7 +47,6 @@ export default function Statistics({ invoices = [] }) {
     return <span className="pl-2 text-gray-500">{rank}</span>;
   };
 
-  // Custom giao diện cho cái hộp thông tin khi rê chuột vào biểu đồ (Tooltip)
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       return (
@@ -86,7 +76,7 @@ export default function Statistics({ invoices = [] }) {
               Doanh thu hôm nay
             </p>
             <p className="text-xl font-bold text-gray-800">
-              {todayRevenue} VNĐ
+              {stats.todayRevenue?.toLocaleString() || 0} VNĐ
             </p>
           </div>
         </div>
@@ -100,7 +90,7 @@ export default function Statistics({ invoices = [] }) {
               Doanh thu tháng
             </p>
             <p className="text-xl font-bold text-gray-800">
-              {monthlyRevenue} VNĐ
+              {stats.monthlyRevenue?.toLocaleString() || 0} VNĐ
             </p>
           </div>
         </div>
@@ -113,7 +103,9 @@ export default function Statistics({ invoices = [] }) {
             <p className="text-xs font-medium text-gray-500 uppercase">
               Hóa đơn hôm nay
             </p>
-            <p className="text-xl font-bold text-gray-800">{todayOrders}</p>
+            <p className="text-xl font-bold text-gray-800">
+              {stats.todayOrders}
+            </p>
           </div>
         </div>
 
@@ -125,7 +117,9 @@ export default function Statistics({ invoices = [] }) {
             <p className="text-xs font-medium text-gray-500 uppercase">
               Hóa đơn tháng
             </p>
-            <p className="text-xl font-bold text-gray-800">{monthlyOrders}</p>
+            <p className="text-xl font-bold text-gray-800">
+              {stats.monthlyOrders}
+            </p>
           </div>
         </div>
       </div>
@@ -134,20 +128,20 @@ export default function Statistics({ invoices = [] }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* CỘT TRÁI: BIỂU ĐỒ CỘT DOANH THU */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-2 flex flex-col h-[420px]">
-          <h2 className="font-bold text-gray-800 mb-6">Doanh thu trong tuần</h2>
+          <h2 className="font-bold text-gray-800 mb-6">
+            Doanh thu 7 ngày gần nhất
+          </h2>
           <div className="flex-1 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
-                data={weeklyData}
+                data={stats.weeklyData}
                 margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
               >
-                {/* Lưới kẻ ngang mờ */}
                 <CartesianGrid
                   strokeDasharray="3 3"
                   vertical={false}
                   stroke="#f3f4f6"
                 />
-                {/* Trục X (Ngày) */}
                 <XAxis
                   dataKey="name"
                   axisLine={false}
@@ -155,18 +149,15 @@ export default function Statistics({ invoices = [] }) {
                   tick={{ fill: "#9ca3af", fontSize: 12 }}
                   dy={10}
                 />
-                {/* Trục Y (Tiền) */}
                 <YAxis
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: "#9ca3af", fontSize: 12 }}
                 />
-                {/* Khung thông tin khi rê chuột */}
                 <Tooltip
                   content={<CustomTooltip />}
                   cursor={{ fill: "#f9fafb" }}
                 />
-                {/* Cột dữ liệu màu xanh lá */}
                 <Bar
                   dataKey="revenue"
                   fill="#4ade80"
@@ -178,12 +169,13 @@ export default function Statistics({ invoices = [] }) {
           </div>
         </div>
 
-        {/* CỘT PHẢI: DANH SÁCH MÓN ĂN (GIAO DIỆN SÁNG MÀU TONE-SUR-TONE) */}
+        {/* CỘT PHẢI: DANH SÁCH MÓN ĂN */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-[420px] overflow-hidden">
           <div className="p-5 border-b border-gray-100 bg-white">
-            <h2 className="font-bold text-gray-800">Món ăn phổ biến</h2>
+            <h2 className="font-bold text-gray-800">
+              Món ăn phổ biến tháng này
+            </h2>
           </div>
-
           <div className="flex-1 overflow-y-auto p-2">
             <table className="w-full text-left text-sm">
               <thead className="sticky top-0 bg-white shadow-sm z-10 text-gray-500">
@@ -203,9 +195,9 @@ export default function Statistics({ invoices = [] }) {
                 </tr>
               </thead>
               <tbody>
-                {topDishes.map((dish) => (
+                {stats.topDishes.map((dish, index) => (
                   <tr
-                    key={dish.rank}
+                    key={dish.rank || index}
                     className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
                   >
                     <td className="p-3 font-medium">{renderRank(dish.rank)}</td>
@@ -216,10 +208,17 @@ export default function Statistics({ invoices = [] }) {
                       {dish.qty}
                     </td>
                     <td className="p-3 text-right font-medium text-emerald-500">
-                      {dish.revenue}
+                      {dish.revenue?.toLocaleString()} đ
                     </td>
                   </tr>
                 ))}
+                {stats.topDishes.length === 0 && (
+                  <tr>
+                    <td colSpan="4" className="text-center p-6 text-gray-400">
+                      Chưa có món nào được bán!
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
