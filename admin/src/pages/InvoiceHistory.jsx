@@ -96,7 +96,7 @@ export default function InvoiceHistory() {
                 <div className="flex w-full md:w-110 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                     <input type="text" placeholder="Tìm kiếm theo Số hóa đơn, Số bàn..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} className="flex-1 px-4 py-3 outline-none text-sm text-gray-700"/>
                     <button onClick={handleSearch} className="bg-blue-600 hover:bg-blue-700 text-white px-6 transition-colors cursor-pointer">Tìm</button>
-                    <button onClick={() => {setSearchTerm("");setFilteredOrders(orders);setCurrentPage(1);}}className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 text-sm transition-colors cursor-pointer">Reset</button>
+                    <button onClick={() => {setSearchTerm("");setFilteredOrders(orders);setCurrentPage(1);}} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 text-sm transition-colors cursor-pointer">Reset</button>
                 </div>
             </div>
             {/* Bảng danh sách Hóa đơn */}
@@ -127,8 +127,8 @@ export default function InvoiceHistory() {
                                     <td className="px-5 py-4 text-center text-gray-700">{item.table ? `Bàn ${item.table.tableId}` : "Mang đi"}</td>
                                     <td className="px-5 py-4 text-right font-bold text-gray-800">{formatCurrency(item.totalAmount)}</td>
                                     <td className="px-5 py-4 text-center">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${item.payment ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
-                                            {item.status === "Paid" ? "Đã thanh toán" : item.status === "Serving" ? "Đang phục vụ" : "Đã hủy"}
+                                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                                            item.status === "Paid" ? "bg-emerald-100 text-emerald-700" : item.status === "Cancelled" ? "bg-rose-100 text-rose-700"  : "bg-sky-100 text-sky-700"}`}>{item.status === "Paid" ? "Đã thanh toán" : item.status === "Cancelled" ? "Đã hủy" : "Đang phục vụ"}
                                         </span>
                                     </td>
                                     <td className="px-5 py-4 text-center text-gray-500">
@@ -195,10 +195,8 @@ export default function InvoiceHistory() {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${selectedOrder.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
-                                    {selectedOrder.status
-                                        ? "Đã thanh toán"
-                                        : "Chưa thanh toán"}
+                                <span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${selectedOrder.status === "Paid" ? "bg-emerald-100 text-emerald-700" : selectedOrder.status === "Cancelled" ? "bg-rose-100 text-rose-700" : "bg-sky-100 text-sky-700"}`}>
+                                    {selectedOrder.status === "Paid" ? "Đã thanh toán" : selectedOrder.status === "Cancelled" ? "Đã hủy" : "Đang phục vụ"}
                                 </span>
 
                                 <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-red-500 cursor-pointer">
