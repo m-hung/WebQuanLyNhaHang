@@ -77,7 +77,7 @@ public class VNPayController {
 
         // Redirect về frontend kèm toàn bộ params VNPay
         // ⚠️ Đổi URL bên dưới thành đường dẫn frontend thật của bạn
-        StringBuilder redirectUrl = new StringBuilder("http://127.0.0.1:5500/src/payment-result.html?");
+        StringBuilder redirectUrl = new StringBuilder("http://127.0.0.1:5500/client/src/payment-result.html?");
         params.forEach((k, v) -> {
             try {
                 redirectUrl.append(URLEncoder.encode(k, StandardCharsets.UTF_8))
