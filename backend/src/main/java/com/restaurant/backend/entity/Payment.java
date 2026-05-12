@@ -1,5 +1,6 @@
 package com.restaurant.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentId;
 
+    @JsonIgnoreProperties("payment")
     @OneToOne
     @JoinColumn(name = "order_id")
     private Order order;
