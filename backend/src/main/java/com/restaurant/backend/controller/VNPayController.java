@@ -52,38 +52,39 @@ public class VNPayController {
 
     // ── GET /api/payment/vnpay-return ──
     @GetMapping("/vnpay-return")
-    public void handleReturn(
-            @RequestParam Map<String, String> params,
-            HttpServletResponse response) throws IOException {
+    public void handleReturn(@RequestParam Map<String, String> params, HttpServletResponse response) throws IOException {
 
-        // Copy params trước khi verify (verifyReturn() remove 1 số key)
         Map<String, String> paramsCopy = new HashMap<>(params);
         boolean validSignature = vnPayService.verifyReturn(paramsCopy);
 
         String responseCode = params.get("vnp_ResponseCode");
-        String orderId      = params.get("vnp_TxnRef");
+        String orderId = params.get("vnp_TxnRef");
 
         if (validSignature && "00".equals(responseCode)) {
             try {
+                // 1. Lấy thông tin khách hàng đang "treo" trong RAM
                 VNPayCreateRequest pending = BookingCache.get(orderId);
+                
                 if (pending != null) {
-                    reservationService.confirmReservation(pending, params.get("vnp_TransactionNo"));
+                    // 2. Thanh toán OK -> Lưu MỚI vào Database
+                    reservationService.createNewReservationAfterPayment(pending, params.get("vnp_TransactionNo"));
+                    
+                    // 3. Xóa khỏi RAM sau khi đã lưu DB thành công
                     BookingCache.remove(orderId);
                 }
             } catch (Exception e) {
-                System.err.println("Lỗi lưu reservation: " + e.getMessage());
+                System.err.println("Lỗi lưu DB sau thanh toán: " + e.getMessage());
             }
+        } else {
+            // Thanh toán thất bại hoặc hủy -> Xóa luôn trong RAM, DB không có gì
+            BookingCache.remove(orderId);
         }
 
-        // Redirect về frontend kèm toàn bộ params VNPay
-        // ⚠️ Đổi URL bên dưới thành đường dẫn frontend thật của bạn
+        // Redirect về Frontend kết quả
         StringBuilder redirectUrl = new StringBuilder("http://127.0.0.1:5500/client/src/payment-result.html?");
         params.forEach((k, v) -> {
             try {
-                redirectUrl.append(URLEncoder.encode(k, StandardCharsets.UTF_8))
-                           .append("=")
-                           .append(URLEncoder.encode(v, StandardCharsets.UTF_8))
-                           .append("&");
+                redirectUrl.append(URLEncoder.encode(k, StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(v, StandardCharsets.UTF_8)).append("&");
             } catch (Exception ignored) {}
         });
 

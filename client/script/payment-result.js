@@ -76,7 +76,7 @@ function renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDa
     // Nút hành động
     const actionsEl = document.getElementById('result-actions');
     actionsEl.style.display = 'flex';
-    actionsEl.innerHTML = `
+    /*actionsEl.innerHTML = `
         <button class="btn-payment-confirm"
                 onclick="window.location.href='../index.html'">
             Về Trang Chủ
@@ -85,12 +85,23 @@ function renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDa
                 onclick="window.print()">
             ⎙ In xác nhận
         </button>
-    `;
+    `;*/
 
     // Dọn localStorage
-    ['bk_name','bk_phone','bk_email','bk_datetime','bk_guests',
-     'bk_table','bk_tableId','bk_reservationTime','bk_order_id']
-        .forEach(k => localStorage.removeItem(k));
+    window.finishBooking = function() {
+        ['bk_name','bk_phone','bk_email','bk_datetime','bk_guests',
+        'bk_table','bk_tableId','bk_reservationTime','bk_order_id']
+            .forEach(k => localStorage.removeItem(k));
+        window.location.href = '../index.html';
+    };
+    actionsEl.innerHTML = `
+    <button class="btn-payment-confirm" onclick="finishBooking()">
+        Về Trang Chủ
+    </button>
+    <button class="btn-back" onclick="window.print()">
+        ⎙ In xác nhận
+    </button>
+`;
 }
 
 // ─────────────────────────────────────────────

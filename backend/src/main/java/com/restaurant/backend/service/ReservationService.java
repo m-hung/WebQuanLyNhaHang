@@ -2,12 +2,10 @@ package com.restaurant.backend.service;
 
 import com.restaurant.backend.dto.VNPayCreateRequest;
 import com.restaurant.backend.entity.Reservation;
-import com.restaurant.backend.entity.TableEntity;
 import com.restaurant.backend.repository.ReservationRepository;
 import com.restaurant.backend.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 
 @Service
@@ -20,32 +18,34 @@ public class ReservationService {
     private TableRepository tableRepository;
 
     /**
-     * Gọi sau khi VNPay xác nhận thanh toán thành công.
+     * Tạo mới Reservation sau khi thanh toán thành công
      */
-    public Reservation confirmReservation(VNPayCreateRequest req, String transactionNo) {
+    public Reservation createNewReservationAfterPayment(VNPayCreateRequest req, String transactionNo) {
         Reservation r = new Reservation();
 
+        // Map dữ liệu từ Request (lấy từ Cache) sang Entity
         r.setCustomerName(req.getCustomerName());
         r.setPhone(req.getPhone());
         r.setEmail(req.getEmail());
-        r.setGuestCount(req.getGuestCount() != 0 ? req.getGuestCount() : null);
-        r.setIsPaid(true);
+        r.setGuestCount(req.getGuestCount());
+        r.setIsPaid(true); // Luôn true vì thanh toán xong mới gọi
         r.setPaymentRef(req.getOrderId());
         r.setTransactionNo(transactionNo);
 
-        // Parse reservationTime
+        // Parse thời gian đặt bàn
         if (req.getReservationTime() != null && !req.getReservationTime().isEmpty()) {
             r.setReservationTime(LocalDateTime.parse(req.getReservationTime()));
         }
 
-        // Tìm TableEntity theo tableId
+        // Tìm và gán bàn
         if (req.getTableId() != null && !req.getTableId().isEmpty()) {
             try {
                 Long tableId = Long.parseLong(req.getTableId());
                 tableRepository.findById(tableId).ifPresent(r::setTable);
-            } catch (NumberFormatException ignored) {}
+            } catch (Exception ignored) {}
         }
 
+        // Lưu MỚI vào Database
         return reservationRepository.save(r);
     }
 }
