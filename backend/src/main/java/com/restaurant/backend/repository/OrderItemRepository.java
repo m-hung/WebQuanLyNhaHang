@@ -17,6 +17,8 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
                    "JOIN menu_items m ON oi.item_id = m.item_id " +
                    "JOIN orders o ON oi.order_id = o.order_id " +
                    "WHERE o.status = 'Paid' " +
+                   "AND MONTH(o.order_date) = MONTH(CURDATE()) " +
+                   "AND YEAR(o.order_date) = YEAR(CURDATE()) " +
                    "GROUP BY m.item_id, m.name " +
                    "ORDER BY SUM(oi.quantity) DESC, SUM(oi.subtotal) DESC LIMIT 10", nativeQuery = true)
     List<Map<String, Object>> getTopDishes();
