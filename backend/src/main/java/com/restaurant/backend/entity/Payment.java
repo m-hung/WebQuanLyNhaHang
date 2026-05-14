@@ -1,5 +1,6 @@
 package com.restaurant.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class Payment {
 
     @OneToOne
     @JoinColumn(name = "order_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Order order;
 
     private String paymentMethod; // Tiền mặt, Chuyển khoản
