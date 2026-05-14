@@ -22,6 +22,7 @@ public class Order {
 
  private LocalDateTime orderDate;
  private BigDecimal totalAmount;
+ @Column(columnDefinition = "VARCHAR(50) DEFAULT 'Serving'")
  private String status; // Đang phục vụ, Đã thanh toán, Đã hủy
 
  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
