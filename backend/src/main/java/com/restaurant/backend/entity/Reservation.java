@@ -24,4 +24,9 @@ public class Reservation {
     private TableEntity table;
 
     private Integer guestCount;
+
+    // ── Thêm mới cho VNPay ──
+    private Boolean isPaid = false;   // true sau khi VNPay xác nhận
+    private String paymentRef;        // orderId từ frontend (VD: CH1A2B3X)
+    private String transactionNo;     // Mã giao dịch từ VNPay
 }

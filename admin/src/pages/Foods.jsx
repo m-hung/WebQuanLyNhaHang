@@ -53,8 +53,8 @@ export default function Foods() {
       isAvailable: food.isAvailable !== false,
       category: food.category || null,
       description: food.description || "",
-      price: food.price ? Number(food.price).toLocaleString('vi-VN') : "",
-      discount: food.discount ? Number(food.discount).toLocaleString('vi-VN') : "",
+      price: food.price ? String(food.price) : "",
+      discount: food.discount ? String(food.discount) : "",
       imageUrl: food.imageUrl || ""
     });
     setEditingId(food.itemId);
@@ -78,8 +78,8 @@ export default function Foods() {
     const payload = {
       name: formData.name,
       description: formData.description,
-      price: parseFloat(String(formData.price).replace(/\./g, '').replace(/,/g, '.')) || 0,
-      discount: parseFloat(String(formData.discount).replace(/\./g, '').replace(/,/g, '.')) || 0,
+      price: parseFloat(formData.price) || 0,
+      discount: parseFloat(formData.discount) || 0,
       imageUrl: formData.imageUrl,
       isAvailable: formData.isAvailable,
       category: formData.category ? { categoryId: formData.category.categoryId } : null
@@ -179,8 +179,8 @@ export default function Foods() {
                   </div>
                 </td>
                 <td className="p-4 text-sm text-gray-600 font-medium">{food.category ? food.category.name : "N/A"}</td>
-                <td className="p-4 text-center font-medium text-gray-700">{food.price ? Number(food.price).toLocaleString("vi-VN") + "K VND" : "-"}</td>
-                <td className="p-4 text-center font-bold text-green-600">{food.discount ? Number(food.discount).toLocaleString("vi-VN") + "K VND" : "Không có"}</td>
+                <td className="p-4 text-center font-medium text-gray-700">{food.price ? Number(food.price).toLocaleString("vi-VN") + " ₫" : "-"}</td>
+                <td className="p-4 text-center font-bold text-green-600">{food.discount ? Number(food.discount).toLocaleString("vi-VN") + " ₫" : "Không có"}</td>
                 <td className="p-4">
                   <div className="flex items-center justify-center gap-2">
                     <button
@@ -224,7 +224,7 @@ export default function Foods() {
               <div className="flex items-center gap-3">
                 <div className="w-2 h-8 bg-red-600 rounded-full"></div>
                 <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">
-                  {editingId ? "Sửa món ăn" : "Thêm món ăn mới"}
+                  {editingId ? "Sửa mon an" : "Thêm món ăn moi"}
                 </h2>
               </div>
               <button onClick={() => setIsModalOpen(false)} className="bg-gray-100 text-gray-500 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-2 border border-transparent hover:border-red-100">
@@ -279,7 +279,7 @@ export default function Foods() {
                 </div>
 
                 <button onClick={handleSave} className="w-full lg:w-auto bg-blue-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-200 active:scale-95 hover:-translate-y-0.5 transition-all">
-                  {editingId ? "Cập nhật món ăn +" : "Thêm món ăn vào hệ thống +"}
+                  {editingId ? "Cập nhật món ăn +" : "Thêm món ăn vao he thong +"}
                 </button>
               </div>
 
@@ -291,60 +291,50 @@ export default function Foods() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase">Giá niêm yết (VNĐ) <span className="text-red-500">*</span></label>
-                      <input type="text" value={formData.price} onChange={(e) => {
-                          const raw = e.target.value.replace(/[^0-9.]/g, '');
-                          setFormData({...formData, price: raw});
-                        }} onBlur={(e) => {
-                          const num = parseFloat(String(formData.price).replace(/\./g, ''));
-                          if (!isNaN(num)) setFormData({...formData, price: num.toLocaleString('vi-VN')});
-                        }} className="w-full border border-gray-200 rounded-xl p-3 font-black text-lg focus:ring-4 focus:ring-green-50/50 outline-none transition-all" placeholder="0" />
+                      <input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 font-black text-lg focus:ring-4 focus:ring-green-50/50 outline-none transition-all" placeholder="0" />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold text-green-600 mb-1 uppercase">Giảm giá (Nếu có)</label>
-                      <input type="text" value={formData.discount} onChange={(e) => {
-                          const raw = e.target.value.replace(/[^0-9.]/g, '');
-                          setFormData({...formData, discount: raw});
-                        }} onBlur={(e) => {
-                          const num = parseFloat(String(formData.discount).replace(/\./g, ''));
-                          if (!isNaN(num)) setFormData({...formData, discount: num.toLocaleString('vi-VN')});
-                        }} className="w-full border border-green-100 bg-green-50/20 rounded-xl p-3 font-black text-lg text-green-600 outline-none focus:ring-4 focus:ring-green-100 transition-all" placeholder="0" />
+                      <input type="number" value={formData.discount} onChange={(e) => setFormData({...formData, discount: e.target.value})} className="w-full border border-green-100 bg-green-50/20 rounded-xl p-3 font-black text-lg text-green-600 outline-none focus:ring-4 focus:ring-green-100 transition-all" placeholder="0" />
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="bg-white p-7 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
                   <h3 className="text-xs font-black text-red-600 mb-4 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
                     <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span> Hình ảnh hiển thị
                   </h3>
-
-                  {/* Khung Xem trước ảnh (Preview) */}
-                  <div className="w-full h-48 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center overflow-hidden mb-4 transition-all">
+                  <div
+                    className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer group"
+                    onClick={() => fileInputRef.current.click()}
+                  >
                     {formData.imageUrl ? (
-                      <img 
-                        src={formData.imageUrl} 
-                        alt="Preview" 
-                        className="w-full h-full object-cover" 
-                        onError={(e) => { e.target.src = 'https://via.placeholder.com/150?text=Link+Loi'; }} // Phòng trường hợp link chết
-                      />
+                      <div className="relative group">
+                        <img src={formData.imageUrl} alt="Preview" className="w-full h-32 object-cover rounded-xl mb-2 shadow-md" />
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span className="bg-white/90 text-blue-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm">Đổi ảnh</span>
+                        </div>
+                      </div>
                     ) : (
-                      <div className="flex flex-col items-center text-gray-300">
-                        <svg className="w-12 h-12 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span className="text-xs font-medium italic">Chưa có hình ảnh</span>
+                      <div className="flex flex-col items-center py-4">
+                        <div className="w-14 h-14 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-3 shadow-inner">
+                          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                        </div>
+                        <span className="bg-gray-900 text-white px-5 py-2 rounded-xl text-xs font-bold mb-1 shadow-md">Tải ảnh lên</span>
+                        <p className="text-[10px] text-gray-400 font-medium italic mt-2">Định dạng JPG, PNG (Tối đa 5MB)</p>
                       </div>
                     )}
+                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
                   </div>
 
-                  {/* Ô nhập URL */}
                   <div className="mt-4">
-                    <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase">Dán URL hình ảnh vào đây</label>
+                    <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase">Hoặc dán URL hình ảnh</label>
                     <input
                       type="text"
                       value={formData.imageUrl}
                       onChange={(e) => setFormData({...formData, imageUrl: e.target.value})}
-                      className="w-full border border-gray-200 rounded-xl p-3 text-xs outline-none focus:ring-4 focus:ring-blue-100 transition-all"
-                      placeholder="https://example.com/image.png"
+                      className="w-full border border-gray-200 rounded-xl p-2 text-xs outline-none focus:ring-2 focus:ring-blue-100"
+                      placeholder="https://..."
                     />
                   </div>
                 </div>
