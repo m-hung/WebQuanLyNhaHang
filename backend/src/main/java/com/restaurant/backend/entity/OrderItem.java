@@ -1,9 +1,9 @@
 package com.restaurant.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name = "order_items")
@@ -11,13 +11,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
 
     @ManyToOne
     @JoinColumn(name = "order_id")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonBackReference
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Order order;
 
     @ManyToOne
