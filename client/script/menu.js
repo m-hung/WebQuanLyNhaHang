@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function formatPrice(price) {
         if (!price) return '';
-        return Number(price).toLocaleString('vi-VN') + '.000 VND';
+        return Number(price).toLocaleString('vi-VN') + ' VND';
     }
 
     function renderMenu() {

@@ -179,8 +179,8 @@ export default function Foods() {
                   </div>
                 </td>
                 <td className="p-4 text-sm text-gray-600 font-medium">{food.category ? food.category.name : "N/A"}</td>
-                <td className="p-4 text-center font-medium text-gray-700">{food.price ? Number(food.price).toLocaleString("vi-VN") + " ₫" : "-"}</td>
-                <td className="p-4 text-center font-bold text-green-600">{food.discount ? Number(food.discount).toLocaleString("vi-VN") + " ₫" : "Không có"}</td>
+                <td className="p-4 text-center font-medium text-gray-700">{food.price ? Number(food.price).toLocaleString("vi-VN") + " VND" : "-"}</td>
+                <td className="p-4 text-center font-bold text-green-600">{food.discount ? Number(food.discount).toLocaleString("vi-VN") + " VND" : "Không có"}</td>
                 <td className="p-4">
                   <div className="flex items-center justify-center gap-2">
                     <button
