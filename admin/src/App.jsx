@@ -4,6 +4,7 @@ import DashBoard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
 import Reservations from "./pages/Reservations";
 import Foods from "./pages/Foods";
+import ArticleList from "./pages/ArticleList";
 import Pos from "./pages/Pos";
 import Checkout from "./pages/Checkout";
 import Statistics from "./pages/Statistics";
@@ -112,6 +113,8 @@ export default function App() {
         return <Categories />;
       case "foods":
         return <Foods />;
+      case "articles":
+        return <ArticleList />;
       case "reservations":
         return <Reservations />;
       case "invoice_history":
