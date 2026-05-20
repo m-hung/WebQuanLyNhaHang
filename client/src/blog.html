@@ -14,6 +14,32 @@
     />
     <link rel="stylesheet" href="../style/style.css" />
     <link rel="stylesheet" href="../style/blogStyle.css" />
+    <style>
+      /* CSS khung và kiểu dáng nút chuyển ngữ bo tròn đồng bộ tuyệt đối như file booking.html */
+      .lang-switcher-nav {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        margin-left: 10px;
+      }
+      .btn-lang {
+        background: transparent;
+        border: 1px solid #c5a880; /* Màu viền vàng Gold đặc trưng */
+        color: #fff;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        border-radius: 30px; /* Bo góc tròn sang trọng */
+        transition: all 0.3s ease;
+      }
+      .btn-lang:hover, .btn-lang.active-lang {
+        background: #c5a880; 
+        color: #000;
+      }
+    </style>
   </head>
   <body>
     <header class="blog-hero">
@@ -23,25 +49,23 @@
           <span class="material-symbols-outlined">menu</span>
         </button>
         <ul class="nav-links">
-          <li><a href="../index.html">Trang Chủ</a></li>
-          <li><a href="./menu.html">Thực Đơn</a></li>
-          <li><a href="./team.html">Nhà Hàng</a></li>
-          <li><a href="./booking.html">Đặt Bàn</a></li>
-          <li><a href="./blog.html" class="active">Blog</a></li>
-          <li><a href="./contact.html">Liên Hệ</a></li>
+          <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
+          <li><a href="./menu.html" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
+          <li><a href="./team.html" data-i18n="navbar.nav_team">Nhà Hàng</a></li>
+          <li><a href="./booking.html" data-i18n="navbar.nav_booking">Đặt Bàn</a></li>
+          <li><a href="./blog.html" class="active" data-i18n="navbar.nav_blog">Blog</a></li>
+          <li><a href="./contact.html" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
           <li>
-            <button id="openLoginBtn" class="btn-login-nav">
-              <span class="material-symbols-outlined avatar-icon"
-                >account_circle</span
-              >
-              ĐĂNG NHẬP
-            </button>
+            <div class="lang-switcher-nav">
+              <button class="btn-lang" onclick="changeLanguage('vi')">VI</button>
+              <button class="btn-lang" onclick="changeLanguage('en')">EN</button>
+            </div>
           </li>
         </ul>
       </nav>
       <div class="hero-content2">
-        <h1>Blog Ẩm Thực</h1>
-        <p>Khám phá bí mật đằng sau những món ăn tinh tế</p>
+        <h1 data-i18n="page.hero_title">Blog Ẩm Thực</h1>
+        <p data-i18n="page.hero_subtitle">Khám phá bí mật đằng sau những món ăn tinh tế</p>
         <div class="line"></div>
       </div>
     </header>
@@ -51,105 +75,62 @@
         <article class="blog-post">
           <div class="blog-img">
             <img src="../img/blog/ruouvang.jpg" alt="Blog 1" />
-            <span class="blog-date">25 Tháng 3, 2026</span>
+            <span class="blog-date" data-i18n="page.post1_date">25 Tháng 3, 2026</span>
           </div>
           <div class="blog-info">
-            <h3>Nghệ Thuật Thưởng Thức Rượu Vang Pháp</h3>
-            <p>
+            <h3 data-i18n="page.post1_title">Nghệ Thuật Thưởng Thức Rượu Vang Pháp</h3>
+            <p data-i18n="page.post1_desc">
               Khám phá cách kết hợp các dòng vang Bordeaux danh tiếng với thực
               đơn bò Wagyu tại nhà hàng chúng tôi...
             </p>
-            <a href="./ruou-vang-phap.html" class="read-more"
-              >Đọc Tiếp &rsaquo;</a
-            >
+            <a href="./ruou-vang-phap.html" class="read-more" data-i18n="page.read_more">Đọc Tiếp &rsaquo;</a>
           </div>
         </article>
 
         <article class="blog-post">
           <div class="blog-img">
             <img src="../img/blog/a5.jpg" alt="Blog 2" />
-            <span class="blog-date">18 Tháng 3, 2026</span>
+            <span class="blog-date" data-i18n="page.post2_date">18 Tháng 3, 2026</span>
           </div>
           <div class="blog-info">
-            <h3>Bí Mật Đằng Sau Món Bò Wagyu A5</h3>
-            <p>
+            <h3 data-i18n="page.post2_title">Bí Mật Đằng Sau Món Bò Wagyu A5</h3>
+            <p data-i18n="page.post2_desc">
               Tại sao bò Wagyu lại có những vân mỡ cẩm thạch tuyệt đẹp và quy
               trình chế biến chuẩn mực tại Celesté House là gì?
             </p>
-            <a href="./bo-wagyu.html" class="read-more">Đọc Tiếp &rsaquo;</a>
+            <a href="./bo-wagyu.html" class="read-more" data-i18n="page.read_more">Đọc Tiếp &rsaquo;</a>
           </div>
         </article>
 
         <article class="blog-post">
           <div class="blog-img">
             <img src="../img/blog/blog3.jpg" alt="Blog 3" />
-            <span class="blog-date">10 Tháng 3, 2026</span>
+            <span class="blog-date" data-i18n="page.post3_date">10 Tháng 3, 2026</span>
           </div>
           <div class="blog-info">
-            <h3>Không Gian Fine Dining: Sang Trọng & Tinh Tế</h3>
-            <p>
+            <h3 data-i18n="page.post3_title">Không Gian Fine Dining: Sang Trọng & Tinh Tế</h3>
+            <p data-i18n="page.post3_desc">
               Tìm hiểu về phong cách kiến trúc và cách chúng tôi tạo dựng không
               gian lãng mạn cho những bữa tối của bạn.
             </p>
-            <a href="./khong-gian-fine-dining.html" class="read-more"
-              >Đọc Tiếp &rsaquo;</a
-            >
+            <a href="./khong-gian-fine-dining.html" class="read-more" data-i18n="page.read_more">Đọc Tiếp &rsaquo;</a>
           </div>
         </article>
       </div>
     </section>
 
     <footer class="cta">
-      <h2 style="color: #fff; border: none">Đăng Ký Nhận Tin</h2>
-      <p style="margin-bottom: 30px">
+      <h2 style="color: #fff; border: none" data-i18n="page.footer_title">Đăng Ký Nhận Tin</h2>
+      <p style="margin-bottom: 30px" data-i18n="page.footer_desc">
         Nhận thông báo về các sự kiện ẩm thực và ưu đãi đặc quyền.
       </p>
       <div class="subscribe-form">
-        <input type="email" placeholder="Email của bạn..." />
-        <button class="btn btn-gold">Đăng Ký</button>
+        <input type="email" data-i18n="page.placeholder_email" placeholder="Email của bạn..." />
+        <button class="btn btn-gold" data-i18n="page.btn_subscribe">Đăng Ký</button>
       </div>
     </footer>
 
-    <div id="loginModal" class="modal-overlay">
-      <div class="modal-content">
-        <span id="closeModalBtn" class="close-btn">&times;</span>
-        <h2 class="modal-title">ĐĂNG NHẬP</h2>
-        <button class="btn-google">
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google icon"
-          />
-          Đăng nhập với Google
-        </button>
-        <div class="divider">
-          <span>hoặc</span>
-        </div>
-        <form id="loginForm">
-          <div class="input-group">
-            <input
-              type="text"
-              placeholder="Số điện thoại hoặc Email"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <input type="password" placeholder="Mật khẩu" required />
-          </div>
-          <div class="forgot-password">
-            <a href="#">Quên mật khẩu?</a>
-          </div>
-          <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
-        </form>
-        <div class="register-link">
-          Bạn chưa có tài khoản? <a href="#">Đăng ký ngay</a>
-        </div>
-        <div class="policy-text">
-          Bằng việc đăng nhập, bạn đồng ý với
-          <a href="./policy.html">Chính sách & Điều khoản</a> của CELESTÉ HOUSE.
-        </div>
-      </div>
-    </div>
-
+    <script src="../script/i18n.js"></script>
     <script src="../script/script.js"></script>
     <script src="../script/main.js"></script>
   </body>

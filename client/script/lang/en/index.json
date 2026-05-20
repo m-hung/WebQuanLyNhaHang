@@ -1,0 +1,41 @@
+{
+  "hero_subtitle": "Exquisite European Flavors",
+  "btn_explore_menu": "Explore Menu",
+  "btn_book_now": "Book A Table",
+  
+  "features_title": "Why Choose Us",
+  "feature_chef_title": "Professional Chefs",
+  "feature_chef_desc": "Experienced culinary team with over 10 years in the industry.",
+  "feature_service_speed_title": "Fast Service",
+  "feature_service_speed_desc": "Committed to serving dishes in the shortest time possible.",
+  "feature_quality_title": "Guaranteed Quality",
+  "feature_quality_desc": "Fresh and premium ingredients, carefully selected.",
+  "feature_dedication_title": "Dedicated Service",
+  "feature_dedication_desc": "Our staff members are friendly, attentive, and professional.",
+
+  "about_title": "About Us",
+  "about_p1": "CELESTÉ HOUSE is the ideal destination for connoisseurs of exquisite European cuisine. With a luxurious, meticulous, and charming ambiance, we offer a world-class dining experience.",
+  "about_p2": "In particular, our signature Wagyu beef dish has established our reputation, masterfully prepared by world-class chefs to preserve its rich, traditional flavor.",
+  "about_more": "Learn More &rsaquo;",
+
+  "special_menu_title": "Chef's Specials",
+  "dish_wagyu_desc": "Premium Japanese beef, perfectly grilled with absolute tenderness.",
+  "dish_duck_desc": "Traditional French slow-cooked duck with crispy skin and melt-in-your-mouth meat.",
+  "dish_lobster_desc": "Classic French baked lobster with cheese, offering a rich and elegant flavor.",
+  "btn_view_all_menu": "View Full Menu",
+
+  "cta_title": "Book Your Table Today",
+  "cta_desc": "Experience a romantic dinner in the luxurious atmosphere of CELESTÉ HOUSE",
+
+  "modal_title": "LOGIN",
+  "btn_google": "Sign in with Google",
+  "divider_or": "or",
+  "input_account_placeholder": "Phone number or Email",
+  "input_password_placeholder": "Password",
+  "link_forgot_password": "Forgot password?",
+  "link_register_prompt": "Don't have an account? ",
+  "link_register_now": "Register now",
+  "policy_text_p1": "By logging in, you agree to the ",
+  "policy_text_link": "Terms & Policies",
+  "policy_text_p2": " of CELESTÉ HOUSE."
+}

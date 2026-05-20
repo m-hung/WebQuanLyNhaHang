@@ -13,109 +13,123 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
+    <style>
+      /* CSS định hình khung cho nút chuyển đổi ngôn ngữ giống nút đăng nhập cũ */
+      .lang-switcher-nav {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        margin-left: 10px;
+      }
+      .btn-lang {
+        background: transparent;
+        border: 1px solid #c5a880; /* Khung màu vàng Gold sang trọng */
+        color: #fff;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        border-radius: 30px; /* Bo tròn giống nút login cũ */
+        transition: all 0.3s ease;
+      }
+      /* Hiệu ứng khi rê chuột vào hoặc khi nút đó đang được kích hoạt */
+      .btn-lang:hover, .btn-lang.active-lang {
+        background: #c5a880; 
+        color: #000;
+      }
+    </style>
   </head>
   <body>
     <header class="home-hero">
       <nav>
-        
         <div class="logo">CELESTÉ HOUSE</div>
         <button class="menu-toggle" id="mobile-menu">
           <span class="material-symbols-outlined">menu</span>
         </button>
         <ul class="nav-links">
-          <li><a href="index.html" class="active">Trang Chủ</a></li>
-          <li><a href="./src/menu.html">Thực Đơn</a></li>
-          <li><a href="./src/team.html">Nhà Hàng</a></li>
-          <li><a href="./src/booking.html">Đặt Bàn</a></li>
-          <li><a href="./src/blog.html">Blog</a></li>
-          <li><a href="./src/contact.html">Liên Hệ</a></li>
+          <li><a href="index.html" class="active" data-i18n="navbar.nav_home">Trang Chủ</a></li>
+          <li><a href="./src/menu.html" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
+          <li><a href="./src/team.html" data-i18n="navbar.nav_team">Nhà Hàng</a></li>
+          <li><a href="./src/booking.html" data-i18n="navbar.nav_booking">Đặt Bàn</a></li>
+          <li><a href="./src/blog.html" data-i18n="navbar.nav_blog">Blog</a></li>
+          <li><a href="./src/contact.html" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
           <li>
-            <button id="openLoginBtn" class="btn-login-nav">
-              <span class="material-symbols-outlined avatar-icon"
-                >account_circle</span>
-              ĐĂNG NHẬP
-            </button>
+            <div class="lang-switcher-nav">
+              <button class="btn-lang" onclick="changeLanguage('vi')">VI</button>
+              <button class="btn-lang" onclick="changeLanguage('en')">EN</button>
+            </div>
           </li>
         </ul>
       </nav>
 
       <div class="hero-content">
         <h1>CELESTÉ HOUSE</h1>
-        <p>Hương Vị Châu Âu Tinh Tế</p>
+        <p data-i18n="page.hero_subtitle">Hương Vị Châu Âu Tinh Tế</p>
         <div class="btn-group">
           <a href="src/menu.html">
-            <button class="btn btn-all">Khám Phá Thực Đơn</button>
+            <button class="btn btn-all" data-i18n="page.btn_explore_menu">Khám Phá Thực Đơn</button>
           </a>
           <a href="src/booking.html">
-            <button class="btn btn-outline">Đặt Bàn Ngay</button>
+            <button class="btn btn-outline" data-i18n="page.btn_book_now">Đặt Bàn Ngay</button>
           </a>
         </div>
       </div>
     </header>
 
     <section class="features">
-      <h2>Tại Sao Chọn Chúng Tôi</h2>
+      <h2 data-i18n="page.features_title">Tại Sao Chọn Chúng Tôi</h2>
       <div class="features-grid">
         <div class="feature-item">
-          <!-- <div class="icon">👨‍🍳</div> -->
           <span class="icon material-symbols-outlined">chef_hat</span>
-          <h3>Đầu Bếp Chuyên Nghiệp</h3>
-          <p>Đội ngũ giàu kinh nghiệm với hơn 10 năm trong nghề.</p>
+          <h3 data-i18n="page.feature_chef_title">Đầu Bếp Chuyên Nghiệp</h3>
+          <p data-i18n="page.feature_chef_desc">Đội ngũ giàu kinh nghiệm với hơn 10 năm trong nghề.</p>
         </div>
         <div class="feature-item">
-          <!-- <div class="icon">⏱</div> -->
           <span class="icon material-symbols-outlined">av_timer</span>
-          <h3>Phục Vụ Nhanh Chóng</h3>
-          <p>Cam kết phục vụ món ăn trong thời gian ngắn nhất.</p>
+          <h3 data-i18n="page.feature_service_speed_title">Phục Vụ Nhanh Chóng</h3>
+          <p data-i18n="page.feature_service_speed_desc">Cam kết phục vụ món ăn trong thời gian ngắn nhất.</p>
         </div>
         <div class="feature-item">
-          <!-- <div class="icon">🏅</div> -->
           <span class="icon material-symbols-outlined">workspace_premium</span>
-          <h3>Chất Lượng Đảm Bảo</h3>
-          <p>Nguyên liệu tươi ngon, được chọn lựa kỹ lưỡng.</p>
+          <h3 data-i18n="page.feature_quality_title">Chất Lượng Đảm Bảo</h3>
+          <p data-i18n="page.feature_quality_desc">Nguyên liệu tươi ngon, được chọn lựa kỹ lưỡng.</p>
         </div>
         <div class="feature-item">
-          <!-- <div class="icon">👥</div> -->
           <span class="icon material-symbols-outlined">person_heart</span>
-          <h3>Dịch Vụ Tận Tâm</h3>
-          <p>Đội ngũ nhân viên thân thiện, chuyên nghiệp.</p>
+          <h3 data-i18n="page.feature_dedication_title">Dịch Vụ Tận Tâm</h3>
+          <p data-i18n="page.feature_dedication_desc">Đội ngũ nhân viên thân thiện, chuyên nghiệp.</p>
         </div>
       </div>
     </section>
+
     <section class="about">
       <div class="about-container">
         <div class="about-image">
           <img src="img/VeChungToi.jpg" alt="Không gian nhà hàng" />
         </div>
-
         <div class="about-content">
-          <h2 class="about-title">Về Chúng Tôi</h2>
-          <p class="about-text">
-            CELESTÉ HOUSE là điểm đến lý tưởng cho những ai yêu thích ẩm thực Âu
-            tinh tế. Với không gian sang trọng, tỉ mỉ và đầy quyền rũ, chúng tôi
-            mang đến trải nghiệm ẩm thực đẳng cấp quốc tế.
+          <h2 class="about-title" data-i18n="page.about_title">Về Chúng Tôi</h2>
+          <p class="about-text" data-i18n="page.about_p1">
+            CELESTÉ HOUSE là điểm đến lý tưởng cho những ai yêu thích ẩm thực Âu tinh tế...
           </p>
-          <p class="about-text">
-            Đặc biệt, món bò Wagyu đã làm nên thương hiệu của chúng tôi tại Nhật
-            Bản, được chế biến bởi những đầu bếp hàng đầu thế giới mang đậm
-            hương vị truyền thống.
+          <p class="about-text" data-i18n="page.about_p2">
+            Đặc biệt, món bò Wagyu đã làm nên thương hiệu của chúng tôi tại Nhật Bản...
           </p>
-          <a href="#" class="btn-more">Tìm Hiểu Thêm &rsaquo;</a>
+          <a href="#" class="btn-more" data-i18n="page.about_more">Tìm Hiểu Thêm &rsaquo;</a>
         </div>
       </div>
     </section>
 
     <section class="menu">
-      <h2>Món Ăn Đặc Biệt</h2>
+      <h2 data-i18n="page.special_menu_title">Món Ăn Đặc Beit</h2>
       <div class="menu-grid">
         <div class="menu-card">
           <img src="img/menu/wayguA5.jpg" alt="Wagyu" />
           <div class="card-body">
             <h3>Wagyu Beef A5</h3>
-            <p>
-              Thịt bò thượng hạng từ Nhật Bản, nướng hoàn hảo với độ mềm tuyệt
-              đối.
-            </p>
+            <p data-i18n="page.dish_wagyu_desc">Thịt bò thượng hạng từ Nhật Bản, nướng hoàn hảo với độ mềm tuyệt đối.</p>
             <span class="price">2,500,000 VND</span>
           </div>
         </div>
@@ -123,10 +137,7 @@
           <img src="img/menu/DuckConfit.jpg" alt="Duck Confit" />
           <div class="card-body">
             <h3>Duck Confit</h3>
-            <p>
-              Vịt om kiểu Pháp truyền thống với da giòn rụm, thịt mềm tan trong
-              miệng.
-            </p>
+            <p data-i18n="page.dish_duck_desc">Vịt om kiểu Pháp truyền thống với da giòn rụm, thịt mềm tan trong miệng.</p>
             <span class="price">850,000 VND</span>
           </div>
         </div>
@@ -134,71 +145,27 @@
           <img src="img/menu/LobsterThermidor.jpg" alt="Lobster" />
           <div class="card-body">
             <h3>Lobster Thermidor</h3>
-            <p>
-              Tôm hùm nướng phô mai kiểu Pháp cổ điển, hương vị đậm đà sang
-              trọng.
-            </p>
+            <p data-i18n="page.dish_lobster_desc">Tôm hùm nướng phô mai kiểu Pháp cổ điển, hương vị đậm đà sang trọng.</p>
             <span class="price">1,890,000 VND</span>
           </div>
         </div>
       </div>
       <a href="src/menu.html">
-        <button class="view-more">Xem Toàn Bộ Thực Đơn</button>
+        <button class="view-more" data-i18n="page.btn_view_all_menu">Xem Toàn Bộ Thực Đơn</button>
       </a>
     </section>
 
     <section class="cta">
-      <h2 style="color: #fff; border: none">Đặt Bàn Ngay Hôm Nay</h2>
-      <p style="margin-bottom: 30px">
-        Trải nghiệm bữa tối lãng mạn trong không gian sang trọng của CELESTÉ
-        HOUSE
+      <h2 style="color: #fff; border: none" data-i18n="page.cta_title">Đặt Bàn Ngay Hôm Nay</h2>
+      <p style="margin-bottom: 30px" data-i18n="page.cta_desc">
+        Trải nghiệm bữa tối lãng mạn trong không gian sang trọng của CELESTÉ HOUSE
       </p>
-
       <a href="src/booking.html">
-        <button class="btn btn-gold">Đặt Bàn Ngay</button>
+        <button class="btn btn-gold" data-i18n="page.btn_book_now">Đặt Bàn Ngay</button>
       </a>
     </section>
 
-    <div id="loginModal" class="modal-overlay">
-      <div class="modal-content">
-        <span id="closeModalBtn" class="close-btn">&times;</span>
-        <h2 class="modal-title">ĐĂNG NHẬP</h2>
-        <button class="btn-google">
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google icon"
-          />
-          Đăng nhập với Google
-        </button>
-        <div class="divider">
-          <span>hoặc</span>
-        </div>
-        <form id="loginForm">
-          <div class="input-group">
-            <input
-              type="text"
-              placeholder="Số điện thoại hoặc Email"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <input type="password" placeholder="Mật khẩu" required />
-          </div>
-          <div class="forgot-password">
-            <a href="#">Quên mật khẩu?</a>
-          </div>
-          <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
-        </form>
-        <div class="register-link">
-          Bạn chưa có tài khoản? <a href="#">Đăng ký ngay</a>
-        </div>
-        <div class="policy-text">
-          Bằng việc đăng nhập, bạn đồng ý với
-          <a href="src/policy.html">Chính sách & Điều khoản</a> của CELESTÉ
-          HOUSE.
-        </div>
-      </div>
-    </div>
+    <script src="script/i18n.js"></script>
     <script src="script/script.js"></script>
     <script src="script/main.js"></script>
   </body>
