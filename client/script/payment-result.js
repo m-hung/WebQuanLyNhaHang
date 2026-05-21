@@ -72,6 +72,16 @@ function renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDa
     document.getElementById('r-table').textContent    = table;
 
     document.getElementById('result-details').style.display = 'grid';
+    //  Gửi email xác nhận cho khách
+    sendConfirmationEmail({
+        customer_name:  name,
+        customer_email: localStorage.getItem('bk_email') || '',
+        table:          table,
+        datetime:       localStorage.getItem('bk_datetime') || '—',
+        guests:         localStorage.getItem('bk_guests') || '—',
+        transaction_no: transactionNo || txnRef || '—',
+        amount:         amountFormatted,
+    });
 
     // Nút hành động
     const actionsEl = document.getElementById('result-actions');
@@ -133,4 +143,15 @@ function renderFailure(code, txnRef) {
             ← Quay lại đặt bàn
         </button>
     `;
+}
+function sendConfirmationEmail(params) {
+    if (!params.customer_email) {
+        console.warn('[EmailJS] Không có email khách hàng, bỏ qua.');
+        return;
+    }
+
+    // Thay YOUR_TEMPLATE_CONFIRM bằng Template ID vừa tạo
+    emailjs.send('service_70nli69', 'template_ef816li', params)
+        .then(() => console.log('[EmailJS] Đã gửi email xác nhận cho khách.'))
+        .catch(err => console.error('[EmailJS] Lỗi gửi email:', err));
 }
