@@ -63,23 +63,23 @@
           <span class="material-symbols-outlined">menu</span>
         </button>
         <ul class="nav-links">
-          <li><a href="../index.html">Trang Chủ</a></li>
-          <li><a href="./menu.html">Thực Đơn</a></li>
-          <li><a href="./team.html">Nhà Hàng</a></li>
-          <li><a href="./booking.html">Đặt Bàn</a></li>
-          <li><a href="./blog.html">Blog</a></li>
-          <li><a href="./contact.html" class="active">Liên Hệ</a></li>
+          <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
+          <li><a href="./menu.html" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
+          <li><a href="./team.html" data-i18n="navbar.nav_team">Nhà Hàng</a></li>
+          <li><a href="./booking.html" data-i18n="navbar.nav_booking">Đặt Bàn</a></li>
+          <li><a href="./blog.html" data-i18n="navbar.nav_blog">Blog</a></li>
+          <li><a href="./contact.html" class="active" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
           <li>
-            <button id="openLoginBtn" class="btn-login-nav">
-              <span class="material-symbols-outlined avatar-icon">account_circle</span>
-              ĐĂNG NHẬP
-            </button>
+            <div class="lang-switcher-nav">
+              <button class="btn-lang" onclick="changeLanguage('vi')">VI</button>
+              <button class="btn-lang" onclick="changeLanguage('en')">EN</button>
+            </div>
           </li>
         </ul>
       </nav>
       <div class="hero-content2">
-        <h1>Liên Hệ</h1>
-        <p>Chúng tôi luôn sẵn sàng lắng nghe và phục vụ bạn</p>
+        <h1 data-i18n="page.hero_title">Liên Hệ Với Chúng Tôi</h1>
+        <p data-i18n="page.hero_subtitle">Celesté House luôn sẵn sàng lắng nghe và phục vụ quý khách</p>
         <div class="line"></div>
       </div>
     </header>
@@ -88,32 +88,45 @@
       <div class="contact-container">
         <!-- Thông tin liên hệ -->
         <div class="contact-info">
-          <h2 class="contact-title">Thông Tin Liên Hệ</h2>
+          <h2 data-i18n="page.info_title">Thông Tin Liên Hệ</h2>
+
           <div class="info-item">
-            <span class="icon material-symbols-outlined">map</span>
-            <p>Lê Văn Việt, Quận 9, TP. Hồ Chí Minh</p>
-          </div>
-          <div class="info-item">
-            <span class="icon material-symbols-outlined">call</span>
-            <p>+84 123 456 789</p>
-          </div>
-          <div class="info-item">
-            <span class="icon material-symbols-outlined">mail</span>
-            <p>celestehousecontact@gmail.com</p>
-          </div>
-          <div class="info-item">
-            <span class="icon material-symbols-outlined">alarm</span>
-            <p>Thứ 2 - Chủ Nhật: 10:00 - 22:00</p>
+            <span class="icon material-symbols-outlined">location_on</span>
+            <div>
+              <p data-i18n="page.info_address_detail">Lê Văn Việt, Quận 9, TP. Hồ Chí Minh</p>
+            </div>
           </div>
 
-          <div class="map-container">
+          <div class="info-item">
+            <span class="icon material-symbols-outlined">phone_in_talk</span>
+            <div>
+              <p data-i18n="page.info_phone_detail">+84 123 456 789</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="icon material-symbols-outlined">mail</span>
+            <div>
+              <p data-i18n="page.info_email_detail">celestehousecontact@gmail.com</p>
+            </div>
+          </div>
+
+          <div class="info-item">
+            <span class="icon material-symbols-outlined">schedule</span>
+            <div>
+              <p data-i18n="page.info_hours_detail">Thứ 2 - Chủ Nhật: 10:00 - 22:00</p>
+            </div>
+          </div>
+
+          <div class="map-wrapper" style="margin-top: 30px; border-radius: 4px; overflow: hidden;">
             <iframe
-              src="https://maps.app.goo.gl/Gvf2mZWjRmHUK2vN8"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.479482121088!2d106.78286047587786!3d10.851086257814467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175276e7ea103df%3A0xb6cfb3da01fe8068!2zTMOqIFbEg24gVmnhu4d0LCBRdeG6rW4gOSwgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e0!3m2!2svi!2s!4v1716200000000!5m2!2svi!2s"
               width="100%"
               height="250"
-              style="border: 0"
+              style="border: 0; display: block;"
               allowfullscreen=""
               loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
             ></iframe>
           </div>
         </div>
@@ -166,57 +179,19 @@
       </div>
     </section>
 
-    <footer class="cta">
-      <h2 style="color: #fff; border: none">Đặt Bàn Ngay Hôm Nay</h2>
-      <p style="margin-bottom: 30px">
-        Trải nghiệm không gian ẩm thực sang trọng và đẳng cấp.
-      </p>
-      <a href="./booking.html">
-        <button class="btn btn-gold">Đặt Bàn Ngay</button>
-      </a>
-    </footer>
-
-    <!-- Modal đăng nhập -->
-    <div id="loginModal" class="modal-overlay">
-      <div class="modal-content">
-        <span id="closeModalBtn" class="close-btn">&times;</span>
-        <h2 class="modal-title">ĐĂNG NHẬP</h2>
-        <button class="btn-google">
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google icon"
-          />
-          Đăng nhập với Google
-        </button>
-        <div class="divider">
-          <span>hoặc</span>
-        </div>
-        <form id="loginForm">
-          <div class="input-group">
-            <input
-              type="text"
-              placeholder="Số điện thoại hoặc Email"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <input type="password" placeholder="Mật khẩu" required />
-          </div>
-          <div class="forgot-password">
-            <a href="#">Quên mật khẩu?</a>
-          </div>
-          <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
-        </form>
-        <div class="register-link">
-          Bạn chưa có tài khoản? <a href="#">Đăng ký ngay</a>
-        </div>
-        <div class="policy-text">
-          Bằng việc đăng nhập, bạn đồng ý với
-          <a href="./policy.html">Chính sách & Điều khoản</a> của CELESTÉ HOUSE.
-        </div>
+    <section class="footer-booking-section" style="background: url('../images/restaurant-bg.jpg') no-repeat center center/cover; position: relative; padding: 100px 20px; text-align: center; color: #fff;">
+      <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1;"></div>
+  
+      <div class="footer-booking-content" style="position: relative; z-index: 2; max-width: 800px; margin: 0 auto;">
+        <h2 data-i18n="page.footer_title" style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; margin-bottom: 15px; letter-spacing: 1px;">Đặt Bàn Ngay Hôm Nay</h2>
+    
+        <p data-i18n="page.footer_subtitle" style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 300; color: #ccc; margin-bottom: 30px;">Trải nghiệm không gian ẩm thực sang trọng và đẳng cấp.</p>
+    
+        <a href="./booking.html" class="btn-footer-book" data-i18n="page.btn_footer_book" style="display: inline-block; background: #c5a059; color: #000; padding: 12px 35px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-decoration: none; text-transform: uppercase; border-radius: 2px; transition: all 0.3s ease;">Đặt Bàn Ngay</a>
       </div>
-    </div>
+    </section>
 
+    <script src="../script/i18n.js"></script>
     <script src="../script/script.js"></script>
     <script src="../script/main.js"></script>
 

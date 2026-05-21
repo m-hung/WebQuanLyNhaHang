@@ -654,6 +654,10 @@ h2::after {
   background-color: #e0bc75;
 }
 
+.btn-footer-book:hover {
+  background-color: #e0bc75 !important; /* Dùng !important để ghi đè lên màu nền inline */
+}
+
 /* --- LINK ĐĂNG KÝ & CHÍNH SÁCH --- */
 .register-link {
   margin-top: 25px;

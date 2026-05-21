@@ -18,34 +18,58 @@
     />
     <link rel="stylesheet" href="../style/style.css" />
     <link rel="stylesheet" href="../style/menuStyle.css" />
+    <style>
+      /* CSS đồng bộ giao diện cụm nút ngôn ngữ giống file index.html */
+      .lang-switcher-nav {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        margin-left: 10px;
+      }
+      .btn-lang {
+        background: transparent;
+        border: 1px solid #c5a880; /* Viền khung màu vàng Gold đặc trưng */
+        color: #fff;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        border-radius: 30px; /* Bo tròn góc sang trọng */
+        transition: all 0.3s ease;
+      }
+      .btn-lang:hover, .btn-lang.active-lang {
+        background: #c5a880; 
+        color: #000;
+      }
+    </style>
   </head>
   <body>
     <header class="menu-hero">
       <nav>
         <div class="logo">CELESTÉ HOUSE</div>
         <button class="menu-toggle" id="mobile-menu">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
+          <span class="material-symbols-outlined">menu</span>
+        </button>
         <ul class="nav-links">
-          <li><a href="../index.html">Trang Chủ</a></li>
-          <li><a href="./menu.html" class="active">Thực Đơn</a></li>
-          <li><a href="./team.html">Nhà Hàng</a></li>
-          <li><a href="./booking.html">Đặt Bàn</a></li>
-          <li><a href="./blog.html">Blog</a></li>
-          <li><a href="./contact.html">Liên Hệ</a></li>
+          <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
+          <li><a href="./menu.html" class="active" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
+          <li><a href="./team.html" data-i18n="navbar.nav_team">Nhà Hàng</a></li>
+          <li><a href="./booking.html" data-i18n="navbar.nav_booking">Đặt Bàn</a></li>
+          <li><a href="./blog.html" data-i18n="navbar.nav_blog">Blog</a></li>
+          <li><a href="./contact.html" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
           <li>
-            <button id="openLoginBtn" class="btn-login-nav">
-              <span class="material-symbols-outlined avatar-icon"
-                >account_circle</span
-              >
-              ĐĂNG NHẬP
-            </button>
+            <div class="lang-switcher-nav">
+              <button class="btn-lang" onclick="changeLanguage('vi')">VI</button>
+              <button class="btn-lang" onclick="changeLanguage('en')">EN</button>
+            </div>
           </li>
         </ul>
       </nav>
       <div class="hero-content">
-        <h1>Thực Đơn Tinh Hoa</h1>
-        <p>Khám phá nghệ thuật ẩm thực Châu Âu giữa lòng thành phố</p>
+        <h1 data-i18n="page.hero_title">Thực Đơn Tinh Hoa</h1>
+        <p data-i18n="page.hero_subtitle">Khám phá nghệ thuật ẩm thực Châu Âu giữa lòng thành phố</p>
         <div class="gold-line-center"></div>
       </div>
     </header>
@@ -56,65 +80,27 @@
         <input
           type="text"
           id="menu-search"
+          data-i18n="page.search_placeholder"
           placeholder="Bạn đang tìm món ăn nào?"
         />
       </div>
 
       <div class="filter-tabs">
-        <button class="filter-btn active" data-filter="all">Tất Cả</button>
+        <button class="filter-btn active" data-filter="all" data-i18n="page.filter_all">Tất Cả</button>
       </div>
     </div>
 
     <section class="menu-display">
       <div class="menu-grid" id="main-menu-grid">
-      </div>
+        </div>
     </section>
 
     <footer class="cta-section">
-      <h2>Sẵn Sàng Cho Một Bữa Tối Tuyệt Vời?</h2>
-      <a href="./booking.html" class="btn-primary-gold">Đặt Bàn Ngay</a>
+      <h2 data-i18n="page.footer_title">Sẵn Sàng Cho Một Bữa Tối Tuyệt Vời?</h2>
+      <a href="./booking.html" class="btn-primary-gold" data-i18n="page.btn_book_now">Đặt Bàn Ngay</a>
     </footer>
 
-    <div id="loginModal" class="modal-overlay">
-      <div class="modal-content">
-        <span id="closeModalBtn" class="close-btn">&times;</span>
-        <h2 class="modal-title">ĐĂNG NHẬP</h2>
-        <button class="btn-google">
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="Google icon"
-          />
-          Đăng nhập với Google
-        </button>
-        <div class="divider">
-          <span>hoặc</span>
-        </div>
-        <form id="loginForm">
-          <div class="input-group">
-            <input
-              type="text"
-              placeholder="Số điện thoại hoặc Email"
-              required
-            />
-          </div>
-          <div class="input-group">
-            <input type="password" placeholder="Mật khẩu" required />
-          </div>
-          <div class="forgot-password">
-            <a href="#">Quên mật khẩu?</a>
-          </div>
-          <button type="submit" class="btn-submit">ĐĂNG NHẬP</button>
-        </form>
-        <div class="register-link">
-          Bạn chưa có tài khoản? <a href="#">Đăng ký ngay</a>
-        </div>
-        <div class="policy-text">
-          Bằng việc đăng nhập, bạn đồng ý với
-          <a href="./policy.html">Chính sách & Điều khoản</a> của CELESTÉ HOUSE.
-        </div>
-      </div>
-    </div>
-
+    <script src="../script/i18n.js"></script>
     <script src="../script/script.js"></script>
     <script src="../script/menu.js"></script>
     <script src="../script/main.js"></script>

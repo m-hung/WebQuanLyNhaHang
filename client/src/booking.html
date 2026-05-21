@@ -5,34 +5,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đặt Bàn Sang Trọng - Celesté House</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style/style.css">
     <link rel="stylesheet" href="../style/bookingStyle.css">
+    <style>
+      /* Khung và kiểu dáng nút chuyển ngữ bo tròn đồng bộ phong cách như file index.html */
+      .lang-switcher-nav {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+        margin-left: 10px;
+      }
+      .btn-lang {
+        background: transparent;
+        border: 1px solid #c5a880; /* Màu viền vàng Gold đặc trưng */
+        color: #fff;
+        padding: 8px 16px;
+        cursor: pointer;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        border-radius: 30px; /* Bo góc tròn sang trọng */
+        transition: all 0.3s ease;
+      }
+      .btn-lang:hover, .btn-lang.active-lang {
+        background: #c5a880; 
+        color: #000;
+      }
+    </style>
 </head>
 <body>
     <nav>
         <div class="logo">CELESTÉ HOUSE</div>
         <button class="menu-toggle" id="mobile-menu">
-                <span class="material-symbols-outlined">menu</span>
-            </button>
-            <ul class="nav-links">
-                <li><a href="../index.html">Trang Chủ</a></li>
-                <li><a href="./menu.html">Thực Đơn</a></li>
-                <li><a href="./team.html">Nhà Hàng</a></li>
-                <li><a href="./booking.html" class="active">Đặt Bàn</a></li>
-                <li><a href="./blog.html">Blog</a></li>
-                <li><a href="./contact.html">Liên Hệ</a></li>
-            </ul>
-        </nav>
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+        <ul class="nav-links">
+            <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
+            <li><a href="./menu.html" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
+            <li><a href="./team.html" data-i18n="navbar.nav_team">Nhà Hàng</a></li>
+            <li><a href="./booking.html" class="active" data-i18n="navbar.nav_booking">Đặt Bàn</a></li>
+            <li><a href="./blog.html" data-i18n="navbar.nav_blog">Blog</a></li>
+            <li><a href="./contact.html" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
+            <li>
+                <div class="lang-switcher-nav">
+                    <button class="btn-lang" onclick="changeLanguage('vi')">VI</button>
+                    <button class="btn-lang" onclick="changeLanguage('en')">EN</button>
+                </div>
+            </li>
+        </ul>
+    </nav>
 
     <div class="split-container">
         <div class="booking-visual">
             <div class="visual-inner">
                 <img src="../img/booking-side.jpg" alt="Restaurant Interior" class="main-img">
                 <div class="visual-text">
-                    <h2>Trải Nghiệm Đẳng Cấp</h2>
+                    <h2 data-i18n="page.visual_title">Trải Nghiệm Đẳng Cấp</h2>
                     <div class="gold-line"></div>
-                    <p>Mỗi bữa tối là một hành trình nghệ thuật tại Celesté House.</p>
+                    <p data-i18n="page.visual_desc">Mỗi bữa tối là một hành trình nghệ thuật tại Celesté House.</p>
                 </div>
                 <div class="corner-pattern"></div>
             </div>
@@ -40,74 +72,77 @@
 
         <div class="booking-content">
             <div class="form-wrapper">
-                <h1 class="form-title">Yêu Cầu Đặt Bàn</h1>
-                <p class="form-subtitle">Vui lòng điền thông tin chi tiết để chúng tôi chuẩn bị tốt nhất.</p>
+                <h1 class="form-title" data-i18n="page.form_title">Yêu Cầu Đặt Bàn</h1>
+                <p class="form-subtitle" data-i18n="page.form_subtitle">Vui lòng điền thông tin chi tiết để chúng tôi chuẩn bị tốt nhất.</p>
 
                 <form id="booking-form">
-    <div class="input-group">
-        <label>Họ và Tên *</label>
-        <input type="text" id="cust-name" placeholder="Nhập tên của bạn" required>
-    </div>
+                    <div class="input-group">
+                        <label data-i18n="page.lbl_fullname">Họ và Tên *</label>
+                        <input type="text" id="cust-name" data-i18n="page.placeholder_fullname" placeholder="Nhập tên của bạn" required>
+                    </div>
 
-    <div class="input-row">
-        <div class="input-group">
-            <label>Số điện thoại *</label>
-            <input type="tel" id="cust-phone" placeholder="090..." required>
-        </div>
-        <div class="input-group">
-            <label>Email</label>
-            <input type="email" id="cust-email" placeholder="example@mail.com">
-        </div>
-    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label data-i18n="page.lbl_phone">Số điện thoại *</label>
+                            <input type="tel" id="cust-phone" data-i18n="page.placeholder_phone" placeholder="090..." required>
+                        </div>
+                        <div class="input-group">
+                            <label data-i18n="page.lbl_email">Email</label>
+                            <input type="email" id="cust-email" data-i18n="page.placeholder_email" placeholder="example@mail.com">
+                        </div>
+                    </div>
 
-    <label class="section-label">Thông tin đặt chỗ</label>
-    <div class="search-bar-inline">
-    <div class="search-input-item">
-        <input type="date" id="book-date" required>
-    </div>
-    <div class="search-input-item">
-        <input type="time" id="book-time" required>
-    </div>
-    <div class="search-input-item">
-        <select id="book-guests" required>
-            <option value="" disabled selected>Số người</option>
-            <option value="2">2 Người</option>
-            <option value="4">4 Người</option>
-            <option value="6">6+ Người</option>
-        </select>
-    </div>
-    <button type="button" id="btn-find-table" class="btn-find" disabled>Tìm bàn</button>
-</div>
+                    <label class="section-label" data-i18n="page.section_booking_info">Thông tin đặt chỗ</label>
+                    <div class="search-bar-inline">
+                        <div class="search-input-item">
+                            <input type="date" id="book-date" required>
+                        </div>
+                        <div class="search-input-item">
+                            <input type="time" id="book-time" required>
+                        </div>
+                        <div class="search-input-item">
+                            <select id="book-guests" required>
+                                <option value="" disabled selected data-i18n="page.opt_guests_default">Số người</option>
+                                <option value="2" data-i18n="page.opt_guests_2">2 Người</option>
+                                <option value="4" data-i18n="page.opt_guests_4">4 Người</option>
+                                <option value="6" data-i18n="page.opt_guests_6">6+ Người</option>
+                            </select>
+                        </div>
+                        <button type="button" id="btn-find-table" class="btn-find" disabled data-i18n="page.btn_find_table">Tìm bàn</button>
+                    </div>
 
-    <div id="available-tables-section" class="hidden-section">
-        <label class="section-label">Chọn bàn còn trống</label>
-        <div class="time-slots" id="table-list">
-            <button type="button" class="time-btn table-select">Bàn Cửa Sổ (Vip)</button>
-            <button type="button" class="time-btn table-select">Bàn Sân Thượng</button>
-            <button type="button" class="time-btn table-select">Bàn Trung Tâm</button>
-            <button type="button" class="time-btn table-select">Bàn Đơn 01</button>
-        </div>
-    </div>
+                    <div id="available-tables-section" class="hidden-section">
+                        <label class="section-label" data-i18n="page.section_available_tables">Chọn bàn còn trống</label>
+                        <div class="time-slots" id="table-list">
+                            <button type="button" class="time-btn table-select" data-i18n="page.table_window_vip">Bàn Cửa Sổ (Vip)</button>
+                            <button type="button" class="time-btn table-select" data-i18n="page.table_terrace">Bàn Sân Thượng</button>
+                            <button type="button" class="time-btn table-select" data-i18n="page.table_center">Bàn Trung Tâm</button>
+                            <button type="button" class="time-btn table-select" data-i18n="page.table_single_01">Bàn Đơn 01</button>
+                        </div>
+                    </div>
 
-    <button type="submit" id="btn-confirm-final" class="btn-confirm disabled" disabled>Xác Nhận Đặt Bàn</button>
-</form>
+                    <button type="submit" id="btn-confirm-final" class="btn-confirm disabled" disabled data-i18n="page.btn_confirm_booking">Xác Nhận Đặt Bàn</button>
+                </form>
             </div>
         </div>
     </div>
+
     <div id="success-modal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="success-icon">
-            <span class="material-symbols-outlined">check_circle</span>
-        </div>
-            <h2>Đặt bàn thành công!</h2>
-            <p>Cảm ơn quý khách đã lựa chọn <strong>Celesté House</strong>.</p>
+        <div class="modal-content">
+            <div class="success-icon">
+                <span class="material-symbols-outlined">check_circle</span>
+            </div>
+            <h2 data-i18n="page.modal_success_title">Đặt bàn thành công!</h2>
+            <p><span data-i18n="page.modal_success_p1">Cảm ơn quý khách đã lựa chọn</span> <strong>Celesté House</strong>.</p>
             <div class="modal-details">
-            <p>Thông tin xác nhận đã được gửi đến email của bạn.</p>
-            <p>Chúng tôi sẽ liên hệ lại qua SĐT để xác nhận lần cuối.</p>
+                <p data-i18n="page.modal_success_detail1">Thông tin xác nhận đã được gửi đến email của bạn.</p>
+                <p data-i18n="page.modal_success_detail2">Chúng tôi sẽ liên hệ lại qua SĐT để xác nhận lần cuối.</p>
+            </div>
+            <button id="btn-close-modal" class="btn-modal-close" data-i18n="page.btn_back_home">Quay lại trang chủ</button>
         </div>
-        <button id="btn-close-modal" class="btn-modal-close">Quay lại trang chủ</button>
     </div>
-</div>
+
+    <script src="../script/i18n.js"></script>
     <script src="../script/booking.js"></script>
     <script src="../script/main.js"></script>
 </body>
