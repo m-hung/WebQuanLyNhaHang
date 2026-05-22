@@ -55,7 +55,7 @@ nav {
 .progress-steps {
     display: flex;
     align-items: center;
-    max-width: 600px;
+    max-width: 760px;
     margin: 0 auto;
 }
 .step {
@@ -67,6 +67,8 @@ nav {
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 .step.done { color: var(--gold); }
 .step.active { color: var(--cream); }

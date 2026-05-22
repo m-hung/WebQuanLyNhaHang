@@ -1,10 +1,14 @@
+// =============================================
+// i18n.js — CELESTÉ HOUSE
+// =============================================
+
 // 1. Hàm xác định trang hiện tại để lấy đúng tên file JSON
 function getCurrentPageName() {
     const path = window.location.pathname;
-    const page = path.split("/").pop(); // Lấy phần cuối cùng của URL (ví dụ: index.html hoặc menu.html)
+    const page = path.split("/").pop();
     
     if (!page || page === 'index.html') return 'index';
-    return page.replace('.html', ''); // Trả về 'menu', 'booking', 'contact'...
+    return page.replace('.html', '');
 }
 
 // 2. Hàm lấy đường dẫn chính xác tới thư mục lang/
@@ -13,11 +17,11 @@ function getLangPath() {
     return isSubPage ? '../script/lang/' : 'script/lang/';
 }
 
-// 3. Hàm tải file JSON (Hỗ trợ tải nhiều file cùng lúc)
+// 3. Hàm tải file JSON
 async function fetchJson(url) {
     try {
         const response = await fetch(url);
-        if (!response.ok) return {}; // Nếu không tìm thấy file, trả về object rỗng để tránh lỗi
+        if (!response.ok) return {};
         return await response.json();
     } catch (e) {
         return {};
@@ -29,45 +33,41 @@ async function applyLanguage(lng) {
     const basePath = getLangPath();
     const pageName = getCurrentPageName();
 
-    // Tải song song file dùng chung (navbar) và file riêng của trang đó
     const [navbarRes, pageRes] = await Promise.all([
         fetchJson(`${basePath}${lng}/navbar.json`),
         fetchJson(`${basePath}${lng}/${pageName}.json`)
     ]);
 
-    // Gộp dữ liệu dịch lại thành một kho duy nhất cho trang hiện tại
     const translations = {
         navbar: navbarRes,
         page: pageRes
     };
 
-    // Tìm và dịch các phần tử HTML
     const elements = document.querySelectorAll('[data-i18n]');
     elements.forEach(element => {
-        const keyPath = element.getAttribute('data-i18n'); 
-        const [prefix, key] = keyPath.split('.'); 
+        const keyPath = element.getAttribute('data-i18n');
+        const [prefix, key] = keyPath.split('.');
 
-        // === ĐOẠN XỬ LÝ FIX LỖI DỊCH ĐỘNG CHO TRANG PAYMENT ===
+        // === DYNAMIC KEYS ===
         if (keyPath === 'page.dynamic_guests') {
             const guestsCount = localStorage.getItem('bk_guests');
             if (guestsCount) {
-                element.innerHTML = lng === 'en' 
-                    ? `${guestsCount} People` 
+                element.innerHTML = lng === 'en'
+                    ? `${guestsCount} People`
                     : `${guestsCount} người`;
             }
-            return; // Bỏ qua xử lý mặc định
+            return;
         }
 
         if (keyPath === 'page.dynamic_table') {
             const tNum = localStorage.getItem('bk_table_num');
             const tCap = localStorage.getItem('bk_table_cap');
-                
+
             if (tNum && tCap) {
-                element.innerHTML = lng === 'en' 
-                    ? `Table ${tNum} (Capacity: ${tCap})` 
+                element.innerHTML = lng === 'en'
+                    ? `Table ${tNum} (Capacity: ${tCap})`
                     : `Bàn ${tNum} (Sức chứa: ${tCap})`;
             } else {
-                // Parse từ bk_table nếu có dạng "Bàn 3 (Sức chứa: 4)"
                 const rawTable = localStorage.getItem('bk_table') || '';
                 const match = rawTable.match(/(\d+)[^:]*:\s*(\d+)/);
                 if (match) {
@@ -82,12 +82,10 @@ async function applyLanguage(lng) {
             return;
         }
 
-        // BỔ SUNG THÊM: Tự động dịch định dạng Ngày & Giờ ở trang payment khi switch ngôn ngữ
         if (keyPath === 'page.lbl_datetime') {
-            // Tìm thẻ kế tiếp (hoặc thẻ chứa giá trị hiển thị thời gian)
             const datetimeValueEl = document.getElementById('s-datetime');
             const rawTime = localStorage.getItem('bk_reservationTime');
-            
+
             if (datetimeValueEl && rawTime) {
                 const dtObj = new Date(rawTime);
                 const localeStr = lng === 'en' ? 'en-US' : 'vi-VN';
@@ -96,37 +94,39 @@ async function applyLanguage(lng) {
                     hour: '2-digit', minute: '2-digit'
                 });
             }
-            // Không return ở đây để thẻ label "Ngày & Giờ" vẫn được dịch bình thường từ file JSON
         }
-        // ======================================================
+        // ====================
 
         if (translations[prefix] && translations[prefix][key]) {
             const txt = translations[prefix][key];
-            // Kiểm tra nếu là thẻ input thì dịch placeholder, ngược lại dịch textContent
             if (element.tagName === 'INPUT') {
                 element.setAttribute('placeholder', txt);
             } else {
-                element.innerHTML = txt; // Dùng innerHTML để giữ lại các ký tự đặc biệt như &rsaquo; ở nút Tìm hiểu thêm
+                element.innerHTML = txt;
             }
         }
     });
 
+    // ── FIX: đồng bộ cả 2 key để tương thích toàn bộ dự án ──
     localStorage.setItem('selected_language', lng);
+    localStorage.setItem('language', lng);             // ← thêm dòng này
+
     document.documentElement.lang = lng;
+
+    // Cập nhật active state nút VI / EN
+    document.querySelectorAll('.btn-lang').forEach(btn => btn.classList.remove('active-lang'));
+    const activeBtn = document.getElementById('btn-' + lng);
+    if (activeBtn) activeBtn.classList.add('active-lang');
 
     const dateInput = document.getElementById('book-date');
     if (dateInput) {
-        // Nếu chọn tiếng Anh thì set là 'en-US', tiếng Việt set là 'vi-VN' giúp ép trình duyệt hiển thị lịch chuẩn ngôn ngữ
         dateInput.setAttribute('lang', lng === 'en' ? 'en-US' : 'vi-VN');
     }
 
-    // Tìm toàn bộ các nút chọn bàn đang được hiển thị trên giao diện
     const dynamicTables = document.querySelectorAll('.table-select');
     dynamicTables.forEach(btn => {
         const tableNum = btn.getAttribute('data-table-num');
         const cap = btn.getAttribute('data-table-cap');
-        
-        // Nếu nút bấm này có chứa dữ liệu bàn động, tiến hành đổi ngôn ngữ chữ hiển thị bên trong
         if (tableNum && cap) {
             btn.innerText = lng === 'en'
                 ? `Table ${tableNum} (Capacity: ${cap})`
@@ -140,6 +140,9 @@ function changeLanguage(lng) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const savedLng = localStorage.getItem('selected_language') || 'vi';
+    // ── FIX: đọc từ cả 2 key, ưu tiên selected_language ──
+    const savedLng = localStorage.getItem('selected_language')
+                  || localStorage.getItem('language')
+                  || 'vi';
     applyLanguage(savedLng);
 });

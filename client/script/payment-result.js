@@ -1,12 +1,6 @@
 // =============================================
 // CELESTÉ HOUSE — payment-result.js
 // File: client/script/payment-result.js
-//
-// VNPay redirect về URL dạng:
-// /src/payment-result.html?vnp_ResponseCode=00&vnp_TxnRef=CH...&vnp_Amount=21000000&...
-//
-// Backend đã verify chữ ký HMAC và lưu reservation trước khi redirect về đây.
-// File này chỉ đọc params URL và hiển thị kết quả cho user.
 // =============================================
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -20,15 +14,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const payDate      = params.get('vnp_PayDate');        // "20240510143022"
     const transactionNo= params.get('vnp_TransactionNo'); // Mã giao dịch VNPay
 
+    // Lấy ngôn ngữ hiện tại chính xác từ hệ thống i18n
+    const currentLang = localStorage.getItem('selected_language') || localStorage.getItem('language') || 'vi';
+
     // Đọc thông tin đặt bàn từ localStorage
     const name     = localStorage.getItem('bk_name')     || '—';
-    const table    = localStorage.getItem('bk_table')    || '—';
     const datetime = localStorage.getItem('bk_datetime') || '—';
 
+    // Format tên bàn theo ngôn ngữ hiện tại
+    const tNum = localStorage.getItem('bk_table_num');
+    const tCap = localStorage.getItem('bk_table_cap');
+    let table;
+    if (tNum && tCap) {
+        table = currentLang === 'en'
+            ? `Table ${tNum} (Capacity: ${tCap})`
+            : `Bàn ${tNum} (Sức chứa: ${tCap})`;
+    } else {
+        // Fallback: parse từ bk_table nếu có dạng 'Table X (Capacity: Y)'
+        const rawTable = localStorage.getItem('bk_table') || '—';
+        const match = rawTable.match(/(\d+)[^:]*:\s*(\d+)/);
+        if (match) {
+            table = currentLang === 'en'
+                ? `Table ${match[1]} (Capacity: ${match[2]})`
+                : `Bàn ${match[1]} (Sức chứa: ${match[2]})`;
+        } else {
+            table = rawTable;
+        }
+    }
+
     // ── Format dữ liệu hiển thị ──
-    const amountDisplay = amount
-        ? parseInt(amount) / 100 : 0;
-    const amountFormatted = amountDisplay.toLocaleString('vi-VN') + ' ₫';
+    const amountDisplay = amount ? parseInt(amount) / 100 : 0;
+    // Giữ định dạng gốc VND cho cả 2 ngôn ngữ theo logic ban đầu của bạn
+    const finalAmount = amountDisplay.toLocaleString('vi-VN') + ' ₫';
 
     const payDateFormatted = payDate
         ? `${payDate.substring(6,8)}/${payDate.substring(4,6)}/${payDate.substring(0,4)} `
@@ -37,42 +54,59 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ── Render theo kết quả ──
     if (responseCode === '00') {
-        renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDateFormatted, name, table });
+        renderSuccess({ txnRef, transactionNo, amountFormatted: finalAmount, bankCode, payDateFormatted, name, table, currentLang });
     } else {
-        renderFailure(responseCode, txnRef);
+        renderFailure(responseCode, txnRef, currentLang);
     }
 });
 
 // ─────────────────────────────────────────────
 // THÀNH CÔNG
 // ─────────────────────────────────────────────
-function renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDateFormatted, name, table }) {
+function renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDateFormatted, name, table, currentLang }) {
     // Progress: bước 4 thành công
-    document.getElementById('step-4-num').innerHTML =
-        '<span class="material-symbols-outlined" style="font-size:13px">check</span>';
-    document.getElementById('step-4').className = 'step done';
+    const step4Num = document.getElementById('step-4-num');
+    if (step4Num) step4Num.innerHTML = '<span class="material-symbols-outlined" style="font-size:13px">check</span>';
+    
+    const step4 = document.getElementById('step-4');
+    if (step4) step4.className = 'step done';
 
-    // Icon
+    // Icon thành công
     const iconEl = document.getElementById('result-icon-symbol');
-    iconEl.textContent = 'check_circle';
-    iconEl.parentElement.classList.add('success');
+    if (iconEl) {
+        iconEl.textContent = 'check_circle';
+        iconEl.parentElement.classList.remove('failure');
+        iconEl.parentElement.classList.add('success');
+    }
 
-    document.getElementById('result-title').textContent    = 'Thanh Toán Thành Công!';
-    document.getElementById('result-subtitle').innerHTML   =
-        'Cảm ơn quý khách đã lựa chọn <strong style="color:var(--gold)">Celesté House</strong>.<br>'
-      + 'Xác nhận đã được gửi qua email & SMS.';
+    // Xóa bỏ thuộc tính data-i18n tạm thời trên Tiêu đề để tránh bị i18n.js ghi đè lại thành "Đang xử lý"
+    const titleEl = document.getElementById('result-title');
+    const subtitleEl = document.getElementById('result-subtitle');
+    if (titleEl) titleEl.removeAttribute('data-i18n');
+    if (subtitleEl) subtitleEl.removeAttribute('data-i18n');
 
-    // Chi tiết giao dịch
-    document.getElementById('r-txn-ref').textContent  = transactionNo || txnRef || '—';
-    document.getElementById('r-order-id').textContent = txnRef         || '—';
-    document.getElementById('r-amount').textContent   = amountFormatted;
-    document.getElementById('r-bank').textContent     = bankCode        || '—';
-    document.getElementById('r-time').textContent     = payDateFormatted;
-    document.getElementById('r-name').textContent     = name;
-    document.getElementById('r-table').textContent    = table;
+    // Cập nhật nội dung Text dựa theo ngôn ngữ đang chọn
+    if (currentLang === 'en') {
+        if (titleEl) titleEl.textContent = 'Payment Successful!';
+        if (subtitleEl) subtitleEl.innerHTML = 'Thank you for choosing <strong style="color:var(--gold)">Celesté House</strong>.<br>A confirmation has been sent via email & SMS.';
+    } else {
+        if (titleEl) titleEl.textContent = 'Thanh Toán Thành Công!';
+        if (subtitleEl) subtitleEl.innerHTML = 'Cảm ơn quý khách đã lựa chọn <strong style="color:var(--gold)">Celesté House</strong>.<br>Xác nhận đã được gửi qua email & SMS.';
+    }
 
-    document.getElementById('result-details').style.display = 'grid';
-    //  Gửi email xác nhận cho khách
+    // Gán dữ liệu vào bảng chi tiết
+    if (document.getElementById('r-txn-ref')) document.getElementById('r-txn-ref').textContent   = transactionNo || txnRef || '—';
+    if (document.getElementById('r-order-id')) document.getElementById('r-order-id').textContent  = txnRef         || '—';
+    if (document.getElementById('r-amount')) document.getElementById('r-amount').textContent    = amountFormatted;
+    if (document.getElementById('r-bank')) document.getElementById('r-bank').textContent      = bankCode        || '—';
+    if (document.getElementById('r-time')) document.getElementById('r-time').textContent      = payDateFormatted;
+    if (document.getElementById('r-name')) document.getElementById('r-name').textContent      = name;
+    if (document.getElementById('r-table')) document.getElementById('r-table').textContent     = table;
+
+    const detailsEl = document.getElementById('result-details');
+    if (detailsEl) detailsEl.style.display = 'grid';
+
+    // Gửi email xác nhận cho khách
     sendConfirmationEmail({
         customer_name:  name,
         customer_email: localStorage.getItem('bk_email') || '',
@@ -83,74 +117,85 @@ function renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDa
         amount:         amountFormatted,
     });
 
-    // Nút hành động
+    // Tạo các nút chức năng đồng bộ theo ngôn ngữ
     const actionsEl = document.getElementById('result-actions');
-    actionsEl.style.display = 'flex';
-    /*actionsEl.innerHTML = `
-        <button class="btn-payment-confirm"
-                onclick="window.location.href='../index.html'">
-            Về Trang Chủ
-        </button>
-        <button class="btn-back"
-                onclick="window.print()">
-            ⎙ In xác nhận
-        </button>
-    `;*/
+    if (actionsEl) {
+        actionsEl.style.display = 'flex';
 
-    // Dọn localStorage
-    window.finishBooking = function() {
-        ['bk_name','bk_phone','bk_email','bk_datetime','bk_guests',
-        'bk_table','bk_tableId','bk_reservationTime','bk_order_id']
-            .forEach(k => localStorage.removeItem(k));
-        window.location.href = '../index.html';
-    };
-    actionsEl.innerHTML = `
-    <button class="btn-payment-confirm" onclick="finishBooking()">
-        Về Trang Chủ
-    </button>
-    <button class="btn-back" onclick="window.print()">
-        ⎙ In xác nhận
-    </button>
-`;
+        window.finishBooking = function() {
+            ['bk_name','bk_phone','bk_email','bk_datetime','bk_guests',
+            'bk_table','bk_tableId','bk_reservationTime','bk_order_id', 'bk_table_num', 'bk_table_cap']
+                .forEach(k => localStorage.removeItem(k));
+            window.location.href = '../index.html';
+        };
+
+        const homeText = currentLang === 'en' ? 'Back to Homepage' : 'Về Trang Chủ';
+        const printText = currentLang === 'en' ? 'Print Confirmation' : 'In phiếu xác nhận';
+
+        actionsEl.innerHTML = `
+            <button class="btn-payment-confirm" onclick="finishBooking()">
+                ${homeText}
+            </button>
+            <button class="btn-back" onclick="window.print()">
+                ⎙ ${printText}
+            </button>
+        `;
+    }
 }
 
 // ─────────────────────────────────────────────
 // THẤT BẠI / HUỶ
 // ─────────────────────────────────────────────
-function renderFailure(code, txnRef) {
+function renderFailure(code, txnRef, currentLang) {
     const isCancel = (code === '24'); // 24 = user huỷ
 
     const iconEl = document.getElementById('result-icon-symbol');
-    iconEl.textContent = isCancel ? 'cancel' : 'error';
-    iconEl.parentElement.classList.add('failure');
+    if (iconEl) {
+        iconEl.textContent = isCancel ? 'cancel' : 'error';
+        iconEl.parentElement.classList.remove('success');
+        iconEl.parentElement.classList.add('failure');
+    }
 
-    document.getElementById('result-title').textContent  =
-        isCancel ? 'Giao Dịch Đã Huỷ' : 'Thanh Toán Thất Bại';
-    document.getElementById('result-subtitle').textContent =
-        isCancel
+    const titleEl = document.getElementById('result-title');
+    const subtitleEl = document.getElementById('result-subtitle');
+    if (titleEl) titleEl.removeAttribute('data-i18n');
+    if (subtitleEl) subtitleEl.removeAttribute('data-i18n');
+
+    if (currentLang === 'en') {
+        if (titleEl) titleEl.textContent = isCancel ? 'Transaction Cancelled' : 'Payment Failed';
+        if (subtitleEl) subtitleEl.textContent = isCancel
+            ? 'You cancelled the transaction. Your table booking has not been confirmed.'
+            : `Transaction was unsuccessful (Error code: ${code}). Please try again.`;
+    } else {
+        if (titleEl) titleEl.textContent = isCancel ? 'Giao Dịch Đã Huỷ' : 'Thanh Toán Thất Bại';
+        if (subtitleEl) subtitleEl.textContent = isCancel
             ? 'Bạn đã huỷ giao dịch. Đặt bàn chưa được xác nhận.'
             : `Giao dịch không thành công (mã lỗi: ${code}). Vui lòng thử lại.`;
+    }
 
     const actionsEl = document.getElementById('result-actions');
-    actionsEl.style.display = 'flex';
-    actionsEl.innerHTML = `
-        <button class="btn-payment-confirm"
-                onclick="window.location.href='./payment.html'">
-            ↺ Thử Thanh Toán Lại
-        </button>
-        <button class="btn-back"
-                onclick="window.location.href='./booking.html'">
-            ← Quay lại đặt bàn
-        </button>
-    `;
+    if (actionsEl) {
+        actionsEl.style.display = 'flex';
+
+        const retryText = currentLang === 'en' ? '↺ Retry Payment' : '↺ Thử Thanh Toán Lại';
+        const backText = currentLang === 'en' ? '← Back to Booking' : '← Quay lại đặt bàn';
+
+        actionsEl.innerHTML = `
+            <button class="btn-payment-confirm" onclick="window.location.href='./payment.html'">
+                ${retryText}
+            </button>
+            <button class="btn-back" onclick="window.location.href='./booking.html'">
+                ${backText}
+            </button>
+        `;
+    }
 }
+
 function sendConfirmationEmail(params) {
     if (!params.customer_email) {
         console.warn('[EmailJS] Không có email khách hàng, bỏ qua.');
         return;
     }
-
-    // Thay YOUR_TEMPLATE_CONFIRM bằng Template ID vừa tạo
     emailjs.send('service_70nli69', 'template_ef816li', params)
         .then(() => console.log('[EmailJS] Đã gửi email xác nhận cho khách.'))
         .catch(err => console.error('[EmailJS] Lỗi gửi email:', err));

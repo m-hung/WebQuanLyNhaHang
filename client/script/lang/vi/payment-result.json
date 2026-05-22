@@ -1,0 +1,16 @@
+{
+    "title": "Kết Quả Thanh Toán - Celesté House",
+    "step_info": "Thông tin",
+    "step_table": "Chọn bàn",
+    "step_payment": "Thanh toán",
+    "step_confirm": "Xác nhận",
+    "status_processing": "Đang xử lý...",
+    "subtitle_processing": "Vui lòng chờ trong giây lát.",
+    "label_vnpay_id": "Mã giao dịch VNPay",
+    "label_order_id": "Mã đơn hàng",
+    "label_amount": "Số tiền",
+    "label_bank": "Ngân hàng",
+    "label_time": "Thời gian",
+    "label_customer": "Khách hàng",
+    "label_table": "Bàn đặt"
+}

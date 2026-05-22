@@ -1,0 +1,16 @@
+{
+    "title": "Payment Result - Celesté House",
+    "step_info": "Information",
+    "step_table": "Table Selection",
+    "step_payment": "Payment",
+    "step_confirm": "Confirmation",
+    "status_processing": "Processing...",
+    "subtitle_processing": "Please wait for a moment.",
+    "label_vnpay_id": "VNPay Transaction ID",
+    "label_order_id": "Order ID",
+    "label_amount": "Amount",
+    "label_bank": "Bank",
+    "label_time": "Time",
+    "label_customer": "Customer",
+    "label_table": "Reserved Table"
+}
