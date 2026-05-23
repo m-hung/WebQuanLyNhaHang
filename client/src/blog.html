@@ -63,11 +63,33 @@
 
       /* Empty state */
       .blog-empty {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         text-align: center;
         padding: 80px 20px;
-        color: #aaa;
         font-family: 'Montserrat', sans-serif;
+      }
+      .blog-empty-icon {
+        font-size: 52px;
+        color: var(--gold, #c5a880);
+        margin-bottom: 24px;
+        opacity: 0.6;
+      }
+      .blog-empty-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 26px;
+        color: #fff;
+        margin-bottom: 12px;
+        font-weight: 700;
+      }
+      .blog-empty-sub {
         font-size: 14px;
+        color: #888;
+        letter-spacing: 0.5px;
+        line-height: 1.7;
       }
 
       /* Error state */
@@ -203,7 +225,9 @@
           if (blogs.length === 0) {
             container.innerHTML = `
               <div class="blog-empty">
-                Chưa có bài viết nào được đăng.<br>Hãy quay lại sau nhé!
+                <div class="blog-empty-icon">✦</div>
+                <div class="blog-empty-title">Chưa có bài viết nào</div>
+                <div class="blog-empty-sub">Những câu chuyện ẩm thực đang được chuẩn bị.<br>Hãy quay lại sau nhé!</div>
               </div>
             `;
             return;
