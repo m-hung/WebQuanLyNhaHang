@@ -18,8 +18,18 @@ public class MenuItem {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    private String name;
-    private String description;
+    @Column(name = "name_vi", nullable = false)
+    private String nameVi;
+
+    @Column(name = "name_en", nullable = false)
+    private String nameEn;
+
+    @Column(name = "description_vi", columnDefinition = "TEXT")
+    private String descriptionVi;
+
+    @Column(name = "description_en", columnDefinition = "TEXT")
+    private String descriptionEn;
+
     private BigDecimal price;
     private Double discount;
     private String imageUrl;
