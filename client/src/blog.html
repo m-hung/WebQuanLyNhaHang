@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="../style/style.css" />
     <link rel="stylesheet" href="../style/blogStyle.css" />
     <style>
-      /* CSS khung và kiểu dáng nút chuyển ngữ bo tròn đồng bộ tuyệt đối như file booking.html */
       .lang-switcher-nav {
         display: inline-flex;
         gap: 10px;
@@ -24,7 +23,7 @@
       }
       .btn-lang {
         background: transparent;
-        border: 1px solid #c5a880; /* Màu viền vàng Gold đặc trưng */
+        border: 1px solid #c5a880;
         color: #fff;
         padding: 8px 16px;
         cursor: pointer;
@@ -32,12 +31,65 @@
         font-size: 12px;
         font-weight: 600;
         letter-spacing: 1px;
-        border-radius: 30px; /* Bo góc tròn sang trọng */
+        border-radius: 30px;
         transition: all 0.3s ease;
       }
       .btn-lang:hover, .btn-lang.active-lang {
-        background: #c5a880; 
+        background: #c5a880;
         color: #000;
+      }
+
+      /* Loading skeleton */
+      .blog-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 80px 20px;
+        color: #888;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+        letter-spacing: 1px;
+      }
+      .blog-loading-spinner {
+        width: 32px;
+        height: 32px;
+        border: 2px solid #ddd;
+        border-top-color: #c5a880;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-right: 12px;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      /* Empty state */
+      .blog-empty {
+        text-align: center;
+        padding: 80px 20px;
+        color: #aaa;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+      }
+
+      /* Error state */
+      .blog-error {
+        text-align: center;
+        padding: 60px 20px;
+        color: #c0392b;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 14px;
+      }
+
+      /* Dynamic blog date badge */
+      .blog-date {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        background: rgba(0,0,0,0.65);
+        color: #fff;
+        padding: 4px 10px;
+        font-size: 12px;
+        border-radius: 4px;
+        font-family: 'Montserrat', sans-serif;
       }
     </style>
   </head>
@@ -71,67 +123,110 @@
     </header>
 
     <section class="blog-section">
-      <div class="blog-container">
-        <article class="blog-post">
-          <div class="blog-img">
-            <img src="../img/blog/ruouvang.jpg" alt="Blog 1" />
-            <span class="blog-date" data-i18n="page.post1_date">25 Tháng 3, 2026</span>
-          </div>
-          <div class="blog-info">
-            <h3 data-i18n="page.post1_title">Nghệ Thuật Thưởng Thức Rượu Vang Pháp</h3>
-            <p data-i18n="page.post1_desc">
-              Khám phá cách kết hợp các dòng vang Bordeaux danh tiếng với thực
-              đơn bò Wagyu tại nhà hàng chúng tôi...
-            </p>
-            <a href="./ruou-vang-phap.html" class="read-more" data-i18n="page.read_more">Đọc Tiếp &rsaquo;</a>
-          </div>
-        </article>
-
-        <article class="blog-post">
-          <div class="blog-img">
-            <img src="../img/blog/a5.jpg" alt="Blog 2" />
-            <span class="blog-date" data-i18n="page.post2_date">18 Tháng 3, 2026</span>
-          </div>
-          <div class="blog-info">
-            <h3 data-i18n="page.post2_title">Bí Mật Đằng Sau Món Bò Wagyu A5</h3>
-            <p data-i18n="page.post2_desc">
-              Tại sao bò Wagyu lại có những vân mỡ cẩm thạch tuyệt đẹp và quy
-              trình chế biến chuẩn mực tại Celesté House là gì?
-            </p>
-            <a href="./bo-wagyu.html" class="read-more" data-i18n="page.read_more">Đọc Tiếp &rsaquo;</a>
-          </div>
-        </article>
-
-        <article class="blog-post">
-          <div class="blog-img">
-            <img src="../img/blog/blog3.jpg" alt="Blog 3" />
-            <span class="blog-date" data-i18n="page.post3_date">10 Tháng 3, 2026</span>
-          </div>
-          <div class="blog-info">
-            <h3 data-i18n="page.post3_title">Không Gian Fine Dining: Sang Trọng & Tinh Tế</h3>
-            <p data-i18n="page.post3_desc">
-              Tìm hiểu về phong cách kiến trúc và cách chúng tôi tạo dựng không
-              gian lãng mạn cho những bữa tối của bạn.
-            </p>
-            <a href="./khong-gian-fine-dining.html" class="read-more" data-i18n="page.read_more">Đọc Tiếp &rsaquo;</a>
-          </div>
-        </article>
+      <div class="blog-container" id="blog-container">
+        <!-- Bài viết sẽ được render động từ API -->
+        <div class="blog-loading">
+          <div class="blog-loading-spinner"></div>
+          Đang tải bài viết...
+        </div>
       </div>
     </section>
-
-    <footer class="cta">
-      <h2 style="color: #fff; border: none" data-i18n="page.footer_title">Đăng Ký Nhận Tin</h2>
-      <p style="margin-bottom: 30px" data-i18n="page.footer_desc">
-        Nhận thông báo về các sự kiện ẩm thực và ưu đãi đặc quyền.
-      </p>
-      <div class="subscribe-form">
-        <input type="email" data-i18n="page.placeholder_email" placeholder="Email của bạn..." />
-        <button class="btn btn-gold" data-i18n="page.btn_subscribe">Đăng Ký</button>
-      </div>
-    </footer>
 
     <script src="../script/i18n.js"></script>
     <script src="../script/script.js"></script>
     <script src="../script/main.js"></script>
+
+    <script>
+      const API_BASE = "http://localhost:8080/api/blogs";
+
+      // Format ngày từ ISO string sang "DD Tháng MM, YYYY"
+      function formatDateVI(isoString) {
+        if (!isoString) return "";
+        const date = new Date(isoString);
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        return `${day} Tháng ${month}, ${year}`;
+      }
+
+      // Tạo HTML cho 1 bài viết
+      function createBlogPostHTML(blog) {
+        const imgSrc = blog.imgUrl && blog.imgUrl.trim() !== ""
+          ? blog.imgUrl
+          : "../img/blog/default.jpg"; // Ảnh mặc định nếu không có
+
+        const dateStr = formatDateVI(blog.createdAt);
+        const summary = blog.summary || "";
+        const slug = blog.slug || "";
+
+        return `
+          <article class="blog-post">
+            <div class="blog-img" style="position:relative;">
+              <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(blog.title)}"
+                onerror="this.src='../img/blog/default.jpg'" />
+              ${dateStr ? `<span class="blog-date">${escapeHtml(dateStr)}</span>` : ""}
+            </div>
+            <div class="blog-info">
+              <h3>${escapeHtml(blog.title)}</h3>
+              <p>${escapeHtml(summary)}</p>
+              <a href="./blog-detail.html?slug=${encodeURIComponent(slug)}" class="read-more">
+                Đọc Tiếp &rsaquo;
+              </a>
+            </div>
+          </article>
+        `;
+      }
+
+      // Escape HTML để tránh XSS
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // Tải bài viết từ API
+      async function loadBlogs() {
+        const container = document.getElementById("blog-container");
+
+        try {
+          // Chỉ lấy bài viết đang active (hiển thị)
+          const res = await fetch(`${API_BASE}/active`);
+
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+          const blogs = await res.json();
+
+          if (blogs.length === 0) {
+            container.innerHTML = `
+              <div class="blog-empty">
+                Chưa có bài viết nào được đăng.<br>Hãy quay lại sau nhé!
+              </div>
+            `;
+            return;
+          }
+
+          // Sắp xếp theo ngày mới nhất trước
+          blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+          container.innerHTML = blogs.map(createBlogPostHTML).join("");
+
+        } catch (err) {
+          console.error("Lỗi khi tải blog:", err);
+          container.innerHTML = `
+            <div class="blog-error">
+              Không thể tải bài viết. Vui lòng thử lại sau.<br>
+              <small style="color:#bbb; font-size:11px; margin-top:8px; display:block;">${err.message}</small>
+            </div>
+          `;
+        }
+      }
+
+      // Chạy khi trang load xong
+      document.addEventListener("DOMContentLoaded", loadBlogs);
+    </script>
   </body>
 </html>
