@@ -18,6 +18,7 @@ public class Reservation {
     private String phone;
     private String email;
     private LocalDateTime reservationTime;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "table_id")

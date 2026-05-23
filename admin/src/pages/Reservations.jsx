@@ -61,11 +61,7 @@ export default function Reservations() {
 
       const matchSearch =
           item.customerName?.toLowerCase().includes(keyword) ||
-          item.phone?.toLowerCase().includes(keyword) ||
-          item.email?.toLowerCase().includes(keyword) ||
-          String(item.table?.tableNumber || "")
-              .toLowerCase()
-              .includes(keyword);
+          item.phone?.toLowerCase().includes(keyword) ;
 
       // DATE FILTER
       if (!item.reservationTime) return false;
@@ -89,7 +85,8 @@ export default function Reservations() {
       }
 
       return matchSearch && validStart && validEnd;
-    });
+    })
+        .sort((a, b) => new Date(a.reservationTime) - new Date(b.reservationTime));
   }, [reservations, searchTerm, startDate, endDate]);
 
   // PAGINATION
@@ -222,8 +219,16 @@ export default function Reservations() {
 
       const newReservation = await response.json();
 
-      setReservations((prev) => [...prev, newReservation]);
-      setShowAddModal(false);
+      const selectedTable = tables.find(
+          (t) => t.tableId === parseInt(formData.tableId)
+      );
+
+      const enriched = {
+        ...newReservation,
+        table: selectedTable ?? newReservation.table,
+      };
+
+      setReservations((prev) => [...prev, enriched]);      setShowAddModal(false);
     } catch (error) {
       console.error("Lỗi tạo reservation:", error);
     } finally {
@@ -300,7 +305,7 @@ export default function Reservations() {
               />
               <input
                   type="text"
-                  placeholder="Tên khách, SĐT, bàn..."
+                  placeholder="Tên khách, SĐT"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 outline-none focus:border-blue-500"
@@ -364,7 +369,7 @@ export default function Reservations() {
                               {item.customerName}
                             </p>
                             <p className="text-xs text-gray-400 mt-1">
-                              #{item.reservationId}
+                              Đặt lúc {formatDateTime(item.createdAt)}
                             </p>
                           </div>
                         </td>
