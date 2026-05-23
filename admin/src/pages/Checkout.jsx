@@ -182,14 +182,16 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
           }`}
           disabled={!isFormValid}
           onClick={() => {
-            // ==========================================
-            // BƯỚC 1: LƯU VÀO BẢNG PAYMENTS
-            // ==========================================
+            // LƯU VÀO BẢNG PAYMENTS
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, "0");
+            const localDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
             const paymentPayload = {
               order: { orderId: invoice?.id },
               amountPaid: invoice?.totalPrice,
               paymentMethod: paymentMethod,
-              paymentTime: new Date().toISOString(),
+              paymentTime: localDateTime,
               customerName: customerName,
               phone: customerPhone,
             };

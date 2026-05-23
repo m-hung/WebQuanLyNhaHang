@@ -26,4 +26,9 @@ public class Payment {
     private LocalDateTime paymentTime;
     private String customerName;
     private String phone;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.paymentTime == null) {
+            this.paymentTime = LocalDateTime.now();
 }
