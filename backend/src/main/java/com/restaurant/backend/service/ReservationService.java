@@ -46,6 +46,7 @@ public class ReservationService {
         }
 
         // Lưu MỚI vào Database
+        r.setCreatedAt(LocalDateTime.now());
         return reservationRepository.save(r);
     }
 }
