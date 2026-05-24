@@ -29,4 +29,11 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<OrderItem> orderItems;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.orderDate == null) {
+            this.orderDate = LocalDateTime.now();
+        }
+    }
 }

@@ -138,7 +138,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
               </button>
               {categories.map((category) => (
                 <button
-                  key={category.id}
+                  key={category.categoryId}
                   className={`px-4 py-2 rounded transition ${
                     selectedCategory === category.name
                       ? "bg-blue-600 text-white"
@@ -169,7 +169,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                 {filteredProducts.map((product) => (
                   <div
-                    key={product.id}
+                    key={product.itemId}
                     onClick={() => handleAddToCart(product)}
                     className="bg-white border border-gray-200 p-2 rounded-lg text-center cursor-pointer hover:shadow-lg hover:border-blue-400 hover:-translate-y-1 transition duration-200 flex flex-col"
                   >
@@ -379,9 +379,14 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                     },
                   )
                     .then(() => {
+                      const now = new Date();
+                      const pad = (n) => String(n).padStart(2, "0");
+                      // Format thành chuẩn "YYYY-MM-DDTHH:mm:ss" mà không bị lùi giờ
+                      const localDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
                       const orderPayload = {
                         table: { tableId: selectedTableObj.tableId },
-                        orderDate: new Date().toISOString(),
+                        orderDate: localDateTime,
                         totalAmount: calculatedTotal,
                         status: "Serving",
                       };
@@ -397,7 +402,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                       const itemPromises = cart.map((item) => {
                         const orderItemPayload = {
                           order: { orderId: savedOrder.orderId },
-                          menuItem: { id: item.id },
+                          menuItem: { itemId: item.itemId },
                           quantity: item.qty,
                           subtotal: item.price * item.qty,
                           note: "",
