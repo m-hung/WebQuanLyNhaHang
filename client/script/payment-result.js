@@ -99,7 +99,7 @@ function renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDa
     if (document.getElementById('r-order-id')) document.getElementById('r-order-id').textContent  = txnRef         || '—';
     if (document.getElementById('r-amount')) document.getElementById('r-amount').textContent    = amountFormatted;
     if (document.getElementById('r-bank')) document.getElementById('r-bank').textContent      = bankCode        || '—';
-    if (document.getElementById('r-time')) document.getElementById('r-time').textContent      = payDateFormatted;
+    if (document.getElementById('r-time')) document.getElementById('r-time').textContent      = localStorage.getItem('bk_datetime') || '—';
     if (document.getElementById('r-name')) document.getElementById('r-name').textContent      = name;
     if (document.getElementById('r-table')) document.getElementById('r-table').textContent     = table;
 
