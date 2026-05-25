@@ -196,7 +196,15 @@ function sendConfirmationEmail(params) {
         console.warn('[EmailJS] Không có email khách hàng, bỏ qua.');
         return;
     }
+
+    // ✅ Chống gửi trùng — nếu đã gửi rồi thì bỏ qua
+    if (sessionStorage.getItem('email_sent_' + params.transaction_no)) {
+        console.log('[EmailJS] Email đã gửi trước đó, bỏ qua.');
+        return;
+    }
+    sessionStorage.setItem('email_sent_' + params.transaction_no, '1');
+
     emailjs.send('service_70nli69', 'template_ef816li', params)
-        .then(() => console.log('[EmailJS] Đã gửi email xác nhận cho khách.'))
-        .catch(err => console.error('[EmailJS] Lỗi gửi email:', err));
+        .then(() => console.log('[EmailJS] ✅ Đã gửi email xác nhận cho:', params.customer_email))
+        .catch(err => console.error('[EmailJS] ❌ Lỗi gửi email:', err));
 }
