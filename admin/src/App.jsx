@@ -13,17 +13,17 @@ import InvoiceHistory from "./pages/InvoiceHistory";
 export default function App() {
   const [page, setPage] = React.useState("main_dashboard");
   const [invoices, setInvoices] = useState([]);
+  const [allOrders, setAllOrders] = useState([]);
   const [editingInvoice, setEditingInvoice] = useState(null);
   const [checkoutInvoice, setCheckoutInvoice] = useState(null);
   const [toastMessage, setToastMessage] = useState(null);
 
-  // =========================================================================
-  // 2. THÊM ĐOẠN NÀY VÀO: Tự động tải hóa đơn "Đang phục vụ" khi mở web hoặc F5
-  // =========================================================================
+  // Tự động tải hóa đơn "Đang phục vụ" khi mở web hoặc F5
   useEffect(() => {
     fetch("http://localhost:8080/api/orders")
       .then((res) => res.json())
       .then((data) => {
+        setAllOrders(data);
         // Lọc ra những hóa đơn chưa thanh toán (Đang phục vụ)
         const activeOrders = data.filter((order) => order.status === "Serving");
 
@@ -40,7 +40,7 @@ export default function App() {
         setInvoices(formattedInvoices);
       })
       .catch((err) => console.error("Lỗi khi tải hóa đơn:", err));
-  }, []);
+  }, [page]);
   // =========================================================================
 
   const handleSaveInvoice = (invoiceData) => {
@@ -108,7 +108,7 @@ export default function App() {
           />
         );
       case "statistics":
-        return <Statistics invoices={invoices} />;
+        return <Statistics invoices={allOrders} />;
       case "categories":
         return <Categories />;
       case "foods":

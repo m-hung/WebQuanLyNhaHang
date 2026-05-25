@@ -2,7 +2,6 @@ import React from "react";
 import { Plus } from "lucide-react"; // Import icon dấu cộng
 
 export default function DashBoard({
-  setPage,
   invoices = [],
   onEditInvoice,
   onCreateNew,

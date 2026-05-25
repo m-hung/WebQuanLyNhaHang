@@ -1,6 +1,10 @@
 # Sử dụng JDK để build và chạy ứng dụng
 FROM eclipse-temurin:17-jdk-alpine
 
+# CÀI ĐẶT GÓI TIMEZONE CHO BẢN ALPINE
+RUN apk add --no-cache tzdata
+ENV TZ="Asia/Ho_Chi_Minh"
+
 # Thư mục làm việc trong container
 WORKDIR /app
 
