@@ -86,7 +86,7 @@ export default function Reservations() {
 
       return matchSearch && validStart && validEnd;
     })
-        .sort((a, b) => new Date(a.reservationTime) - new Date(b.reservationTime));
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [reservations, searchTerm, startDate, endDate]);
 
   // PAGINATION
