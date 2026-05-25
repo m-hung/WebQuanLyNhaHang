@@ -225,7 +225,17 @@
           if (blogs.length === 0) {
             container.innerHTML = `
               <div class="blog-empty">
-                <div class="blog-empty-icon">✦</div>
+                <div class="blog-empty-icon">
+                <svg width="72" height="72" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g transform="translate(60,60) rotate(-38)">
+                    <rect x="-6" y="-38" width="12" height="48" rx="4" fill="none" stroke="#c5a880" stroke-width="2"/>
+                    <rect x="-6" y="-38" width="12" height="9" rx="4" fill="#c5a880" opacity="0.5"/>
+                    <polygon points="-6,10 6,10 1,26 -1,26" fill="#c5a880"/>
+                  </g>
+                  <path d="M18,88 Q38,72 60,80 Q82,88 102,70" fill="none" stroke="#c5a880" stroke-width="1.8" stroke-linecap="round"/>
+                  <line x1="18" y1="96" x2="102" y2="96" stroke="#c5a880" stroke-width="0.8" opacity="0.35"/>
+                </svg>
+              </div>
                 <div class="blog-empty-title">Chưa có bài viết nào</div>
                 <div class="blog-empty-sub">Những câu chuyện ẩm thực đang được chuẩn bị.<br>Hãy quay lại sau nhé!</div>
               </div>
