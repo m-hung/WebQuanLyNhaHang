@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 
 export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
-  // Quản lý State cho các ô input
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-
   const [paymentMethod, setPaymentMethod] = useState("Cash");
 
-  // Lấy thời gian hiện tại gộp thẳng vào useState, không dùng useEffect nữa
   const [currentTime] = useState(() => {
     const now = new Date();
-    // Format thời gian theo kiểu Việt Nam: HH:MM - DD/MM/YYYY
     return (
       now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) +
       " - " +
@@ -18,8 +14,10 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
     );
   });
 
-  // Điều kiện để mở khóa nút thanh toán (Phải nhập đủ tên và sđt)
   const isFormValid = customerName.trim() !== "" && customerPhone.trim() !== "";
+
+  // TỰ ĐỘNG CHUẨN HÓA DỮ LIỆU MÓN ĂN
+  const rawItems = invoice?.cart || invoice?.orderItems || [];
 
   return (
     <div className="bg-white p-6 md:p-10 rounded shadow-md max-w-5xl mx-auto mt-4">
@@ -27,7 +25,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
         Thanh toán hóa đơn
       </h2>
 
-      {/* Thông tin chung */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
         <div>
           <h3 className="text-2xl font-medium text-gray-700 mb-2">
@@ -74,7 +71,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
         </div>
       </div>
 
-      {/* Bảng sản phẩm */}
       <div className="mb-8 border rounded overflow-hidden">
         <table className="w-full text-left">
           <thead className="bg-gray-50 border-b">
@@ -90,25 +86,54 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
             </tr>
           </thead>
           <tbody>
-            {/* Render danh sách món ăn từ giỏ hàng */}
-            {invoice?.cart && invoice.cart.length > 0 ? (
-              invoice.cart.map((item, index) => (
-                <tr
-                  key={index}
-                  className="border-b bg-white hover:bg-gray-50 transition"
-                >
-                  <td className="p-3 text-gray-700 font-medium">{item.name}</td>
-                  <td className="p-3 text-gray-600">
-                    {item.price?.toLocaleString()} đ
-                  </td>
-                  <td className="p-3 text-gray-700 text-center font-semibold">
-                    {item.qty}
-                  </td>
-                  <td className="p-3 text-blue-600 font-bold text-right">
-                    {(item.price * item.qty).toLocaleString()} đ
-                  </td>
-                </tr>
-              ))
+            {rawItems.length > 0 ? (
+              rawItems.map((item, index) => {
+                // XỬ LÝ DỮ LIỆU ĐA NGUỒN: DB (menuItem) vs Pos (trực tiếp)
+                const itemName = item.menuItem ? item.menuItem.name : item.name;
+
+                // Lấy giá gốc và giảm giá
+                const basePrice = item.menuItem
+                  ? item.menuItem.price
+                  : item.price;
+                const discount = item.menuItem
+                  ? item.menuItem.discount
+                  : item.discount;
+
+                // Tính giá trị thực tế sau giảm
+                const effectivePrice = Math.max(
+                  0,
+                  (basePrice || 0) - (discount || 0),
+                );
+
+                // Số lượng
+                const itemQty = item.quantity || item.qty;
+
+                // Tổng tiền món (Nếu từ DB thì lấy subtotal, nếu từ Pos thì tự nhân)
+                const itemTotal =
+                  item.subtotal !== undefined
+                    ? item.subtotal
+                    : effectivePrice * itemQty;
+
+                return (
+                  <tr
+                    key={index}
+                    className="border-b bg-white hover:bg-gray-50 transition"
+                  >
+                    <td className="p-3 text-gray-700 font-medium">
+                      {itemName}
+                    </td>
+                    <td className="p-3 text-gray-600">
+                      {effectivePrice.toLocaleString()} đ
+                    </td>
+                    <td className="p-3 text-gray-700 text-center font-semibold">
+                      {itemQty}
+                    </td>
+                    <td className="p-3 text-blue-600 font-bold text-right">
+                      {itemTotal.toLocaleString()} đ
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr className="border-b bg-white">
                 <td colSpan="4" className="p-4 text-center text-gray-400">
@@ -117,7 +142,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
               </tr>
             )}
 
-            {/* Dòng tổng tiền */}
             <tr className="bg-blue-50">
               <td
                 colSpan="3"
@@ -133,7 +157,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
         </table>
       </div>
 
-      {/* Hình thức thanh toán (ĐÃ SỬA onChange VÀ value) */}
       <div className="mb-8 bg-gray-50 p-4 rounded border border-gray-100">
         <h3 className="text-lg font-medium text-gray-700 mb-4">
           Hình thức thanh toán:
@@ -164,7 +187,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
         </div>
       </div>
 
-      {/* Nút hành động */}
       <div className="flex flex-wrap gap-4 justify-end">
         <button
           className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-2.5 rounded font-medium shadow-sm transition"
@@ -181,7 +203,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
           }`}
           disabled={!isFormValid}
           onClick={() => {
-            // LƯU VÀO BẢNG PAYMENTS
             const now = new Date();
             const pad = (n) => String(n).padStart(2, "0");
             const localDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
@@ -201,9 +222,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
               body: JSON.stringify(paymentPayload),
             })
               .then(() => {
-                // ==========================================
-                // BƯỚC 2: ĐỔI TRẠNG THÁI HÓA ĐƠN -> ĐÃ THANH TOÁN
-                // ==========================================
                 return fetch(
                   `http://localhost:8080/api/orders/${invoice?.id}/status`,
                   {
@@ -214,9 +232,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
                 );
               })
               .then(() => {
-                // ==========================================
-                // BƯỚC 3: DỌN BÀN -> TRỐNG
-                // ==========================================
                 return fetch(
                   `http://localhost:8080/api/tables/${invoice?.tableId}/status`,
                   {
@@ -227,9 +242,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
                 );
               })
               .then(() => {
-                // ==========================================
-                // BƯỚC 4: BÁO CHO REACT ẨN HÓA ĐƠN ĐI
-                // ==========================================
                 if (onPaymentSuccess) {
                   onPaymentSuccess(invoice?.id);
                 }

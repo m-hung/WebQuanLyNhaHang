@@ -10,9 +10,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
   ];
 
   const [selectedCashier, setSelectedCashier] = useState(cashiers[0]);
-
   const [availableTables, setAvailableTables] = useState([]);
-
   const [selectedTable, setSelectedTable] = useState(
     editingInvoice ? editingInvoice.tableName : "",
   );
@@ -24,9 +22,14 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
 
-  // ==============================================================
+  // HÀM TÍNH GIÁ ĐÃ GIẢM
+  const getEffectivePrice = (item) => {
+    const basePrice = item.price || 0;
+    const discountAmount = item.discount || 0;
+    return Math.max(0, basePrice - discountAmount);
+  };
+
   // GỌI API LẤY DỮ LIỆU TỪ SPRING BOOT
-  // ==============================================================
   useEffect(() => {
     fetch("http://localhost:8080/api/categories")
       .then((res) => res.json())
@@ -42,12 +45,10 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
     fetch("http://localhost:8080/api/tables")
       .then((res) => res.json())
       .then((data) => {
-        // Đã sửa cho khớp với Entity Java: dùng trường status === 'Trống'
         const freeTables = data.filter((table) => table.status === "Available");
         setAvailableTables(freeTables);
 
         if (freeTables.length > 0 && !editingInvoice) {
-          // Đã sửa: dùng tableNumber thay vì name
           setSelectedTable(freeTables[0].tableNumber);
         }
       })
@@ -56,12 +57,10 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
 
   // HÀM LỌC SẢN PHẨM (TÌM KIẾM + DANH MỤC)
   const filteredProducts = products.filter((product) => {
-    // 1. Lọc theo chữ gõ trong ô tìm kiếm (Không phân biệt hoa/thường)
     const matchSearch = product.name
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
 
-    // 2. Lọc theo nút Danh mục
     const matchCategory =
       selectedCategory === "Tất cả" ||
       (product.category && product.category.name === selectedCategory);
@@ -69,9 +68,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
     return matchSearch && matchCategory;
   });
 
-  // ==============================================================
   // CÁC HÀM XỬ LÝ GIỎ HÀNG
-  // ==============================================================
   const handleAddToCart = (product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.name === product.name);
@@ -101,8 +98,9 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
     setCart((prevCart) => prevCart.filter((item) => item.name !== itemName));
   };
 
+  // SỬA LẠI TÍNH TỔNG TIỀN DỰA TRÊN GIÁ ĐÃ GIẢM
   const calculatedTotal = cart.reduce(
-    (sum, item) => sum + item.price * item.qty,
+    (sum, item) => sum + getEffectivePrice(item) * item.qty,
     0,
   );
 
@@ -154,8 +152,8 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
               <input
                 type="text"
                 placeholder="Tìm kiếm món ăn..."
-                value={searchTerm} // <--- Gắn biến lưu từ khóa vào đây
-                onChange={(e) => setSearchTerm(e.target.value)} // <--- Cập nhật khi gõ phím
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full sm:w-64 border border-gray-300 px-3 py-2 rounded-l outline-none focus:border-blue-500"
               />
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-r transition">
@@ -190,9 +188,25 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                     >
                       {product.name}
                     </p>
-                    <p className="text-blue-600 text-sm font-bold mt-auto">
-                      {product.price ? product.price.toLocaleString() : 0} đ
-                    </p>
+
+                    {/* XỬ LÝ GIAO DIỆN HIỂN THỊ GIẢM GIÁ */}
+                    <div className="flex flex-col items-center mt-auto">
+                      {product.discount > 0 ? (
+                        <>
+                          <p className="text-gray-400 text-[10px] line-through">
+                            {product.price ? product.price.toLocaleString() : 0}{" "}
+                            đ
+                          </p>
+                          <p className="text-red-600 text-sm font-bold">
+                            {getEffectivePrice(product).toLocaleString()} đ
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-blue-600 text-sm font-bold">
+                          {product.price ? product.price.toLocaleString() : 0} đ
+                        </p>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -241,7 +255,8 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                             {item.name}
                           </p>
                           <p className="text-xs text-gray-400 mt-0.5">
-                            {item.price.toLocaleString()}đ
+                            {/* MỚI THÊM: SỬA LẠI GIÁ BÁN HIỂN THỊ TRONG GIỎ HÀNG */}
+                            {getEffectivePrice(item).toLocaleString()}đ
                           </p>
                         </td>
                         <td className="p-3">
@@ -264,7 +279,11 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                           </div>
                         </td>
                         <td className="p-3 text-right font-bold text-blue-600">
-                          {(item.price * item.qty).toLocaleString()}đ
+                          {}
+                          {(
+                            getEffectivePrice(item) * item.qty
+                          ).toLocaleString()}
+                          đ
                         </td>
                         <td className="p-3 text-center">
                           <button
@@ -331,21 +350,18 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                 onChange={(e) => setSelectedTable(e.target.value)}
                 disabled={isTableFull}
               >
-                {/* 1. Luôn hiển thị bàn hiện tại trên cùng (nếu đang sửa) */}
                 {editingInvoice && (
                   <option value={editingInvoice.tableName}>
                     {editingInvoice.tableName} (Bàn hiện tại)
                   </option>
                 )}
 
-                {/* 2. Đổ thêm danh sách các bàn trống ở dưới để có thể chọn đổi */}
                 {availableTables.map((table) => (
                   <option key={table.tableId} value={table.tableNumber}>
                     {table.tableNumber}
                   </option>
                 ))}
 
-                {/* 3. Nếu hết bàn trống và không phải đang sửa */}
                 {availableTables.length === 0 && !editingInvoice && (
                   <option value="">Hết bàn trống</option>
                 )}
@@ -367,9 +383,6 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                 );
 
                 if (selectedTableObj && !editingInvoice) {
-                  // ==========================================================
-                  // TẠO MỚI HÓA ĐƠN
-                  // ==========================================================
                   fetch(
                     `http://localhost:8080/api/tables/${selectedTableObj.tableId}/status`,
                     {
@@ -381,7 +394,6 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                     .then(() => {
                       const now = new Date();
                       const pad = (n) => String(n).padStart(2, "0");
-                      // Format thành chuẩn "YYYY-MM-DDTHH:mm:ss" mà không bị lùi giờ
                       const localDateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 
                       const orderPayload = {
@@ -398,13 +410,13 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                       }).then((res) => res.json());
                     })
                     .then((savedOrder) => {
-                      // Đã gom chung .then này lại để biến savedOrder không bị mất tích
                       const itemPromises = cart.map((item) => {
                         const orderItemPayload = {
                           order: { orderId: savedOrder.orderId },
                           menuItem: { itemId: item.itemId },
                           quantity: item.qty,
-                          subtotal: item.price * item.qty,
+                          // MỚI THÊM: LƯU TỔNG TIỀN MÓN ĂN XUỐNG DB DỰA TRÊN GIÁ ĐÃ GIẢM
+                          subtotal: getEffectivePrice(item) * item.qty,
                           note: "",
                         };
 
@@ -415,7 +427,6 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                         });
                       });
 
-                      // Đợi lưu xong món ăn thì mới gọi onSaveInvoice
                       return Promise.all(itemPromises).then(() => {
                         if (onSaveInvoice) {
                           onSaveInvoice({
@@ -424,7 +435,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                             tableName: selectedTable,
                             totalPrice: calculatedTotal,
                             cart: cart,
-                            cashierName: selectedCashier, // Đã có tên thu ngân
+                            cashierName: selectedCashier,
                           });
                         }
                       });
@@ -436,15 +447,10 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                       );
                     });
                 } else {
-                  // ==========================================================
-                  // CẬP NHẬT HÓA ĐƠN CŨ (Dọn bàn cũ, Khóa bàn mới, Cập nhật Order DB)
-                  // ==========================================================
                   if (onSaveInvoice) {
-                    // Lấy ID bàn cũ
                     const oldTableId =
                       editingInvoice.tableId || editingInvoice.table?.tableId;
 
-                    // Tìm ID bàn mới
                     const newTableObj = availableTables.find(
                       (t) => t.tableNumber === selectedTable,
                     );
@@ -452,15 +458,12 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                       ? newTableObj.tableId
                       : oldTableId;
 
-                    // Gói hàng để báo Spring Boot cập nhật lại bảng 'orders'
                     const updateOrderPayload = {
                       table: { tableId: finalTableId },
                       totalAmount: calculatedTotal,
                     };
 
-                    // NẾU CÓ ĐỔI BÀN MỚI
                     if (oldTableId !== finalTableId && newTableObj) {
-                      // Bước 1: Nhả bàn cũ về Trống
                       fetch(
                         `http://localhost:8080/api/tables/${oldTableId}/status`,
                         {
@@ -470,7 +473,6 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                         },
                       )
                         .then(() => {
-                          // Bước 2: Khóa bàn mới
                           return fetch(
                             `http://localhost:8080/api/tables/${finalTableId}/status`,
                             {
@@ -481,7 +483,6 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                           );
                         })
                         .then(() => {
-                          // Bước 3: Cầm HÓA ĐƠN sang gắn vào BÀN MỚI trong Database (API vừa viết)
                           return fetch(
                             `http://localhost:8080/api/orders/${editingInvoice.id}`,
                             {
@@ -492,7 +493,6 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                           );
                         })
                         .then(() => {
-                          // Bước 4: Về trang chủ Dashboard
                           onSaveInvoice({
                             id: editingInvoice.id,
                             tableId: finalTableId,
@@ -505,10 +505,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
                         .catch((err) =>
                           console.error("Lỗi khi chuyển bàn:", err),
                         );
-                    }
-                    // NẾU KHÔNG ĐỔI BÀN (Chỉ thêm/bớt món ăn)
-                    else {
-                      // Chỉ cần cập nhật lại giá tiền vào bảng orders là xong
+                    } else {
                       fetch(
                         `http://localhost:8080/api/orders/${editingInvoice.id}`,
                         {

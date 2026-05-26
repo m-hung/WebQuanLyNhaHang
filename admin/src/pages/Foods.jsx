@@ -224,7 +224,7 @@ export default function Foods() {
               <div className="flex items-center gap-3">
                 <div className="w-2 h-8 bg-red-600 rounded-full"></div>
                 <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">
-                  {editingId ? "Sửa mon an" : "Thêm món ăn moi"}
+                  {editingId ? "Sửa món ăn" : "Thêm món ăn mới"}
                 </h2>
               </div>
               <button onClick={() => setIsModalOpen(false)} className="bg-gray-100 text-gray-500 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-2 border border-transparent hover:border-red-100">
@@ -279,7 +279,7 @@ export default function Foods() {
                 </div>
 
                 <button onClick={handleSave} className="w-full lg:w-auto bg-blue-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-200 active:scale-95 hover:-translate-y-0.5 transition-all">
-                  {editingId ? "Cập nhật món ăn +" : "Thêm món ăn vao he thong +"}
+                  {editingId ? "Cập nhật món ăn +" : "Thêm món ăn vào hệ thống +"}
                 </button>
               </div>
 
