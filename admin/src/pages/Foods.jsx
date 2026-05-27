@@ -69,17 +69,40 @@ export default function Foods() {
     }
   };
 
+  // Hàm chặn phím âm (-) và ký tự đặc biệt trong input number
+  const blockInvalidChar = (e) => ['e', 'E', '-', '+'].includes(e.key) && e.preventDefault();
+
   const handleSave = async () => {
     if (!formData.name || !formData.price) {
       alert("Vui lòng nhập tên và giá món ăn");
       return;
     }
 
+    // Kiểm tra tên không chứa số trước khi lưu
+    if (/\d/.test(formData.name)) {
+      alert("Tên món ăn không được chứa ký tự số!");
+      return;
+    }
+
+    const priceNum = parseFloat(formData.price) || 0;
+    const discountNum = parseFloat(formData.discount) || 0;
+
+    if (priceNum < 0 || discountNum < 0) {
+      alert("Giá tiền không được để số âm!");
+      return;
+    }
+
+    // Ràng buộc: Giá giảm không được lớn hơn giá gốc
+    if (discountNum > priceNum) {
+      alert("Giá giảm không được lớn hơn giá niêm yết!");
+      return;
+    }
+
     const payload = {
-      name: formData.name,
+      name: formData.name.trim(),
       description: formData.description,
-      price: parseFloat(formData.price) || 0,
-      discount: parseFloat(formData.discount) || 0,
+      price: priceNum,
+      discount: discountNum,
       imageUrl: formData.imageUrl,
       isAvailable: formData.isAvailable,
       category: formData.category ? { categoryId: formData.category.categoryId } : null
@@ -183,34 +206,18 @@ export default function Foods() {
                 <td className="p-4 text-center font-bold text-green-600">{food.discount ? Number(food.discount).toLocaleString("vi-VN") + " VND" : "Không có"}</td>
                 <td className="p-4">
                   <div className="flex items-center justify-center gap-2">
-                    <button
-                      onClick={() => handleEdit(food)}
-                      className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-lg text-sm font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all shadow-sm"
-                    >
-                      Sửa
-                    </button>
+                    <button onClick={() => handleEdit(food)} className="bg-blue-50 text-blue-600 px-4 py-1.5 rounded-lg text-sm font-bold border border-blue-100 hover:bg-blue-600 hover:text-white transition-all shadow-sm">Sửa</button>
                     <button
                       onClick={() => toggleAvailable(food)}
-                      className={`${food.isAvailable
-                        ? 'bg-orange-50 text-orange-600 border-orange-100 hover:bg-orange-600'
-                        : 'bg-green-50 text-green-600 border-green-100 hover:bg-green-600'
-                      } px-4 py-1.5 rounded-lg text-sm font-bold border transition-all hover:text-white shadow-sm`}
+                      className={`${food.isAvailable ? 'bg-orange-50 text-orange-600 border-orange-100 hover:bg-orange-600' : 'bg-green-50 text-green-600 border-green-100 hover:bg-green-600'} px-4 py-1.5 rounded-lg text-sm font-bold border transition-all hover:text-white shadow-sm`}
                     >
                       {food.isAvailable ? "Ẩn" : "Hiện"}
                     </button>
-                    <button
-                      onClick={() => handleDelete(food.itemId)}
-                      className="bg-red-50 text-red-500 px-4 py-1.5 rounded-lg text-sm font-bold border border-red-100 hover:bg-red-500 hover:text-white transition-all shadow-sm"
-                    >
-                      Xóa
-                    </button>
+                    <button onClick={() => handleDelete(food.itemId)} className="bg-red-50 text-red-500 px-4 py-1.5 rounded-lg text-sm font-bold border border-red-100 hover:bg-red-500 hover:text-white transition-all shadow-sm">Xóa</button>
                   </div>
                 </td>
               </tr>
             ))}
-            {foods.length === 0 && (
-              <tr><td colSpan="5" className="p-10 text-center text-gray-400">Không có món ăn nào.</td></tr>
-            )}
           </tbody>
         </table>
       </div>
@@ -219,37 +226,31 @@ export default function Foods() {
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" onClick={() => setIsModalOpen(false)}></div>
           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[90vh]">
-
             <div className="flex justify-between items-center p-6 border-b bg-white">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-8 bg-red-600 rounded-full"></div>
-                <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">
-                  {editingId ? "Sửa món ăn" : "Thêm món ăn mới"}
-                </h2>
+                <h2 className="text-2xl font-black text-gray-800 uppercase tracking-tight">{editingId ? "Sửa món ăn" : "Thêm món ăn mới"}</h2>
               </div>
-              <button onClick={() => setIsModalOpen(false)} className="bg-gray-100 text-gray-500 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-2 border border-transparent hover:border-red-100">
-                <span>✕</span> Đóng
-              </button>
+              <button onClick={() => setIsModalOpen(false)} className="bg-gray-100 text-gray-500 px-4 py-2 rounded-xl text-sm font-bold hover:bg-red-50 hover:text-red-600 transition-all flex items-center gap-2 border border-transparent hover:border-red-100">✕ Đóng</button>
             </div>
 
             <div className="p-8 bg-gray-50/50 grid grid-cols-1 lg:grid-cols-3 gap-8 overflow-y-auto">
-
               <div className="lg:col-span-2 space-y-6">
                 <div className="bg-white p-7 rounded-2xl border border-gray-100 shadow-sm grid grid-cols-2 gap-6 relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-12 -mt-12"></div>
-
                   <div className="col-span-1 relative">
                     <label className="block text-xs font-black text-blue-600 mb-2 uppercase tracking-widest">Tên món ăn <span className="text-red-500">*</span></label>
-                    <input type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 bg-white outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all placeholder:text-gray-300" placeholder="Nhập tên món ăn..." />
+                    <input 
+                      type="text" 
+                      value={formData.name} 
+                      onChange={(e) => setFormData({...formData, name: e.target.value.replace(/\d/g, "")})} 
+                      className="w-full border border-gray-200 rounded-xl p-3 bg-white outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all" 
+                      placeholder="Nhập tên (không chứa số)..." 
+                    />
                   </div>
 
                   <div className="col-span-1">
                     <label className="block text-xs font-black text-gray-400 mb-2 uppercase tracking-widest">Trạng thái hiển thị</label>
-                    <select
-                      value={formData.isAvailable ? "true" : "false"}
-                      onChange={(e) => setFormData({...formData, isAvailable: e.target.value === "true"})}
-                      className="w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-4 focus:ring-gray-100 bg-white font-medium cursor-pointer"
-                    >
+                    <select value={formData.isAvailable ? "true" : "false"} onChange={(e) => setFormData({...formData, isAvailable: e.target.value === "true"})} className="w-full border border-gray-200 rounded-xl p-3 outline-none bg-white font-medium cursor-pointer">
                       <option value="true">Hiển thị ngay</option>
                       <option value="false">Tạm thời ẩn</option>
                     </select>
@@ -274,60 +275,59 @@ export default function Foods() {
 
                   <div className="col-span-2">
                     <label className="block text-xs font-black text-gray-400 mb-2 uppercase tracking-widest">Mô tả món ăn</label>
-                    <textarea rows="4" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-4 focus:ring-gray-100 bg-white transition-all" placeholder="Thành phần chính, hương vị, cách chế biến..."></textarea>
+                    <textarea rows="4" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-4 focus:ring-gray-100 bg-white transition-all" placeholder="Thành phần chính, hương vị..."></textarea>
                   </div>
                 </div>
 
-                <button onClick={handleSave} className="w-full lg:w-auto bg-blue-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg shadow-blue-200 active:scale-95 hover:-translate-y-0.5 transition-all">
+                <button onClick={handleSave} className="w-full lg:w-auto bg-blue-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 shadow-lg active:scale-95 transition-all">
                   {editingId ? "Cập nhật món ăn +" : "Thêm món ăn vào hệ thống +"}
                 </button>
               </div>
 
               <div className="lg:col-span-1 space-y-6">
                 <div className="bg-white p-7 rounded-2xl border border-gray-100 shadow-sm">
-                  <h3 className="text-xs font-black text-gray-400 mb-4 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span> Thông tin giá
-                  </h3>
+                  <h3 className="text-xs font-black text-gray-400 mb-4 uppercase tracking-widest border-b pb-2 flex items-center gap-2">Thông tin giá</h3>
                   <div className="space-y-4">
                     <div>
                       <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase">Giá niêm yết (VNĐ) <span className="text-red-500">*</span></label>
-                      <input type="number" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full border border-gray-200 rounded-xl p-3 font-black text-lg focus:ring-4 focus:ring-green-50/50 outline-none transition-all" placeholder="0" />
+                      <input 
+                        type="number" 
+                        min="0"
+                        onKeyDown={blockInvalidChar} 
+                        value={formData.price} 
+                        onChange={(e) => setFormData({...formData, price: e.target.value})} 
+                        className="w-full border border-gray-200 rounded-xl p-3 font-black text-lg focus:ring-4 focus:ring-green-50/50 outline-none" 
+                        placeholder="0" 
+                      />
                     </div>
                     <div>
                       <label className="block text-[10px] font-bold text-green-600 mb-1 uppercase">Giảm giá (Nếu có)</label>
-                      <input type="number" value={formData.discount} onChange={(e) => setFormData({...formData, discount: e.target.value})} className="w-full border border-green-100 bg-green-50/20 rounded-xl p-3 font-black text-lg text-green-600 outline-none focus:ring-4 focus:ring-green-100 transition-all" placeholder="0" />
+                      <input 
+                        type="number" 
+                        min="0"
+                        onKeyDown={blockInvalidChar} 
+                        value={formData.discount} 
+                        onChange={(e) => setFormData({...formData, discount: e.target.value})} 
+                        className="w-full border border-green-100 bg-green-50/20 rounded-xl p-3 font-black text-lg text-green-600 outline-none focus:ring-4 focus:ring-green-100" 
+                        placeholder="0" 
+                      />
                     </div>
                   </div>
                 </div>
 
                 <div className="bg-white p-7 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
-                  <h3 className="text-xs font-black text-red-600 mb-4 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></span> Hình ảnh hiển thị
-                  </h3>
-                  <div
-                    className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-blue-50 hover:border-blue-300 transition-all cursor-pointer group"
-                    onClick={() => fileInputRef.current.click()}
-                  >
+                  <h3 className="text-xs font-black text-red-600 mb-4 uppercase tracking-widest border-b pb-2 flex items-center gap-2">Hình ảnh hiển thị</h3>
+                  <div className="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center hover:bg-blue-50 cursor-pointer group" onClick={() => fileInputRef.current.click()}>
                     {formData.imageUrl ? (
-                      <div className="relative group">
-                        <img src={formData.imageUrl} alt="Preview" className="w-full h-32 object-cover rounded-xl mb-2 shadow-md" />
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <span className="bg-white/90 text-blue-600 px-3 py-1 rounded-full text-xs font-bold shadow-sm">Đổi ảnh</span>
-                        </div>
-                      </div>
+                      <img src={formData.imageUrl} alt="Preview" className="w-full h-32 object-cover rounded-xl shadow-md" />
                     ) : (
-                      <div className="flex flex-col items-center py-4">
-                        <div className="w-14 h-14 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-3 shadow-inner">
-                          <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                        </div>
-                        <span className="bg-gray-900 text-white px-5 py-2 rounded-xl text-xs font-bold mb-1 shadow-md">Tải ảnh lên</span>
-                        <p className="text-[10px] text-gray-400 font-medium italic mt-2">Định dạng JPG, PNG (Tối đa 5MB)</p>
-                      </div>
+                      <div className="flex flex-col items-center py-4 text-gray-400 text-xs">Tải ảnh lên</div>
                     )}
                     <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
                   </div>
-
-                  <div className="mt-4">
+                  
+                  {/* PHẦN LINK ẢNH CỦA BẠN Ở ĐÂY */}
+                  <div className="mt-4 pt-4 border-t border-gray-100">
                     <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase">Hoặc dán URL hình ảnh</label>
                     <input
                       type="text"

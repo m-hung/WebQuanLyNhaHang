@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+    // === CÁC BIẾN CỦA BẠN ===
     const bookingForm = document.getElementById('booking-form');
     const btnFind = document.getElementById('btn-find-table');
     const btnConfirm = document.getElementById('btn-confirm-final');
@@ -10,21 +10,64 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookTime = document.getElementById('book-time');
     const bookGuests = document.getElementById('book-guests');
 
+    const custName = document.getElementById('cust-name');
+    const custPhone = document.getElementById('cust-phone');
+    const custEmail = document.getElementById('cust-email');
+
     let selectedTableId = null;
     let selectedTableName = null;
     let selectedTableNum = null;
     let selectedTableCap = null;
+
+    // === 1. RÀNG BUỘC NGÀY GIỜ (CHẶN QUÁ KHỨ) ===
+    const today = new Date().toISOString().split('T')[0];
+    bookDate.setAttribute('min', today); // Chặn chọn ngày cũ trên lịch
+
+    const checkTimeValidity = () => {
+        const now = new Date();
+        if (bookDate.value && bookTime.value) {
+            const selectedDateTime = new Date(`${bookDate.value}T${bookTime.value}:00`);
+            if (selectedDateTime < now) {
+                alert("Bạn không thể chọn thời gian trong quá khứ!");
+                bookTime.value = ""; 
+            }
+        }
+    };
+
+    bookDate.addEventListener('change', checkTimeValidity);
+    bookTime.addEventListener('change', checkTimeValidity);
+
+    // === 2. RÀNG BUỘC NHẬP LIỆU (CHẶN NGAY KHI GÕ) ===
+    
+    // Tên: Không số, không ký tự đặc biệt
+    custName.addEventListener('input', (e) => {
+        const regex = /[^a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÂÊÔƠƯ \s]/g;
+        e.target.value = e.target.value.replace(regex, '');
+    });
+
+    // SĐT: Chỉ số và dấu +, dài 8-15
+    custPhone.addEventListener('input', (e) => {
+        e.target.value = e.target.value.replace(/(?!^\+)[^\d]/g, '');
+        if (e.target.value.length > 15) e.target.value = e.target.value.slice(0, 15);
+    });
+
+    // Email: Kiểm tra đuôi @gmail.com khi rời ô nhập
+    custEmail.addEventListener('blur', (e) => {
+        const val = e.target.value.trim();
+        if (val !== "" && !val.toLowerCase().endsWith("@gmail.com")) {
+            alert("Email bắt buộc phải có đuôi @gmail.com");
+            e.target.value = "";
+        }
+    });
+
+    // === 3. LOGIC XỬ LÝ GỐC CỦA BẠN ===
 
     function generateOrderId() {
         return "CH" + Date.now().toString(36).toUpperCase();
     }
 
     function validateSearchInputs() {
-        const date = bookDate?.value;
-        const time = bookTime?.value;
-        const guests = bookGuests?.value;
-
-        if (date && time && guests) {
+        if (bookDate?.value && bookTime?.value && bookGuests?.value) {
             btnFind.disabled = false;
             btnFind.classList.remove('disabled');
         } else {
@@ -33,118 +76,82 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    bookDate?.addEventListener('change', validateSearchInputs);
-    bookTime?.addEventListener('change', validateSearchInputs);
-    bookGuests?.addEventListener('change', validateSearchInputs);
+    [bookDate, bookTime, bookGuests].forEach(el => el?.addEventListener('change', validateSearchInputs));
 
     if (btnConfirm) btnConfirm.disabled = true;
 
-    /**
-     * TÌM BÀN TRỐNG — gọi API mới /api/tables/available?datetime=...&guests=...
-     * Thay vì GET /api/tables (lấy tất cả, không lọc lịch)
-     */
     btnFind?.addEventListener('click', async () => {
         if (btnFind.disabled) return;
-
-        const currentLng = localStorage.getItem('selected_language') || 'vi';
-
-        // Reset lựa chọn bàn cũ mỗi lần tìm lại
-        selectedTableId = null;
-        selectedTableName = null;
-        selectedTableNum = null;
-        selectedTableCap = null;
-        if (btnConfirm) {
-            btnConfirm.disabled = true;
-            btnConfirm.classList.add('disabled');
+        
+        // Kiểm tra độ dài SĐT trước khi truy vấn
+        if (custPhone.value.length < 8) {
+            alert("Số điện thoại phải từ 8 đến 15 số.");
+            return;
         }
 
+        const currentLng = localStorage.getItem('selected_language') || 'vi';
+        selectedTableId = null; 
+        if (btnConfirm) btnConfirm.disabled = true;
+
         const requestedGuests = parseInt(bookGuests.value);
+        const datetimeParam = `${bookDate.value}T${bookTime.value}:00`;
 
-        // === SỬA: Build datetime đúng format ISO để gửi lên backend ===
-        const datetimeParam = `${bookDate.value}T${bookTime.value}:00`; // "2025-07-20T19:00:00"
-
-        btnFind.innerHTML = currentLng === 'en'
-            ? '<span class="loading-dots">Querying SQL...</span>'
-            : '<span class="loading-dots">Đang truy vấn SQL...</span>';
+        btnFind.innerHTML = currentLng === 'en' ? 'Querying...' : 'Đang truy vấn SQL...';
 
         try {
-            // === THAY ĐỔI CHÍNH: Gọi /api/tables/available thay vì /api/tables ===
             const url = `http://localhost:8080/api/tables/available?datetime=${encodeURIComponent(datetimeParam)}&guests=${requestedGuests}`;
             const response = await fetch(url);
-
             if (!response.ok) throw new Error('Kết nối thất bại');
 
-            const availableTables = await response.json(); // Backend đã lọc sẵn — chỉ bàn trống
+            const availableTables = await response.json();
             tableList.innerHTML = '';
 
             if (availableTables.length === 0) {
-                tableList.innerHTML = currentLng === 'en'
-                    ? '<p style="color: #888; width: 100%; text-align: center;">Sorry, no suitable table available at this time.</p>'
-                    : '<p style="color: #888; width: 100%; text-align: center;">Rất tiếc, không còn bàn trống phù hợp vào khung giờ này.</p>';
+                tableList.innerHTML = `<p style="width: 100%; text-align: center; color: #888;">${currentLng === 'en' ? 'No table available.' : 'Không còn bàn trống.'}</p>`;
             } else {
                 availableTables.forEach(table => {
                     const btn = document.createElement('button');
                     btn.type = 'button';
                     btn.className = 'table-select';
-
                     const tableNum = table.tableNumber || table.table_number || "N/A";
                     const cap = table.capacity || table.table_capacity || 0;
-                    const id = table.tableId;  // TableEntity dùng field "tableId"
-
-                    btn.setAttribute('data-table-num', tableNum);
-                    btn.setAttribute('data-table-cap', cap);
-
-                    btn.innerText = currentLng === 'en'
-                        ? `Table ${tableNum} (Capacity: ${cap})`
-                        : `Bàn ${tableNum} (Sức chứa: ${cap})`;
+                    
+                    btn.innerText = currentLng === 'en' ? `Table ${tableNum} (Cap: ${cap})` : `Bàn ${tableNum} (Sức chứa: ${cap})`;
 
                     btn.onclick = () => {
                         document.querySelectorAll('.table-select').forEach(b => b.classList.remove('active'));
                         btn.classList.add('active');
-
-                        selectedTableId = id;
+                        selectedTableId = table.tableId;
                         selectedTableNum = tableNum;
                         selectedTableCap = cap;
-
-                        const freshLng = localStorage.getItem('selected_language') || 'vi';
-                        selectedTableName = freshLng === 'en'
-                            ? `Table ${tableNum} (Capacity: ${cap})`
-                            : `Bàn ${tableNum} (Sức chứa: ${cap})`;
-
+                        selectedTableName = btn.innerText;
                         btnConfirm.disabled = false;
                         btnConfirm.classList.remove('disabled');
                     };
-
                     tableList.appendChild(btn);
                 });
             }
-
             availableSection.style.display = 'block';
             window.scrollTo({ top: availableSection.offsetTop - 100, behavior: 'smooth' });
-
         } catch (error) {
-            console.error("Lỗi:", error);
-            alert(currentLng === 'en' ? "Backend connection error." : "Lỗi kết nối Backend.");
+            alert("Lỗi kết nối Backend.");
         } finally {
             btnFind.innerText = currentLng === 'en' ? 'Find Table' : 'Tìm bàn';
         }
     });
 
-    /**
-     * XÁC NHẬN ĐẶT BÀN → chuyển sang trang thanh toán
-     */
     if (bookingForm) {
         bookingForm.addEventListener('submit', (e) => {
             e.preventDefault();
-
             const currentLng = localStorage.getItem('selected_language') || 'vi';
             const orderId = generateOrderId();
             const fullReservationTime = `${bookDate.value}T${bookTime.value}:00`;
 
+            // Lưu dữ liệu vào LocalStorage để sang trang payment
             localStorage.setItem('bk_order_id', orderId);
-            localStorage.setItem('bk_name', document.getElementById('cust-name').value);
-            localStorage.setItem('bk_phone', document.getElementById('cust-phone').value);
-            localStorage.setItem('bk_email', document.getElementById('cust-email').value);
+            localStorage.setItem('bk_name', custName.value);
+            localStorage.setItem('bk_phone', custPhone.value);
+            localStorage.setItem('bk_email', custEmail.value);
             localStorage.setItem('bk_reservationTime', fullReservationTime);
             localStorage.setItem('bk_guests', bookGuests.value);
             localStorage.setItem('bk_table', selectedTableName);
@@ -161,8 +168,8 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('bk_datetime', datetimeDisplay);
 
             const params = new URLSearchParams({
-                name: document.getElementById('cust-name').value,
-                phone: document.getElementById('cust-phone').value,
+                name: custName.value,
+                phone: custPhone.value,
                 datetime: datetimeDisplay,
                 guests: bookGuests.value,
                 table: selectedTableName
