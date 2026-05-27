@@ -15,7 +15,7 @@ export default function Sidebar({ setPage }) {
   const [isOpen, setIsOpen] = React.useState(false); // Trạng thái đóng/mở menu trên mobile
 
   const menuItems = [
-    { id: "main_dashboard", label: "Dashboard", icon: <Home size={20} /> },
+    { id: "main_dashboard", label: "Quản lý bàn", icon: <Home size={20} /> },
     {
       id: "statistics",
       label: "Thống kê",

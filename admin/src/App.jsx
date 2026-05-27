@@ -16,6 +16,7 @@ export default function App() {
   const [allOrders, setAllOrders] = useState([]);
   const [editingInvoice, setEditingInvoice] = useState(null);
   const [checkoutInvoice, setCheckoutInvoice] = useState(null);
+  const [selectedTableToCreate, setSelectedTableToCreate] = useState("");
   const [toastMessage, setToastMessage] = useState(null);
 
   // Tự động tải hóa đơn "Đang phục vụ" khi mở web hoặc F5
@@ -34,7 +35,17 @@ export default function App() {
           tableName: order.table?.tableNumber,
           totalPrice: order.totalAmount,
           cashierName: order.cashierName || "Thu ngân",
-          cart: order.orderItems || [],
+          cart: (order.orderItems || []).map((item) => {
+            const menuItem = item.menuItem || {};
+            return {
+              itemId: menuItem.itemId || item.itemId,
+              name: menuItem.name || item.name || "",
+              price: menuItem.price || item.price || 0,
+              discount: menuItem.discount || item.discount || 0,
+              imageUrl: menuItem.imageUrl || item.imageUrl || "",
+              qty: item.quantity || item.qty || 1,
+            };
+          }),
         }));
 
         setInvoices(formattedInvoices);
@@ -62,8 +73,9 @@ export default function App() {
     setPage("pos");
   };
 
-  const handleCreateNew = () => {
+  const handleCreateNew = (tableNumber) => {
     setEditingInvoice(null);
+    setSelectedTableToCreate(tableNumber || "");
     setPage("pos");
   };
 
@@ -95,6 +107,7 @@ export default function App() {
             setPage={setPage}
             onSaveInvoice={handleSaveInvoice}
             editingInvoice={editingInvoice}
+            initialTableNumber={selectedTableToCreate}
           />
         );
       case "main_dashboard":

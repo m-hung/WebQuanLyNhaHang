@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Search, Plus, Minus, Trash2, AlertCircle } from "lucide-react";
 
-export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
+export default function Pos({
+  setPage,
+  onSaveInvoice,
+  editingInvoice,
+  initialTableNumber,
+}) {
   const cashiers = [
     "Nguyễn Thanh Huy",
     "Nguyễn Thành Huy",
@@ -12,10 +17,24 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
   const [selectedCashier, setSelectedCashier] = useState(cashiers[0]);
   const [availableTables, setAvailableTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(
-    editingInvoice ? editingInvoice.tableName : "",
+    editingInvoice ? editingInvoice.tableName : initialTableNumber || "",
   );
 
-  const [cart, setCart] = useState(editingInvoice?.cart || []);
+  const normalizeCartItem = (item) => {
+    const menuItem = item.menuItem || {};
+    return {
+      itemId: menuItem.itemId || item.itemId,
+      name: menuItem.name || item.name || "",
+      price: menuItem.price || item.price || 0,
+      discount: menuItem.discount || item.discount || 0,
+      imageUrl: menuItem.imageUrl || item.imageUrl || "",
+      qty: item.quantity || item.qty || 1,
+    };
+  };
+
+  const [cart, setCart] = useState(
+    (editingInvoice?.cart || []).map(normalizeCartItem),
+  );
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
 
@@ -48,12 +67,12 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice }) {
         const freeTables = data.filter((table) => table.status === "Available");
         setAvailableTables(freeTables);
 
-        if (freeTables.length > 0 && !editingInvoice) {
+        if (freeTables.length > 0 && !editingInvoice && !initialTableNumber) {
           setSelectedTable(freeTables[0].tableNumber);
         }
       })
       .catch((err) => console.error("Lỗi lấy bàn:", err));
-  }, [editingInvoice]);
+  }, [editingInvoice, initialTableNumber]);
 
   // HÀM LỌC SẢN PHẨM (TÌM KIẾM + DANH MỤC)
   const filteredProducts = products.filter((product) => {
