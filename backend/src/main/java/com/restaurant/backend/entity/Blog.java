@@ -14,8 +14,12 @@ public class Blog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long blogId;
 
-    @Column(nullable = false, length = 255)
-    private String title;
+    // --- TIÊU ĐỀ ĐA NGÔN NGỮ ---
+    @Column(name = "title_vi", nullable = false, length = 255)
+    private String titleVi;
+
+    @Column(name = "title_en", nullable = false, length = 255)
+    private String titleEn;
 
     @Column(nullable = false, unique = true, length = 255)
     private String slug;
@@ -23,11 +27,19 @@ public class Blog {
     @Column(name = "img_url", length = 500)
     private String imgUrl;
 
-    @Column(columnDefinition = "TEXT")
-    private String summary;
+    // --- TÓM TẮT ĐA NGÔN NGỮ ---
+    @Column(name = "summary_vi", columnDefinition = "TEXT")
+    private String summaryVi;
 
-    @Column(nullable = false, columnDefinition = "LONGTEXT") // Dùng LONGTEXT để chứa nội dung bài viết dài có dấu
-    private String content;
+    @Column(name = "summary_en", columnDefinition = "TEXT")
+    private String summaryEn;
+
+    // --- NỘI DUNG ĐA NGÔN NGỮ ---
+    @Column(name = "content_vi", nullable = false, columnDefinition = "LONGTEXT")
+    private String contentVi;
+
+    @Column(name = "content_en", nullable = false, columnDefinition = "LONGTEXT")
+    private String contentEn;
 
     @Column(name = "author_name", nullable = false, length = 100)
     private String authorName;

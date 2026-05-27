@@ -29,7 +29,9 @@ public class CategoryController {
     @PutMapping("/{id}")
     public Category updateCategory(@PathVariable Long id, @RequestBody Category categoryDetails) {
         return categoryRepository.findById(id).map(category -> {
-            category.setName(categoryDetails.getName());
+            // Cập nhật cả 2 trường tên mới
+            category.setNameVi(categoryDetails.getNameVi());
+            category.setNameEn(categoryDetails.getNameEn());
             category.setActive(categoryDetails.isActive());
             return categoryRepository.save(category);
         }).orElseThrow(() -> new RuntimeException("Không tìm thấy ID: " + id));

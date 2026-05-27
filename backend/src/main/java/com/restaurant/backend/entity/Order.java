@@ -24,6 +24,10 @@ public class Order {
 
     private LocalDateTime orderDate;
     private BigDecimal totalAmount;
+    
+    // Thêm thuộc tính VAT để lưu số tiền thuế hoặc phần trăm thuế
+    private BigDecimal vat; 
+    
     private String status; // Đang phục vụ, Đã thanh toán, Đã hủy
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
@@ -34,6 +38,10 @@ public class Order {
     protected void onCreate() {
         if (this.orderDate == null) {
             this.orderDate = LocalDateTime.now();
+        }
+        // Bạn có thể set giá trị mặc định cho VAT tại đây nếu cần (Ví dụ: mặc định là 0)
+        if (this.vat == null) {
+            this.vat = BigDecimal.ZERO;
         }
     }
 }
