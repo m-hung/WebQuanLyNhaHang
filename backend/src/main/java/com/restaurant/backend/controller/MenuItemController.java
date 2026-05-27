@@ -34,13 +34,21 @@ public class MenuItemController {
     @PutMapping("/{id}")
     public MenuItem updateMenuItem(@PathVariable Long id, @RequestBody MenuItem menuItemDetails) {
         return menuItemRepository.findById(id).map(item -> {
-            item.setName(menuItemDetails.getName());
-            item.setDescription(menuItemDetails.getDescription());
+            // Cập nhật các trường Tên đa ngôn ngữ mới
+            item.setNameVi(menuItemDetails.getNameVi());
+            item.setNameEn(menuItemDetails.getNameEn());
+            
+            // Cập nhật các trường Mô tả đa ngôn ngữ mới
+            item.setDescriptionVi(menuItemDetails.getDescriptionVi());
+            item.setDescriptionEn(menuItemDetails.getDescriptionEn());
+            
+            // Các trường còn lại giữ nguyên
             item.setPrice(menuItemDetails.getPrice());
             item.setDiscount(menuItemDetails.getDiscount());
             item.setImageUrl(menuItemDetails.getImageUrl());
             item.setIsAvailable(menuItemDetails.getIsAvailable());
             item.setCategory(menuItemDetails.getCategory());
+            
             return menuItemRepository.save(item);
         }).orElseThrow(() -> new RuntimeException("Không tìm thấy ID: " + id));
     }

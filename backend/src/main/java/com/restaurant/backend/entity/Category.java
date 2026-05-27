@@ -15,8 +15,11 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(name = "name_vi", nullable = false)
+    private String nameVi;
+
+    @Column(name = "name_en", nullable = false)
+    private String nameEn;
 
     @Column(name = "active", nullable = false)
     private boolean active = true;
