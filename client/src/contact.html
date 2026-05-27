@@ -17,12 +17,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script>
-      // ✅ Thay YOUR_PUBLIC_KEY bằng Public Key của bạn (Account > General)
       emailjs.init("p5WbWycfax30lGyWM");
     </script>
 
     <style>
-      /* CSS đồng bộ giao diện cụm nút ngôn ngữ giống file menu.html */
+      /* Hiệu ứng làm biến mất Placeholder khi click (Focus) */
+      input:focus::placeholder,
+      textarea:focus::placeholder {
+        color: transparent;
+        transition: 0.2s ease;
+      }
+
+      /* CSS bổ sung cho nút ngôn ngữ và thông báo */
       .lang-switcher-nav {
         display: inline-flex;
         gap: 10px;
@@ -31,15 +37,14 @@
       }
       .btn-lang {
         background: transparent;
-        border: 1px solid #c5a880; /* Viền khung màu vàng Gold đặc trưng */
+        border: 1px solid #c5a880;
         color: #fff;
         padding: 8px 16px;
         cursor: pointer;
         font-family: 'Montserrat', sans-serif;
         font-size: 12px;
         font-weight: 600;
-        letter-spacing: 1px;
-        border-radius: 30px; /* Bo tròn góc sang trọng */
+        border-radius: 30px;
         transition: all 0.3s ease;
       }
       .btn-lang:hover, .btn-lang.active-lang {
@@ -47,45 +52,22 @@
         color: #000;
       }
 
-      /* Trạng thái nút khi đang gửi */
-      #submitBtn:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-      }
-
-      /* Thông báo kết quả */
       #formStatus {
         margin-top: 14px;
         font-size: 14px;
         font-family: 'Montserrat', sans-serif;
-        font-weight: 400;
-        padding: 10px 16px;
+        padding: 10px;
         border-radius: 4px;
         display: none;
       }
-
-      #formStatus.success {
-        display: block;
-        color: #2d6a2d;
-        background: #eaf5ea;
-        border: 1px solid #b5d9b5;
-      }
-
-      #formStatus.error {
-        display: block;
-        color: #8b1a1a;
-        background: #fdf0f0;
-        border: 1px solid #f0b8b8;
-      }
+      #formStatus.success { display: block; color: #2d6a2d; background: #eaf5ea; border: 1px solid #b5d9b5; }
+      #formStatus.error { display: block; color: #8b1a1a; background: #fdf0f0; border: 1px solid #f0b8b8; }
     </style>
   </head>
   <body>
     <header class="contact-hero">
       <nav>
         <div class="logo">CELESTÉ HOUSE</div>
-        <button class="menu-toggle" id="mobile-menu">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
         <ul class="nav-links">
           <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
           <li><a href="./menu.html" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
@@ -112,163 +94,101 @@
       <div class="contact-container">
         <div class="contact-info">
           <h2 data-i18n="page.info_title">Thông Tin Liên Hệ</h2>
-
           <div class="info-item">
             <span class="icon material-symbols-outlined">location_on</span>
-            <div>
-              <p data-i18n="page.info_address_detail">Lê Văn Việt, Quận 9, TP. Hồ Chí Minh</p>
-            </div>
+            <p data-i18n="page.info_address_detail">Lê Văn Việt, Quận 9, TP. Hồ Chí Minh</p>
           </div>
-
           <div class="info-item">
             <span class="icon material-symbols-outlined">phone_in_talk</span>
-            <div>
-              <p data-i18n="page.info_phone_detail">+84 123 456 789</p>
-            </div>
+            <p data-i18n="page.info_phone_detail">+84 123 456 789</p>
           </div>
-
           <div class="info-item">
             <span class="icon material-symbols-outlined">mail</span>
             <div>
               <p data-i18n="page.info_email_detail">celestehousecontact@gmail.com</p>
             </div>
           </div>
-
-          <div class="info-item">
-            <span class="icon material-symbols-outlined">schedule</span>
-            <div>
-              <p data-i18n="page.info_hours_detail">Thứ 2 - Chủ Nhật: 10:00 - 22:00</p>
-            </div>
-          </div>
-
-          <div class="map-wrapper" style="margin-top: 30px; border-radius: 4px; overflow: hidden;">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.479482121088!2d106.78286047587786!3d10.851086257814467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175276e7ea103df%3A0xb6cfb3da01fe8068!2zTMOqIFbEg24gVmnhu4d0LCBRdeG6rW4gOSwgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e0!3m2!2svi!2s!4v1716200000000!5m2!2svi!2s"
-              width="100%"
-              height="250"
-              style="border: 0; display: block;"
-              allowfullscreen=""
-              loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-            ></iframe>
+          <div class="map-wrapper" style="margin-top: 20px; border-radius: 8px; overflow: hidden;">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.52005115135!2d106.784467!3d10.847991!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175276bb2c2317b%3A0x6968e7343e743d50!2zTMOqIFbEg24gVmnhu4d0LCBRdeG6rW4gOSwgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1716880000000!5m2!1svi!2s" width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
           </div>
         </div>
 
         <div class="contact-form">
-          <h2 class="contact-title" data-i18n="page.form_title">Gửi Lời Nhắn</h2>
-
+          <h2 data-i18n="page.form_title">Gửi Lời Nhắn</h2>
           <form id="contactForm">
             <div class="form-group">
-              <input
-                type="text"
-                id="from_name"
-                data-i18n="page.form_placeholder_name"
-                placeholder="Họ và Tên"
-                required
-              />
+              <input type="text" id="from_name" data-i18n="page.form_placeholder_name" placeholder="Họ và Tên" required 
+                     pattern="^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỂẾỀỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪỬỮỰỲYỶỸỳyỷỹ\s]+$" title="Tên không được chứa số">
             </div>
             <div class="form-group">
-              <input
-                type="email"
-                id="from_email"
-                data-i18n="page.form_placeholder_email"
-                placeholder="Email"
-                required
-              />
+              <input type="email" id="from_email" data-i18n="page.form_placeholder_email" placeholder="Email" required>
             </div>
             <div class="form-group">
-              <input
-                type="text"
-                id="phone"
-                data-i18n="page.form_placeholder_phone"
-                placeholder="Số điện thoại"
-              />
+              <input type="text" id="phone" data-i18n="page.form_placeholder_phone" placeholder="Số điện thoại" required 
+                     maxlength="15">
             </div>
             <div class="form-group">
-              <textarea
-                id="message"
-                rows="5"
-                data-i18n="page.form_placeholder_msg"
-                placeholder="Lời nhắn của bạn..."
-              ></textarea>
+                <textarea id="message" rows="5" data-i18n="page.form_placeholder_msg" placeholder="Lời nhắn của bạn..."></textarea>
             </div>
-
-            <button type="submit" class="btn btn-gold" id="submitBtn" data-i18n="page.form_btn_submit">
-              Gửi Ngay
-            </button>
-
+            <button type="submit" class="btn btn-gold" id="submitBtn" data-i18n="page.form_btn_submit">Gửi Ngay</button>
             <p id="formStatus"></p>
           </form>
         </div>
       </div>
     </section>
 
-    <section class="footer-booking-section" style="background: url('../images/restaurant-bg.jpg') no-repeat center center/cover; position: relative; padding: 100px 20px; text-align: center; color: #fff;">
-      <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 1;"></div>
-  
-      <div class="footer-booking-content" style="position: relative; z-index: 2; max-width: 800px; margin: 0 auto;">
-        <h2 data-i18n="page.footer_title" style="font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; margin-bottom: 15px; letter-spacing: 1px;">Đặt Bàn Ngay Hôm Hôm Nay</h2>
-    
-        <p data-i18n="page.footer_subtitle" style="font-family: 'Montserrat', sans-serif; font-size: 14px; font-weight: 300; color: #ccc; margin-bottom: 30px;">Trải nghiệm không gian ẩm thực sang trọng và đẳng cấp.</p>
-    
-        <a href="./booking.html" class="btn-footer-book" data-i18n="page.btn_footer_book" style="display: inline-block; background: #c5a059; color: #000; padding: 12px 35px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 2px; text-decoration: none; text-transform: uppercase; border-radius: 2px; transition: all 0.3s ease;">Đặt Bàn Ngay</a>
-      </div>
-    </section>
-
     <script src="../script/i18n.js"></script>
     <script src="../script/script.js"></script>
-    <script src="../script/main.js"></script>
-
     <script>
+      // 1. Chặn nhập số vào ô Tên
+      document.getElementById("from_name").addEventListener("input", function() {
+        this.value = this.value.replace(/[0-9]/g, '');
+      });
+
+      // 2. Chặn nhập chữ vào ô SĐT
+      document.getElementById("phone").addEventListener("input", function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+      });
+
+      // 3. Xử lý gửi Form
       document.getElementById("contactForm").addEventListener("submit", function (e) {
         e.preventDefault();
-
         const btn = document.getElementById("submitBtn");
         const status = document.getElementById("formStatus");
-
-        // Lấy dữ liệu form
+        const currentLang = localStorage.getItem('language') || 'vi';
+        
         const name = document.getElementById("from_name").value.trim();
         const email = document.getElementById("from_email").value.trim();
-        const phone = document.getElementById("phone").value.trim() || "Không cung cấp";
+        const phone = document.getElementById("phone").value.trim();
         const message = document.getElementById("message").value.trim();
 
-        // Trạng thái đang gửi
-        btn.disabled = true;
-        // Kiểm tra ngôn ngữ hiện tại để hiển thị chữ "Đang gửi..." tương ứng
-        const currentLang = localStorage.getItem('language') || 'vi';
-        btn.textContent = currentLang === 'en' ? "Sending..." : "Đang gửi...";
-        status.className = "";
-        status.textContent = "";
+        // Kiểm tra độ dài SĐT (8-15)
+        if (phone.length < 8 || phone.length > 15) {
+          status.className = "error";
+          status.textContent = currentLang === 'en' ? "✗ Phone must be 8-15 digits." : "✗ Số điện thoại phải từ 8-15 số.";
+          return;
+        }
 
-        // Tham số gửi tới EmailJS template
-        const templateParams = {
+        btn.disabled = true;
+        btn.textContent = currentLang === 'en' ? "Sending..." : "Đang gửi...";
+        
+        emailjs.send("service_70nli69", "template_07wh005", {
           from_name: name,
           from_email: email,
           phone: phone,
-          message: message,
-        };
-
-        // ✅ Thay YOUR_SERVICE_ID và YOUR_TEMPLATE_ID bằng thông tin của bạn
-        emailjs
-          .send("service_70nli69", "template_07wh005", templateParams)
-          .then(function () {
-            status.className = "success";
-            status.textContent = currentLang === 'en' 
-              ? "✓ Message sent successfully! We will contact you soon." 
-              : "✓ Tin nhắn đã được gửi thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất.";
-            document.getElementById("contactForm").reset();
-          })
-          .catch(function (error) {
-            status.className = "error";
-            status.textContent = currentLang === 'en' 
-              ? "✗ Failed to send message. Please try again or contact us directly." 
-              : "✗ Gửi tin nhắn thất bại. Vui lòng thử lại hoặc liên hệ trực tiếp qua email/điện thoại.";
-            console.error("EmailJS error:", error);
-          })
-          .finally(function () {
-            btn.disabled = false;
-            btn.textContent = currentLang === 'en' ? "Send Now" : "Gửi Ngay";
-          });
+          message: message || "N/A"
+        }).then(() => {
+          status.className = "success";
+          status.textContent = currentLang === 'en' ? "✓ Sent successfully!" : "✓ Gửi thành công!";
+          document.getElementById("contactForm").reset();
+        }).catch((err) => {
+          status.className = "error";
+          status.textContent = "Error!";
+          console.error(err);
+        }).finally(() => {
+          btn.disabled = false;
+          btn.textContent = currentLang === 'en' ? "Send Now" : "Gửi Ngay";
+        });
       });
     </script>
   </body>

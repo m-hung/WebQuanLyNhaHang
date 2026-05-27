@@ -99,8 +99,13 @@ async function applyLanguage(lng) {
 
         if (translations[prefix] && translations[prefix][key]) {
             const txt = translations[prefix][key];
-            if (element.tagName === 'INPUT') {
+            // Kiểm tra nếu là ô nhập liệu thì điền vào placeholder, ngược lại điền vào nội dung
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
                 element.setAttribute('placeholder', txt);
+                // Quan trọng: Xóa sạch nội dung bên trong textarea để placeholder có thể hiển thị
+                if (element.tagName === 'TEXTAREA') {
+                    element.value = ''; 
+                }
             } else {
                 element.innerHTML = txt;
             }
