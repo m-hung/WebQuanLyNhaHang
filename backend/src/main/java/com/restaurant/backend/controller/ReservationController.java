@@ -24,6 +24,29 @@ public class ReservationController {
     @PostMapping
     public Reservation createReservation(@RequestBody Reservation reservation) {
         reservation.setCreatedAt(LocalDateTime.now());
+        reservation.setStatus("ACTIVE");
+        return reservationRepository.save(reservation);
+    }
+
+    @PutMapping("/{id}/cancel")
+    public Reservation cancelReservation(@PathVariable Long id) {
+        Reservation reservation = reservationRepository
+                .findById(id)
+                .orElseThrow();
+
+        reservation.setStatus("CANCELLED");
+
+        return reservationRepository.save(reservation);
+    }
+
+    @PutMapping("/{id}/restore")
+    public Reservation restoreReservation(@PathVariable Long id) {
+        Reservation reservation = reservationRepository
+                .findById(id)
+                .orElseThrow();
+
+        reservation.setStatus("ACTIVE");
+
         return reservationRepository.save(reservation);
     }
 }

@@ -30,4 +30,8 @@ public class Reservation {
     private Boolean isPaid = false;   // true sau khi VNPay xác nhận
     private String paymentRef;        // orderId từ frontend (VD: CH1A2B3X)
     private String transactionNo;     // Mã giao dịch từ VNPay
+
+    @Column(name = "status")
+    private String status;
+
 }

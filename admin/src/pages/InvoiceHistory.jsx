@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import React, {useState, useEffect} from "react";
 
 export default function InvoiceHistory() {
     const [orders, setOrders] = useState([]);
@@ -10,7 +9,7 @@ export default function InvoiceHistory() {
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState(null);
-    const [paymentLoading, setPaymentLoading] = useState(false);
+    const [PaymentLoading, setPaymentLoading] = useState(false);
 
     // Logic phân trang
     const [currentPage, setCurrentPage] = useState(1);
@@ -24,8 +23,12 @@ export default function InvoiceHistory() {
                 const response = await fetch("http://localhost:8080/api/orders");
                 const data = await response.json();
 
-                setOrders(data);
-                setFilteredOrders(data);
+                const sortedData = data.sort(
+                    (a, b) => new Date(b.orderDate) - new Date(a.orderDate)
+                );
+
+                setOrders(sortedData);
+                setFilteredOrders(sortedData);
             } catch (error) {
                 console.error("Lỗi khi tải dữ liệu hóa đơn:", error);
             }
@@ -61,7 +64,7 @@ export default function InvoiceHistory() {
 
     // Hàm format tiền tệ và thời gian
     const formatCurrency = (amount) => {
-        if (!amount) return "0 đ";
+        if (amount == null) return "0 đ";
         return amount.toLocaleString("vi-VN") + " đ";
     };
 
@@ -95,6 +98,10 @@ export default function InvoiceHistory() {
             .finally(() => setPaymentLoading(false));
     };
 
+    const handlePrint = () => {
+        window.print();
+    };
+
     return (
         <div className="bg-gray-50 p-6 rounded-2xl w-full min-h-screen flex flex-col relative">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
@@ -102,10 +109,22 @@ export default function InvoiceHistory() {
                     <h2 className="text-2xl font-bold text-gray-800">Lịch sử hóa đơn</h2>
                 </div>
                 {/* Thanh tìm kiếm */}
-                <div className="flex w-full md:w-110 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                    <input type="text" placeholder="Tìm kiếm theo Số hóa đơn, Số bàn..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} className="flex-1 px-4 py-3 outline-none text-sm text-gray-700"/>
-                    <button onClick={handleSearch} className="bg-blue-600 hover:bg-blue-700 text-white px-6 transition-colors cursor-pointer">Tìm</button>
-                    <button onClick={() => {setSearchTerm("");setFilteredOrders(orders);setCurrentPage(1);}} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 text-sm transition-colors cursor-pointer">Reset</button>
+                <div
+                    className="flex w-full md:w-110 bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                    <input type="text" placeholder="Tìm kiếm theo Số hóa đơn, Số bàn..." value={searchTerm}
+                           onChange={(e) => setSearchTerm(e.target.value)}
+                           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                           className="flex-1 px-4 py-3 outline-none text-sm text-gray-700"/>
+                    <button onClick={handleSearch}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-6 transition-colors cursor-pointer">Tìm
+                    </button>
+                    <button onClick={() => {
+                        setSearchTerm("");
+                        setFilteredOrders(orders);
+                        setCurrentPage(1);
+                    }}
+                            className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 text-sm transition-colors cursor-pointer">Reset
+                    </button>
                 </div>
             </div>
             {/* Bảng danh sách Hóa đơn */}
@@ -131,19 +150,21 @@ export default function InvoiceHistory() {
                             </tr>
                         ) : (
                             currentOrders.map((item, index) => (
-                                <tr key={item.orderId || index} className="border-b border-gray-100 hover:bg-gray-50 transition">
+                                <tr key={item.orderId || index}
+                                    className="border-b border-gray-100 hover:bg-gray-50 transition">
                                     <td className="px-5 py-4 font-semibold text-gray-800">HD-{item.orderId}</td>
                                     <td className="px-5 py-4 text-center text-gray-700">{item.table ? `Bàn ${item.table.tableId}` : "Mang đi"}</td>
                                     <td className="px-5 py-4 text-right font-bold text-gray-800">{formatCurrency(item.totalAmount)}</td>
                                     <td className="px-5 py-4 text-center">
                                             <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                                                item.status === "Paid" ? "bg-emerald-100 text-emerald-700" : item.status === "Cancelled" ? "bg-rose-100 text-rose-700"  : "bg-sky-100 text-sky-700"}`}>{item.status === "Paid" ? "Đã thanh toán" : item.status === "Cancelled" ? "Đã hủy" : "Đang phục vụ"}
+                                                item.status === "Paid" ? "bg-emerald-100 text-emerald-700" : item.status === "Cancelled" ? "bg-rose-100 text-rose-700" : "bg-sky-100 text-sky-700"}`}>{item.status === "Paid" ? "Đã thanh toán" : item.status === "Cancelled" ? "Đã hủy" : "Đang phục vụ"}
                                             </span>
                                     </td>
                                     <td className="px-5 py-4 text-center text-gray-500">
                                         {formatDateTime(item.orderDate)}                                        </td>
                                     <td className="px-5 py-4 text-center">
-                                        <button onClick={() => handleViewDetails(item)} className="text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer font-medium">
+                                        <button onClick={() => handleViewDetails(item)}
+                                                className="text-blue-600 hover:text-blue-800 hover:underline transition-colors cursor-pointer font-medium">
                                             Xem chi tiết
                                         </button>
                                     </td>
@@ -157,7 +178,8 @@ export default function InvoiceHistory() {
                 {/* Giao diện phân trang */}
                 {totalPages > 0 && (
                     <div className="flex justify-between items-center px-6 py-4 border-t bg-gray-50">
-                            <span className="text-sm text-gray-500">Hiển thị <span className="font-medium">{indexOfFirstItem + 1}</span> đến{" "}
+                            <span className="text-sm text-gray-500">Hiển thị <span
+                                className="font-medium">{indexOfFirstItem + 1}</span> đến{" "}
                                 <span className="font-medium">
                                     {Math.min(indexOfLastItem, filteredOrders.length)}
                                 </span>{" "}
@@ -165,17 +187,20 @@ export default function InvoiceHistory() {
                             </span>
 
                         <div className="flex items-center gap-2">
-                            <button onClick={prevPage} disabled={currentPage === 1} className={`w-9 h-9 rounded-lg border transition ${currentPage === 1 ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-white hover:bg-gray-100"}`}>
+                            <button onClick={prevPage} disabled={currentPage === 1}
+                                    className={`w-9 h-9 rounded-lg border transition ${currentPage === 1 ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-white hover:bg-gray-100"}`}>
                                 &lt;
                             </button>
 
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
-                                <button key={number} onClick={() => paginate(number)} className={`w-9 h-9 rounded-lg text-sm font-medium transition ${currentPage === number ? "bg-blue-600 text-white" : "bg-white border hover:bg-gray-100"}`}>
+                            {Array.from({length: totalPages}, (_, i) => i + 1).map((number) => (
+                                <button key={number} onClick={() => paginate(number)}
+                                        className={`w-9 h-9 rounded-lg text-sm font-medium transition ${currentPage === number ? "bg-blue-600 text-white" : "bg-white border hover:bg-gray-100"}`}>
                                     {number}
                                 </button>
                             ))}
 
-                            <button onClick={nextPage} disabled={currentPage === totalPages} className={`w-9 h-9 rounded-lg border transition ${currentPage === totalPages ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-white hover:bg-gray-100"}`}>
+                            <button onClick={nextPage} disabled={currentPage === totalPages}
+                                    className={`w-9 h-9 rounded-lg border transition ${currentPage === totalPages ? "bg-gray-100 text-gray-300 cursor-not-allowed" : "bg-white hover:bg-gray-100"}`}>
                                 &gt;
                             </button>
                         </div>
@@ -186,73 +211,82 @@ export default function InvoiceHistory() {
             {/* Modal xem chi tiết hóa đơn */}
             {showModal && selectedOrder && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[90vh]">
+                    <div
+                        className="print-area bg-white shadow-2xl w-full max-w-xl overflow-hidden flex flex-col max-h-[90vh] font-mono border-4 border-gray-300">                        {/* Header Modal */}
+                        <div className="text-center border-b-2 border-dashed border-gray-400 px-6 py-5">
 
-                        {/* Header Modal */}
-                        <div className="flex justify-between items-center px-6 py-5 border-b bg-white">
-                            <div>
-                                <h3 className="text-2xl font-bold text-gray-800">
-                                    Hóa đơn HD-{selectedOrder.orderId}
-                                </h3>
-                                <p className="text-sm text-gray-500 mt-1">
-                                    {formatDateTime(
-                                        selectedPayment?.paymentTime ||
-                                        selectedOrder.orderDate
-                                    )}
-                                </p>
-                            </div>
+                            <h2 className="text-2xl font-bold uppercase tracking-wide">
+                                CELESTÉ HOUSE
+                            </h2>
 
-                            <div className="flex items-center gap-4">
-                                    <span className={`px-4 py-1.5 rounded-full text-sm font-semibold ${selectedOrder.status === "Paid" ? "bg-emerald-100 text-emerald-700" : selectedOrder.status === "Cancelled" ? "bg-rose-100 text-rose-700" : "bg-sky-100 text-sky-700"}`}>
-                                        {selectedOrder.status === "Paid" ? "Đã thanh toán" : selectedOrder.status === "Cancelled" ? "Đã hủy" : "Đang phục vụ"}
-                                    </span>
+                            <p className="text-sm text-gray-600 mt-1">
+                                Lê Văn Việt, Quận 9, TP. Hồ Chí Minh
+                            </p>
 
-                                <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-red-500 cursor-pointer">
-                                    <X size={24} />
-                                </button>
-                            </div>
+                            <p className="text-sm text-gray-600">
+                                Hotline: +84 123 456 789
+                            </p>
+
+                            <h3 className="text-xl font-bold mt-4 uppercase">
+                                Hóa đơn thanh toán
+                            </h3>
+
+                            <p className="text-sm mt-2">
+                                Mã HĐ: HD-{selectedOrder.orderId}
+                            </p>
+
+                            <p className="text-sm">
+                                {formatDateTime(
+                                    selectedPayment?.paymentTime ||
+                                    selectedOrder.orderDate
+                                )}
+                            </p>
                         </div>
 
                         {/* Body Modal */}
                         <div className="p-6 overflow-y-auto">
 
                             {/* Thông tin chung */}
-                            <div className="flex gap-4 mb-6">
+                            <div className="text-sm border-b border-dashed border-black pb-4 mb-4 space-y-1">
 
-                                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 w-48">
-                                    <p className="text-sm text-gray-500 mb-1">
-                                        Bàn
-                                    </p>
-
-                                    <p className="font-semibold text-gray-800">
-                                        {selectedOrder.table
-                                            ? `Bàn ${selectedOrder.table.tableId}`
-                                            : "Mang đi"}
-                                    </p>
+                                <div className="flex justify-between">
+                                    <span>Mã hóa đơn:</span>
+                                    <span>HD-{selectedOrder.orderId}</span>
                                 </div>
 
-                                {paymentLoading ? (
-                                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 text-gray-400 text-sm">Đang tải...</div>
-                                ) : selectedPayment ? (
+                                <div className="flex justify-between">
+                                    <span>Bàn:</span>
+
+                                    <span>
+                                        {selectedOrder.table
+                                            ? `Bàn ${selectedOrder.table.tableNumber}`
+                                            : "Mang đi"}
+                                    </span>
+                                </div>
+
+                                {selectedPayment && (
                                     <>
-                                        <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 w-56">
-                                            <p className="text-sm text-gray-500 mb-1">Khách hàng</p>
-                                            <p className="font-semibold text-gray-800">{selectedPayment.customerName}</p>
+                                        <div className="flex justify-between">
+                                            <span>Khách hàng:</span>
+                                            <span>{selectedPayment.customerName}</span>
                                         </div>
-                                        <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 w-56">
-                                            <p className="text-sm text-gray-500 mb-1">Số điện thoại</p>
-                                            <p className="font-semibold text-gray-800">{selectedPayment.phone}</p>
+
+                                        <div className="flex justify-between">
+                                            <span>SĐT:</span>
+                                            <span>{selectedPayment.phone}</span>
                                         </div>
-                                        <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 w-56">
-                                            <p className="text-sm text-gray-500 mb-1">Phương thức TT</p>
-                                            <p className="font-semibold text-emerald-600">
-                                                {selectedPayment.paymentMethod === "Cash" ? "Tiền mặt"
-                                                    : selectedPayment.paymentMethod === "VNPAY" ? "Chuyển khoản"
-                                                        : selectedPayment.paymentMethod}
-                                            </p>
+
+                                        <div className="flex justify-between">
+                                            <span>Thanh toán:</span>
+
+                                            <span>
+                                                {selectedPayment.paymentMethod === "Cash"
+                                                    ? "Tiền mặt"
+                                                    : "VNPay"}
+                                            </span>
                                         </div>
                                     </>
-                                ) : null}
+                                )}
                             </div>
 
                             {/* Bảng chi tiết các món (Order Items) */}
@@ -260,10 +294,13 @@ export default function InvoiceHistory() {
                                 Danh sách món ăn
                             </h4>
 
-                            <div className="border border-gray-100 rounded-xl overflow-hidden mb-6">
+                            <div className="overflow-hidden mb-6">
                                 <table className="w-full text-sm">
-                                    <thead className="bg-gray-50 border-b border-gray-100">
+                                    <thead className="border-b border-black">
                                     <tr>
+                                        <th className="px-2 py-3 text-center font-semibold">
+                                            STT
+                                        </th>
                                         <th className="px-4 py-3 text-left font-semibold">
                                             Món ăn
                                         </th>
@@ -283,7 +320,10 @@ export default function InvoiceHistory() {
                                     {selectedOrder.orderItems &&
                                     selectedOrder.orderItems.length > 0 ? (
                                         selectedOrder.orderItems.map((item, idx) => (
-                                            <tr key={idx} className="border-b border-gray-100 last:border-0">
+                                            <tr key={idx} className="border-b border-dashed border-gray-300">
+                                                <td className="px-2 py-4 text-center">
+                                                    {idx + 1}
+                                                </td>
                                                 <td className="px-4 py-4 font-medium text-gray-800">
                                                     {item.menuItem
                                                         ? item.menuItem.name
@@ -303,7 +343,7 @@ export default function InvoiceHistory() {
                                             </tr>
                                         ))) : (
                                         <tr>
-                                            <td colSpan="4" className="text-center py-6 text-gray-500">
+                                            <td colSpan="5" className="text-center py-6 text-gray-500">
                                                 Không có dữ liệu món ăn
                                             </td>
                                         </tr>
@@ -312,40 +352,36 @@ export default function InvoiceHistory() {
                                 </table>
                             </div>
 
-                            {/* Tổng kết */}
-                            <div className="flex justify-end mt-8">
-                                <div className="w-80 bg-gray-50 rounded-xl p-5 border border-gray-100">
-                                    <div className="flex justify-between mb-3 text-sm">
-                                            <span className="text-gray-500">
-                                                Tạm tính
-                                            </span>
-                                        <span>
-                                                {formatCurrency(selectedOrder.totalAmount)}
-                                            </span>
-                                    </div>
+                            {/* Tổng kết kiểu hóa đơn */}
+                            <div className="mt-6 border-t border-black pt-4 text-sm">
+                                <div className="border-t mt-2 pt-3 flex justify-between items-center">
+                                    <span className="text-lg font-bold text-gray-800">
+                                        Tổng cộng
+                                    </span>
+                                    <span className="text-xl font-bold">
+                                        {formatCurrency(selectedOrder?.totalAmount)}
+                                    </span>
+                                </div>
 
-                                    <div className="flex justify-between mb-4 text-sm">
-                                            <span className="text-gray-500">
-                                                Giảm giá
-                                            </span>
-                                        <span>0 đ</span>
-                                    </div>
-
-                                    <div className="border-t pt-4 flex justify-between items-center">
-                                            <span className="text-lg font-bold text-gray-800">
-                                                Tổng cộng
-                                            </span>
-                                        <span className="text-2xl font-bold text-blue-600">
-                                                {formatCurrency(selectedOrder.totalAmount)}
-                                            </span>
-                                    </div>
+                                <div className="mt-6 text-center text-gray-500 text-xs italic">
+                                    Cảm ơn quý khách và hẹn gặp lại!
                                 </div>
                             </div>
                         </div>
 
                         {/* Footer Modal */}
-                        <div className="px-6 py-4 border-t flex justify-end gap-3 bg-gray-50">
-                            <button onClick={() => setShowModal(false)} className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-medium transition-colors cursor-pointer">
+                        <div className="px-6 py-4 border-t flex justify-end gap-3 bg-gray-50 print:hidden">
+                            <button
+                                onClick={handlePrint}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-xl font-medium transition-colors cursor-pointer"
+                            >
+                                In hóa đơn
+                            </button>
+
+                            <button
+                                onClick={() => setShowModal(false)}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-xl font-medium transition-colors cursor-pointer"
+                            >
                                 Đóng
                             </button>
                         </div>
