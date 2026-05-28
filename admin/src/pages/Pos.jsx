@@ -76,13 +76,12 @@ export default function Pos({
 
   // HÀM LỌC SẢN PHẨM (TÌM KIẾM + DANH MỤC)
   const filteredProducts = products.filter((product) => {
-    const matchSearch = product.name
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const productName = String(product?.name || "").toLowerCase();
+    const matchSearch = productName.includes(searchTerm.toLowerCase());
 
     const matchCategory =
       selectedCategory === "Tất cả" ||
-      (product.category && product.category.name === selectedCategory);
+      (product?.category && product.category.name === selectedCategory);
 
     return matchSearch && matchCategory;
   });
