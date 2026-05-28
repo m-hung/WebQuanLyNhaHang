@@ -158,16 +158,56 @@ export default function Reservations() {
 
     // SUBMIT RESERVATION
     const handleSubmitReservation = async () => {
+        const newErrors = {};
+
+        if (!formData.customerName.trim()) {
+            newErrors.customerName = "Vui lòng nhập tên khách hàng!";
+        }
+
+        if (!formData.phone.trim()) {
+            newErrors.phone = "Vui lòng nhập số điện thoại!";
+        } else if (!/^\d{8,15}$/.test(formData.phone)) {
+            newErrors.phone = "Số điện thoại phải từ 8 - 15 số!";
+        }
+
+        if (!formData.email.trim()) {
+            newErrors.email = "Vui lòng nhập email!";
+        } else if (!/^[A-Za-z0-9._%+-]+@gmail\.com$/.test(formData.email)) {
+            newErrors.email = "Email phải đúng định dạng @gmail.com!";
+        }
+
+        if (!formData.bookDate) {
+            newErrors.bookDate = "Vui lòng chọn ngày đặt!";
+        }
+
+        if (!formData.bookTime) {
+            newErrors.bookTime = "Vui lòng chọn giờ đặt!";
+        }
+
+        if (formData.bookDate && formData.bookTime) {
+
+            const selectedDateTime = new Date(`${formData.bookDate}T${formData.bookTime}`);
+
+            const now = new Date();
+
+            if (selectedDateTime.getTime() < now.getTime()) {
+                newErrors.bookTime = "Không thể chọn giờ trong quá khứ!";
+            }
+        }
+
+        if (!formData.guestCount) {
+            newErrors.guestCount = "Vui lòng chọn số người!";
+        }
+
+        if (!formData.tableId) {
+            newErrors.tableId = "Vui lòng chọn bàn!";
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
         try {
-            if (!formData.customerName || !formData.phone || !formData.bookDate || !formData.bookTime || !formData.guestCount || !formData.tableId) {
-                alert("Vui lòng nhập đầy đủ thông tin!");
-                return;
-            }
-
-            if (errors.phone || errors.email || errors.bookTime) {
-                return;
-            }
-
             setErrors({});
             setSubmitting(true);
 
@@ -538,8 +578,11 @@ export default function Reservations() {
                             });
                         }}
                         maxLength={50}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm"
+                        className={`w-full border rounded-lg px-3 py-2 outline-none text-sm ${errors.customerName ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-blue-500"}`}
                     />
+                    {errors.customerName && (<p className="text-red-500 text-xs mt-1">
+                        {errors.customerName}
+                    </p>)}
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Số điện
@@ -556,6 +599,9 @@ export default function Reservations() {
                                             ...formData, phone: value
                                         });
                                     }
+                                    setErrors((prev) => ({
+                                        ...prev, phone: ""
+                                    }));
                                 }}
 
                                 onBlur={() => {
@@ -569,15 +615,19 @@ export default function Reservations() {
                                         }));
                                     }
                                 }}
+
                                 maxLength={15}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm"
+                                className={`w-full border rounded-lg px-3 py-2 outline-none text-sm ${errors.phone ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-blue-500"}`}
                             />
                             {errors.phone && (<p className="text-red-500 text-xs mt-1">
                                 {errors.phone}
                             </p>)}
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">
+                                Email
+                            </label>
+
                             <input
                                 type="email"
                                 placeholder="example@gmail.com"
@@ -586,6 +636,11 @@ export default function Reservations() {
                                     setFormData({
                                         ...formData, email: e.target.value
                                     });
+
+                                    // clear lỗi khi nhập lại
+                                    setErrors((prev) => ({
+                                        ...prev, email: ""
+                                    }));
                                 }}
 
                                 onBlur={() => {
@@ -593,14 +648,12 @@ export default function Reservations() {
                                         setErrors((prev) => ({
                                             ...prev, email: "Email phải đúng định dạng @gmail.com!"
                                         }));
-                                    } else {
-                                        setErrors((prev) => ({
-                                            ...prev, email: ""
-                                        }));
                                     }
                                 }}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm"
+
+                                className={`w-full border rounded-lg px-3 py-2 outline-none text-sm ${errors.email ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-blue-500"}`}
                             />
+
                             {errors.email && (<p className="text-red-500 text-xs mt-1">
                                 {errors.email}
                             </p>)}
@@ -625,26 +678,43 @@ export default function Reservations() {
                                         .toISOString()
                                         .split("T")[0];
 
+                                    // Nếu chọn ngày hôm nay
                                     if (selectedDate === today && formData.bookTime) {
 
                                         const now = new Date();
 
-                                        const currentTime = String(now.getHours()).padStart(2, "0") + ":" + String(now.getMinutes()).padStart(2, "0");
+                                        const selectedDateTime = new Date(`${selectedDate}T${formData.bookTime}`);
 
-                                        if (formData.bookTime < currentTime) {
+                                        // Nếu giờ cũ nhỏ hơn hiện tại
+                                        if (selectedDateTime.getTime() < now.getTime()) {
 
                                             updatedTime = "";
 
-                                            alert("Giờ đã chọn không hợp lệ cho ngày hôm nay!");
+                                            setErrors((prev) => ({
+                                                ...prev, bookTime: "Giờ đã chọn không hợp lệ!"
+                                            }));
                                         }
                                     }
 
                                     setFormData({
                                         ...formData, bookDate: selectedDate, bookTime: updatedTime
                                     });
+
+                                    setErrors((prev) => ({
+                                        ...prev, bookDate: "",
+                                    }));
+
+                                    if (selectedDate !== today) {
+                                        setErrors((prev) => ({
+                                            ...prev, bookTime: "",
+                                        }));
+                                    }
                                 }}
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm"
+                                className={`w-full border rounded-lg px-3 py-2 outline-none text-sm ${errors.bookDate ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-blue-500"}`}
                             />
+                            {errors.bookDate && (<p className="text-red-500 text-xs mt-1">
+                                {errors.bookDate}
+                            </p>)}
                         </div>
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Giờ đặt <span
@@ -681,6 +751,11 @@ export default function Reservations() {
                                     setFormData({
                                         ...formData, bookTime: selectedTime
                                     });
+                                    if (!error) {
+                                        setErrors((prev) => ({
+                                            ...prev, bookTime: ""
+                                        }));
+                                    }
                                 }}
                                 className={`w-full border rounded-lg px-3 py-2 outline-none text-sm ${errors.bookTime ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-blue-500"}`}
                             />
@@ -694,27 +769,49 @@ export default function Reservations() {
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Số người <span
                                 className="text-red-500">*</span></label>
                             <select value={formData.guestCount}
-                                    onChange={(e) => setFormData({...formData, guestCount: e.target.value})}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm bg-white"
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData, guestCount: e.target.value
+                                        });
+
+                                        setErrors((prev) => ({
+                                            ...prev, guestCount: ""
+                                        }));
+                                    }}
+                                    className={`w-full border rounded-lg px-3 py-2 outline-none text-sm bg-white ${errors.guestCount ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-blue-500"}`}
                             >
                                 <option value="">Chọn số người</option>
                                 <option value="2">2 người</option>
                                 <option value="4">4 người</option>
                                 <option value="6">6+ người</option>
                             </select>
+                            {errors.guestCount && (<p className="text-red-500 text-xs mt-1">
+                                {errors.guestCount}
+                            </p>)}
                         </div>
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Chọn bàn <span
                                 className="text-red-500">*</span></label>
                             <select value={formData.tableId}
-                                    onChange={(e) => setFormData({...formData, tableId: e.target.value})}
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm bg-white"
+                                    onChange={(e) => {
+                                        setFormData({
+                                            ...formData, tableId: e.target.value
+                                        });
+
+                                        setErrors((prev) => ({
+                                            ...prev, tableId: ""
+                                        }));
+                                    }}
+                                    className={`w-full border rounded-lg px-3 py-2 outline-none text-sm bg-white ${errors.tableId ? "border-red-500 focus:border-red-500" : "border-gray-300 focus:border-blue-500"}`}
                             >
                                 <option value="">Chọn bàn trống</option>
                                 {tables.map((t) => (<option key={t.tableId} value={t.tableId}>
                                     Bàn {t.tableNumber} ({t.capacity} người)
                                 </option>))}
                             </select>
+                            {errors.tableId && (<p className="text-red-500 text-xs mt-1">
+                                {errors.tableId}
+                            </p>)}
                             {tables.length === 0 && (<p className="text-sm text-red-500 mt-2">
                                 Không còn bàn phù hợp
                             </p>)}
