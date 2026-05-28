@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 export default function Categories() {
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: "", active: true });
+  const [formData, setFormData] = useState({ nameVi: "", nameEn: "", active: true });
   const [editingId, setEditingId] = useState(null);
+  const [langTab, setLangTab] = useState("vi"); // "vi" | "en"
 
   const API_URL = "http://localhost:8080/api/categories";
 
@@ -29,7 +30,8 @@ export default function Categories() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           categoryId: cat.categoryId,
-          name: cat.name,
+          nameVi: cat.nameVi,
+          nameEn: cat.nameEn,
           active: !cat.active,
         }),
       });
@@ -40,17 +42,16 @@ export default function Categories() {
   };
 
   const handleEdit = (cat) => {
-    setFormData({ name: cat.name, active: cat.active });
+    setFormData({ nameVi: cat.nameVi || "", nameEn: cat.nameEn || "", active: cat.active });
     setEditingId(cat.categoryId);
+    setLangTab("vi");
     setIsModalOpen(true);
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("Ban co chac chan muon xoa?")) {
       try {
-        const response = await fetch(`${API_URL}/${id}`, {
-          method: "DELETE",
-        });
+        const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
         if (response.ok) {
           fetchCategories();
         } else {
@@ -63,7 +64,8 @@ export default function Categories() {
   };
 
   const handleSave = async () => {
-    if (!formData.name.trim()) return alert("Vui long nhap ten");
+    if (!formData.nameVi.trim()) return alert("Vui lòng nhập tên danh mục (Tiếng Việt)");
+    if (!formData.nameEn.trim()) return alert("Vui lòng nhập tên danh mục (Tiếng Anh)");
 
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `${API_URL}/${editingId}` : API_URL;
@@ -73,11 +75,10 @@ export default function Categories() {
 
     try {
       const response = await fetch(url, {
-        method: method,
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
       if (response.ok) {
         setIsModalOpen(false);
         setEditingId(null);
@@ -91,8 +92,9 @@ export default function Categories() {
   };
 
   const handleOpenModal = () => {
-    setFormData({ name: "", active: true });
+    setFormData({ nameVi: "", nameEn: "", active: true });
     setEditingId(null);
+    setLangTab("vi");
     setIsModalOpen(true);
   };
 
@@ -112,7 +114,8 @@ export default function Categories() {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-100 border-b">
-              <th className="p-4 font-semibold text-gray-600">Tên danh mục</th>
+              <th className="p-4 font-semibold text-gray-600">Tên (Tiếng Việt)</th>
+              <th className="p-4 font-semibold text-gray-600">Tên (English)</th>
               <th className="p-4 font-semibold text-gray-600 text-center">Hiển thị</th>
               <th className="p-4 font-semibold text-gray-600 text-right">Hành động</th>
             </tr>
@@ -120,7 +123,8 @@ export default function Categories() {
           <tbody>
             {categories.map((cat) => (
               <tr key={cat.categoryId} className="border-b last:border-0 hover:bg-gray-50 transition-colors">
-                <td className="p-4 text-gray-700 font-medium">{cat.name}</td>
+                <td className="p-4 text-gray-700 font-medium">{cat.nameVi}</td>
+                <td className="p-4 text-gray-500">{cat.nameEn}</td>
                 <td className="p-4 text-center">
                   <button
                     onClick={() => toggleStatus(cat)}
@@ -132,18 +136,8 @@ export default function Categories() {
                   </button>
                 </td>
                 <td className="p-4 text-right">
-                  <button
-                    onClick={() => handleEdit(cat)}
-                    className="text-blue-600 hover:text-blue-800 mr-4 font-medium text-sm"
-                  >
-                    Sửa
-                  </button>
-                  <button
-                    onClick={() => handleDelete(cat.categoryId)}
-                    className="text-red-500 hover:text-red-700 font-medium text-sm"
-                  >
-                    Xóa
-                  </button>
+                  <button onClick={() => handleEdit(cat)} className="text-blue-600 hover:text-blue-800 mr-4 font-medium text-sm">Sửa</button>
+                  <button onClick={() => handleDelete(cat.categoryId)} className="text-red-500 hover:text-red-700 font-medium text-sm">Xóa</button>
                 </td>
               </tr>
             ))}
@@ -156,58 +150,77 @@ export default function Categories() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/45"
-            onClick={() => setIsModalOpen(false)}
-          ></div>
+          <div className="absolute inset-0 bg-black/45" onClick={() => setIsModalOpen(false)}></div>
           <div className="relative bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-lg font-bold text-gray-800">
                 {editingId ? "Sửa danh mục" : "Thêm danh mục"}
               </h2>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 text-2xl"
-              >
-                &times;
-              </button>
+              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
             </div>
+
             <div className="p-6 space-y-5">
+              {/* Language Tabs */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Tên danh mục <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Nhập tên danh mục..."
-                  className="w-full border border-gray-300 rounded-md p-2.5 outline-none focus:ring-2 focus:ring-blue-500/20"
-                />
+                <div className="flex border border-gray-200 rounded-lg overflow-hidden mb-3">
+                  <button
+                    onClick={() => setLangTab("vi")}
+                    className={`flex-1 py-2 text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${langTab === "vi" ? "bg-blue-600 text-white" : "bg-gray-50 text-gray-500 hover:bg-gray-100"}`}
+                  >
+                    🇻🇳 Tiếng Việt
+                  </button>
+                  <button
+                    onClick={() => setLangTab("en")}
+                    className={`flex-1 py-2 text-sm font-semibold flex items-center justify-center gap-2 transition-colors ${langTab === "en" ? "bg-blue-600 text-white" : "bg-gray-50 text-gray-500 hover:bg-gray-100"}`}
+                  >
+                    🇬🇧 English
+                  </button>
+                </div>
+
+                {langTab === "vi" ? (
+                  <input
+                    type="text"
+                    value={formData.nameVi}
+                    onChange={(e) => setFormData({ ...formData, nameVi: e.target.value })}
+                    placeholder="Nhập tên danh mục bằng Tiếng Việt..."
+                    className="w-full border border-gray-300 rounded-md p-2.5 outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={formData.nameEn}
+                    onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
+                    placeholder="Enter category name in English..."
+                    className="w-full border border-gray-300 rounded-md p-2.5 outline-none focus:ring-2 focus:ring-blue-500/20"
+                  />
+                )}
+
+                {/* Preview both */}
+                {(formData.nameVi || formData.nameEn) && (
+                  <div className="mt-2 flex gap-2 text-xs text-gray-400">
+                    {formData.nameVi && <span className="bg-gray-100 px-2 py-0.5 rounded">🇻🇳 {formData.nameVi}</span>}
+                    {formData.nameEn && <span className="bg-gray-100 px-2 py-0.5 rounded">🇬🇧 {formData.nameEn}</span>}
+                  </div>
+                )}
               </div>
+
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-gray-700">Hiển thị</span>
                 <button
                   onClick={() => setFormData({ ...formData, active: !formData.active })}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formData.active ? "bg-blue-600" : "bg-gray-200"}`}
                 >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.active ? "translate-x-6" : "translate-x-1"}`}
-                  />
+                  <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.active ? "translate-x-6" : "translate-x-1"}`} />
                 </button>
               </div>
             </div>
+
             <div className="flex justify-end gap-3 p-4 bg-gray-50 border-t">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-5 py-2 border rounded text-gray-600 hover:bg-white"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleSave}
-                className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              >
+              <button onClick={() => setIsModalOpen(false)} className="px-5 py-2 border rounded text-gray-600 hover:bg-white">Hủy</button>
+              <button onClick={handleSave} className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                 {editingId ? "Cập nhật" : "Thêm mới"}
               </button>
             </div>

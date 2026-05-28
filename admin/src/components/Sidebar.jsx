@@ -11,8 +11,9 @@ import {
   BookOpen,
 } from "lucide-react";
 
-export default function Sidebar({ setPage }) {
+export default function Sidebar({ setPage, currentPage }) {
   const [isOpen, setIsOpen] = React.useState(false); // Trạng thái đóng/mở menu trên mobile
+  const [activePage, setActivePage] = React.useState(currentPage || "main_dashboard");
 
   const menuItems = [
     { id: "main_dashboard", label: "Quản lý bàn", icon: <Home size={20} /> },
@@ -34,6 +35,7 @@ export default function Sidebar({ setPage }) {
 
   const handleNav = (id) => {
     setPage(id);
+    setActivePage(id);
     setIsOpen(false);
   };
 
@@ -76,12 +78,19 @@ export default function Sidebar({ setPage }) {
               <li key={item.id}>
                 <button
                   onClick={() => handleNav(item.id)}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group text-left"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group text-left
+                    ${activePage === item.id
+                      ? "bg-blue-600 text-white shadow-lg shadow-blue-900/30"
+                      : "hover:bg-gray-700 text-gray-300 hover:text-white"
+                    }`}
                 >
-                  <span className="text-gray-400 group-hover:text-white">
+                  <span className={`transition-colors duration-200 ${activePage === item.id ? "text-white" : "text-gray-400 group-hover:text-white"}`}>
                     {item.icon}
                   </span>
                   <span className="font-medium">{item.label}</span>
+                  {activePage === item.id && (
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-white opacity-80"></span>
+                  )}
                 </button>
               </li>
             ))}

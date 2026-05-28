@@ -161,38 +161,59 @@
     <script>
       const API_BASE = "http://localhost:8080/api/blogs";
 
-      // Format ngày từ ISO string sang "DD Tháng MM, YYYY"
-      function formatDateVI(isoString) {
+      // Lấy ngôn ngữ hiện tại từ localStorage (đồng bộ với i18n.js)
+      function getCurrentLang() {
+        return localStorage.getItem("selected_language")
+            || localStorage.getItem("language")
+            || "vi";
+      }
+
+      // Format ngày
+      function formatDate(isoString) {
         if (!isoString) return "";
         const date = new Date(isoString);
         const day = date.getDate();
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
+        const lng = getCurrentLang();
+        if (lng === "en") {
+          const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+          return `${months[month - 1]} ${day}, ${year}`;
+        }
         return `${day} Tháng ${month}, ${year}`;
       }
 
-      // Tạo HTML cho 1 bài viết
+      // Tạo HTML cho 1 bài viết — dùng field song ngữ, fallback về field cũ
       function createBlogPostHTML(blog) {
+        const lng = getCurrentLang();
         const imgSrc = blog.imgUrl && blog.imgUrl.trim() !== ""
           ? blog.imgUrl
-          : "../img/blog/default.jpg"; // Ảnh mặc định nếu không có
+          : "../img/blog/default.jpg";
 
-        const dateStr = formatDateVI(blog.createdAt);
-        const summary = blog.summary || "";
+        // Tiêu đề: ưu tiên field mới theo ngôn ngữ, fallback về title cũ
+        const title = (lng === "en" ? (blog.title_en || blog.title_vi) : blog.title_vi)
+                      || blog.title || "";
+
+        // Tóm tắt
+        const summary = (lng === "en" ? (blog.summary_en || blog.summary_vi) : blog.summary_vi)
+                        || blog.summary || "";
+
+        const dateStr = formatDate(blog.createdAt);
         const slug = blog.slug || "";
+        const readMoreLabel = lng === "en" ? "Read More" : "Đọc Tiếp";
 
         return `
           <article class="blog-post">
             <div class="blog-img" style="position:relative;">
-              <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(blog.title)}"
+              <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(title)}"
                 onerror="this.src='../img/blog/default.jpg'" />
               ${dateStr ? `<span class="blog-date">${escapeHtml(dateStr)}</span>` : ""}
             </div>
             <div class="blog-info">
-              <h3>${escapeHtml(blog.title)}</h3>
+              <h3>${escapeHtml(title)}</h3>
               <p>${escapeHtml(summary)}</p>
               <a href="./blog-detail.html?slug=${encodeURIComponent(slug)}" class="read-more">
-                Đọc Tiếp &rsaquo;
+                ${readMoreLabel} &rsaquo;
               </a>
             </div>
           </article>
@@ -210,44 +231,48 @@
           .replace(/'/g, "&#039;");
       }
 
+      // Cache blogs để re-render khi đổi ngôn ngữ mà không cần gọi API lại
+      let cachedBlogs = null;
+
+      function renderBlogs() {
+        const container = document.getElementById("blog-container");
+        const lng = getCurrentLang();
+
+        if (!cachedBlogs || cachedBlogs.length === 0) {
+          container.innerHTML = `
+            <div class="blog-empty">
+              <div class="blog-empty-icon">
+              <svg width="72" height="72" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(60,60) rotate(-38)">
+                  <rect x="-6" y="-38" width="12" height="48" rx="4" fill="none" stroke="#c5a880" stroke-width="2"/>
+                  <rect x="-6" y="-38" width="12" height="9" rx="4" fill="#c5a880" opacity="0.5"/>
+                  <polygon points="-6,10 6,10 1,26 -1,26" fill="#c5a880"/>
+                </g>
+                <path d="M18,88 Q38,72 60,80 Q82,88 102,70" fill="none" stroke="#c5a880" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="18" y1="96" x2="102" y2="96" stroke="#c5a880" stroke-width="0.8" opacity="0.35"/>
+              </svg>
+            </div>
+              <div class="blog-empty-title">${lng === "en" ? "No articles yet" : "Chưa có bài viết nào"}</div>
+              <div class="blog-empty-sub">${lng === "en"
+                ? "Culinary stories are being prepared.<br>Check back soon!"
+                : "Những câu chuyện ẩm thực đang được chuẩn bị.<br>Hãy quay lại sau nhé!"}</div>
+            </div>
+          `;
+          return;
+        }
+        container.innerHTML = cachedBlogs.map(createBlogPostHTML).join("");
+      }
+
       // Tải bài viết từ API
       async function loadBlogs() {
         const container = document.getElementById("blog-container");
-
         try {
-          // Chỉ lấy bài viết đang active (hiển thị)
           const res = await fetch(`${API_BASE}/active`);
-
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
           const blogs = await res.json();
-
-          if (blogs.length === 0) {
-            container.innerHTML = `
-              <div class="blog-empty">
-                <div class="blog-empty-icon">
-                <svg width="72" height="72" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g transform="translate(60,60) rotate(-38)">
-                    <rect x="-6" y="-38" width="12" height="48" rx="4" fill="none" stroke="#c5a880" stroke-width="2"/>
-                    <rect x="-6" y="-38" width="12" height="9" rx="4" fill="#c5a880" opacity="0.5"/>
-                    <polygon points="-6,10 6,10 1,26 -1,26" fill="#c5a880"/>
-                  </g>
-                  <path d="M18,88 Q38,72 60,80 Q82,88 102,70" fill="none" stroke="#c5a880" stroke-width="1.8" stroke-linecap="round"/>
-                  <line x1="18" y1="96" x2="102" y2="96" stroke="#c5a880" stroke-width="0.8" opacity="0.35"/>
-                </svg>
-              </div>
-                <div class="blog-empty-title">Chưa có bài viết nào</div>
-                <div class="blog-empty-sub">Những câu chuyện ẩm thực đang được chuẩn bị.<br>Hãy quay lại sau nhé!</div>
-              </div>
-            `;
-            return;
-          }
-
-          // Sắp xếp theo ngày mới nhất trước
           blogs.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-          container.innerHTML = blogs.map(createBlogPostHTML).join("");
-
+          cachedBlogs = blogs;
+          renderBlogs();
         } catch (err) {
           console.error("Lỗi khi tải blog:", err);
           container.innerHTML = `
@@ -258,6 +283,9 @@
           `;
         }
       }
+
+      // Re-render khi người dùng đổi ngôn ngữ (event từ i18n.js)
+      document.addEventListener("langChanged", () => renderBlogs());
 
       // Chạy khi trang load xong
       document.addEventListener("DOMContentLoaded", loadBlogs);

@@ -141,7 +141,9 @@ async function applyLanguage(lng) {
 }
 
 function changeLanguage(lng) {
-    applyLanguage(lng);
+    applyLanguage(lng).then(() => {
+        document.dispatchEvent(new CustomEvent('langChanged', { detail: lng }));
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

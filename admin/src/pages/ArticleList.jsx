@@ -14,30 +14,71 @@ function slugify(text) {
 }
 
 const emptyForm = {
-  title: "",
+  titleVi: "",
+  titleEn: "",
   slug: "",
   imgUrl: "",
-  summary: "",
-  content: "",
+  summaryVi: "",
+  summaryEn: "",
+  contentVi: "",
+  contentEn: "",
   authorName: "",
   active: true,
 };
 
+// Tab component for VI/EN switching inside the modal
+function LangTabs({ activeTab, onChange }) {
+  return (
+    <div className="flex gap-1 rounded-2xl bg-slate-100 p-1 w-fit">
+      {["vi", "en"].map((lang) => (
+        <button
+          key={lang}
+          type="button"
+          onClick={() => onChange(lang)}
+          className={`rounded-xl px-4 py-1.5 text-xs font-bold uppercase tracking-widest transition ${
+            activeTab === lang
+              ? "bg-white text-slate-900 shadow-sm"
+              : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          {lang === "vi" ? "🇻🇳 Tiếng Việt" : "🇬🇧 English"}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 function Modal({ mode, blog, onClose, onSaved }) {
-  const [form, setForm] = useState(mode === "edit" ? { ...blog } : { ...emptyForm });
+  const [form, setForm] = useState(
+    mode === "edit"
+      ? {
+          ...emptyForm,
+          ...blog,
+          // back-compat: if old record only has title/summary/content, pre-fill VI tab
+          titleVi: blog.titleVi || blog.title || "",
+          titleEn: blog.titleEn || "",
+          summaryVi: blog.summaryVi || blog.summary || "",
+          summaryEn: blog.summaryEn || "",
+          contentVi: blog.contentVi || blog.content || "",
+          contentEn: blog.contentEn || "",
+        }
+      : { ...emptyForm }
+  );
+  const [langTab, setLangTab] = useState("vi");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const titleRef = useRef(null);
+  const titleViRef = useRef(null);
 
   useEffect(() => {
-    titleRef.current?.focus();
+    titleViRef.current?.focus();
   }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setForm((prev) => {
       const updated = { ...prev, [name]: type === "checkbox" ? checked : value };
-      if (name === "title" && mode === "create") {
+      // Auto-generate slug from Vietnamese title on create
+      if (name === "titleVi" && mode === "create") {
         updated.slug = slugify(value);
       }
       return updated;
@@ -45,8 +86,8 @@ function Modal({ mode, blog, onClose, onSaved }) {
   };
 
   const handleSubmit = async () => {
-    if (!form.title.trim() || !form.content.trim() || !form.authorName.trim()) {
-      setError("Vui lòng điền đầy đủ tiêu đề, nội dung và tác giả.");
+    if (!form.titleVi.trim() || !form.contentVi.trim() || !form.titleEn.trim() || !form.contentEn.trim() || !form.authorName.trim()) {
+      setError("Vui lòng điền đầy đủ tiêu đề, nội dung cho cả 2 ngôn ngữ và tên tác giả.");
       return;
     }
     setLoading(true);
@@ -72,6 +113,7 @@ function Modal({ mode, blog, onClose, onSaved }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
       <div className="w-full max-w-2xl rounded-3xl bg-white shadow-2xl flex flex-col max-h-[90vh]">
+        {/* Modal header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-900">
             {mode === "edit" ? "Chỉnh sửa bài viết" : "Thêm bài viết mới"}
@@ -84,15 +126,10 @@ function Modal({ mode, blog, onClose, onSaved }) {
             <div className="rounded-2xl bg-rose-50 border border-rose-200 px-4 py-3 text-sm text-rose-700">{error}</div>
           )}
 
+          {/* Shared fields: slug, image, author, status */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Tiêu đề *</label>
-              <input ref={titleRef} name="title" value={form.title} onChange={handleChange}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-slate-500"
-                placeholder="Nhập tiêu đề bài viết..." />
-            </div>
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Slug (tự động)</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">Slug (tự động từ tiêu đề VI)</label>
               <input name="slug" value={form.slug} onChange={handleChange}
                 className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-slate-400 focus:bg-white"
                 placeholder="ten-bai-viet" />
@@ -108,20 +145,74 @@ function Modal({ mode, blog, onClose, onSaved }) {
                   onError={(e) => { e.target.style.display = "none"; }} />
               )}
             </div>
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Tóm tắt</label>
-              <textarea name="summary" value={form.summary} onChange={handleChange} rows={2}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-slate-500 resize-none"
-                placeholder="Mô tả ngắn về bài viết..." />
+          </div>
+
+          {/* Language tabs */}
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Nội dung song ngữ</span>
+              <LangTabs activeTab={langTab} onChange={setLangTab} />
             </div>
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Nội dung *</label>
-              <textarea name="content" value={form.content} onChange={handleChange} rows={6}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-slate-500 resize-none"
-                placeholder="Nội dung chi tiết bài viết..." />
+
+            <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-4 space-y-4">
+              {langTab === "vi" ? (
+                <>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Tiêu đề (Tiếng Việt) <span className="text-rose-500">*</span>
+                    </label>
+                    <input ref={titleViRef} name="titleVi" value={form.titleVi} onChange={handleChange}
+                      className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500"
+                      placeholder="Nhập tiêu đề bằng tiếng Việt..." />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Tóm tắt (Tiếng Việt)</label>
+                    <textarea name="summaryVi" value={form.summaryVi} onChange={handleChange} rows={2}
+                      className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500 resize-none"
+                      placeholder="Mô tả ngắn bằng tiếng Việt..." />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Nội dung (Tiếng Việt) <span className="text-rose-500">*</span>
+                    </label>
+                    <textarea name="contentVi" value={form.contentVi} onChange={handleChange} rows={7}
+                      className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500 resize-none"
+                      placeholder="Nội dung chi tiết bằng tiếng Việt..." />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Title (English) <span className="text-rose-500">*</span>
+                    </label>
+                    <input name="titleEn" value={form.titleEn} onChange={handleChange}
+                      className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500"
+                      placeholder="Enter title in English..." />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">Summary (English)</label>
+                    <textarea name="summaryEn" value={form.summaryEn} onChange={handleChange} rows={2}
+                      className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500 resize-none"
+                      placeholder="Short description in English..." />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1">
+                      Content (English) <span className="text-rose-500">*</span>
+                    </label>
+                    <textarea name="contentEn" value={form.contentEn} onChange={handleChange} rows={7}
+                      className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm outline-none focus:border-slate-500 resize-none"
+                      placeholder="Detailed content in English..." />
+                  </div>
+                </>
+              )}
             </div>
+          </div>
+
+          {/* Author + toggle */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Tác giả *</label>
+              <label className="block text-xs font-semibold text-slate-600 mb-1">Tác giả <span className="text-rose-500">*</span></label>
               <input name="authorName" value={form.authorName} onChange={handleChange}
                 className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-sm outline-none focus:border-slate-500"
                 placeholder="Tên tác giả..." />
@@ -159,8 +250,8 @@ function ArticleList() {
   const [fetchError, setFetchError] = useState("");
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
-  const [modal, setModal] = useState(null); // null | { mode: 'create' | 'edit', blog?: Blog }
-  const [deleteConfirm, setDeleteConfirm] = useState(null); // id to delete
+  const [modal, setModal] = useState(null);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const fetchArticles = async () => {
     setLoading(true);
@@ -231,6 +322,9 @@ function ArticleList() {
     if (!dateStr) return "-";
     return new Date(dateStr).toLocaleDateString("vi-VN");
   };
+
+  // Display title: prefer titleVi, fall back to legacy title field
+  const getDisplayTitle = (article) => article.titleVi || article.title || "(Chưa có tiêu đề)";
 
   return (
     <div className="min-h-screen bg-slate-100 p-6">
@@ -307,7 +401,8 @@ function ArticleList() {
                   <th className="rounded-tl-3xl px-4 py-3">ID</th>
                   <th className="px-4 py-3">Ảnh</th>
                   <th className="px-4 py-3">Tiêu đề</th>
-                  <th className="px-4 py-3">Tóm tắt</th>
+                  <th className="px-4 py-3">Tóm tắt (VI)</th>
+                  <th className="px-4 py-3">Ngôn ngữ</th>
                   <th className="px-4 py-3">Tác giả</th>
                   <th className="px-4 py-3">Ngày đăng</th>
                   <th className="px-4 py-3">Trạng thái</th>
@@ -317,7 +412,7 @@ function ArticleList() {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td colSpan="8" className="px-4 py-12 text-center text-slate-400">
+                    <td colSpan="9" className="px-4 py-12 text-center text-slate-400">
                       <div className="flex flex-col items-center gap-2">
                         <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-300 border-t-slate-700" />
                         <span className="text-sm">Đang tải dữ liệu...</span>
@@ -333,7 +428,7 @@ function ArticleList() {
                       <td className="px-4 py-4 font-medium text-slate-500">#{article.blogId}</td>
                       <td className="px-4 py-4">
                         {article.imgUrl ? (
-                          <img src={article.imgUrl} alt={article.title}
+                          <img src={article.imgUrl} alt={getDisplayTitle(article)}
                             className="h-14 w-14 rounded-2xl object-cover border border-slate-200"
                             onError={(e) => { e.target.src = "https://via.placeholder.com/56?text=?"; }} />
                         ) : (
@@ -341,11 +436,24 @@ function ArticleList() {
                         )}
                       </td>
                       <td className="px-4 py-4">
-                        <div className="font-semibold text-slate-900">{article.title}</div>
+                        <div className="font-semibold text-slate-900">{getDisplayTitle(article)}</div>
+                        {article.titleEn && (
+                          <div className="text-xs text-slate-400 mt-0.5 italic">{article.titleEn}</div>
+                        )}
                         <div className="text-xs text-slate-400 mt-0.5">/{article.slug}</div>
                       </td>
                       <td className="px-4 py-4 text-slate-600 max-w-xs">
-                        <div className="line-clamp-2">{article.summary || "-"}</div>
+                        <div className="line-clamp-2">{article.summaryVi || article.summary || "-"}</div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex flex-col gap-1">
+                          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold w-fit ${
+                            article.titleVi ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-400"
+                          }`}>🇻🇳 VI</span>
+                          <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold w-fit ${
+                            article.titleEn ? "bg-amber-100 text-amber-700" : "bg-slate-100 text-slate-400"
+                          }`}>🇬🇧 EN</span>
+                        </div>
                       </td>
                       <td className="px-4 py-4 text-slate-600 whitespace-nowrap">{article.authorName}</td>
                       <td className="px-4 py-4 text-slate-600 whitespace-nowrap">{formatDate(article.createdAt)}</td>
@@ -385,7 +493,7 @@ function ArticleList() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="8" className="px-4 py-12 text-center text-slate-400">
+                    <td colSpan="9" className="px-4 py-12 text-center text-slate-400">
                       Chưa có bài viết nào. Hãy thêm bài viết đầu tiên!
                     </td>
                   </tr>
