@@ -22,10 +22,6 @@ public class UserController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @JsonIgnore
-    @Column(nullable = false)
-    private String password;
-
     // Lấy tất cả tài khoản
     @GetMapping
     public List<User> getAllUsers() {
