@@ -12,6 +12,7 @@ import InvoiceHistory from "./pages/InvoiceHistory";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import UserManagement from "./pages/UserManagement";
 
 export default function App() {
   const [page, setPage] = React.useState("main_dashboard");
@@ -135,6 +136,8 @@ export default function App() {
         return <Reservations />;
       case "invoice_history":
         return <InvoiceHistory />;
+      case "users":
+        return <UserManagement />;
       default:
         return (
           <DashBoard

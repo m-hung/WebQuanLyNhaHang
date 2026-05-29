@@ -9,7 +9,8 @@ import {
   Receipt,
   Utensils,
   BookOpen,
-  Users // Tải thêm icon Users cho Quản lý tài khoản
+  Users,
+  LogOut
 } from "lucide-react";
 
 export default function Sidebar({ setPage, currentPage }) {
@@ -103,8 +104,25 @@ export default function Sidebar({ setPage, currentPage }) {
           </nav>
 
           {/* Phần chân Sidebar */}
-          <div className="p-4 border-t border-gray-700 text-sm text-gray-400 text-center">
-            © 2026 Admin Dashboard
+          <div className="p-4 border-t border-gray-700">
+            <div className="text-sm text-gray-400 mb-3">
+        <span className="block font-medium text-gray-300">
+            {localStorage.getItem("fullName") || "Admin"}
+        </span>
+              <span className="text-xs">{localStorage.getItem("role")}</span>
+            </div>
+            <button
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  localStorage.removeItem("role");
+                  localStorage.removeItem("fullName");
+                  window.location.href = "/login";
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all duration-200"
+            >
+              <LogOut size={18} />
+              <span className="font-medium text-sm">Đăng xuất</span>
+            </button>
           </div>
         </aside>
       </>
