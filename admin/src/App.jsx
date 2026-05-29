@@ -9,6 +9,9 @@ import Pos from "./pages/Pos";
 import Checkout from "./pages/Checkout";
 import Statistics from "./pages/Statistics";
 import InvoiceHistory from "./pages/InvoiceHistory";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 export default function App() {
   const [page, setPage] = React.useState("main_dashboard");
@@ -145,34 +148,57 @@ export default function App() {
     }
   };
 
-  return (
-    <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-      <Sidebar setPage={setPage} />
-      <main className="flex-1 p-4 md:p-8 overflow-auto">{renderPage()}</main>
+  // ... (giữ nguyên phần khai báo state và useEffect ở trên của bạn)
 
-      {toastMessage && (
-        <div className="fixed top-4 right-4 z-50 bg-[#63b365] text-white px-4 py-3 rounded shadow-lg flex items-center gap-3 animate-fade-in-down">
-          <div className="bg-white/20 rounded-full p-1">
-            <svg
-              className="w-5 h-5 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="3"
-                d="M5 13l4 4L19 7"
-              ></path>
-            </svg>
-          </div>
-          <div>
-            <p className="font-bold text-sm leading-tight">Thông báo</p>
-            <p className="text-sm">{toastMessage}</p>
-          </div>
-        </div>
-      )}
-    </div>
+  return (
+      <BrowserRouter>
+        <Routes>
+          {/* Route đăng nhập không cần bảo vệ */}
+          <Route path="/login" element={<LoginPage />} />
+
+          {/* Mọi route khác (/*) sẽ được bọc bởi ProtectedRoute */}
+          <Route
+              path="/*"
+              element={
+                <ProtectedRoute>
+                  {/* Bê nguyên khối giao diện cũ của bạn vào đây */}
+                  <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+                    <Sidebar setPage={setPage} />
+                    <main className="flex-1 p-4 md:p-8 overflow-auto">
+                      {renderPage()}
+                    </main>
+
+                    {/* Thông báo Toast */}
+                    {toastMessage && (
+                        <div className="fixed top-4 right-4 z-50 bg-[#63b365] text-white px-4 py-3 rounded shadow-lg flex items-center gap-3 animate-fade-in-down">
+                          <div className="bg-white/20 rounded-full p-1">
+                            <svg
+                                className="w-5 h-5 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                              <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="3"
+                                  d="M5 13l4 4L19 7"
+                              ></path>
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="font-bold text-sm leading-tight">
+                              Thông báo
+                            </p>
+                            <p className="text-sm">{toastMessage}</p>
+                          </div>
+                        </div>
+                    )}
+                  </div>
+                </ProtectedRoute>
+              }
+          />
+        </Routes>
+      </BrowserRouter>
   );
 }
