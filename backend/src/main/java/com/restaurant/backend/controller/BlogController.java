@@ -10,19 +10,35 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/blogs")
-@CrossOrigin(origins = "http://localhost:5173") // Khớp với cổng React/Vite của bạn
+@CrossOrigin(origins = "http://localhost:5173")
 public class BlogController {
 
     @Autowired
     private BlogRepository blogRepository;
 
-    // 1. Lấy tất cả bài viết
+    // 1. Lấy tất cả bài viết (dùng cho trang admin)
     @GetMapping
     public List<Blog> getAllBlogs() {
         return blogRepository.findAll();
     }
 
-    // 2. Lấy chi tiết bài viết theo ID
+    // 2. Lấy các bài viết đang hiển thị (dùng cho trang blog.html khách hàng)
+    @GetMapping("/active")
+    public List<Blog> getActiveBlogs() {
+        return blogRepository.findByActiveTrue();
+    }
+
+    // 3. Lấy chi tiết bài viết theo slug (dùng cho trang blog-detail.html)
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<Blog> getBlogBySlug(@PathVariable String slug) {
+        Blog blog = blogRepository.findBySlug(slug);
+        if (blog == null || !blog.isActive()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(blog);
+    }
+
+    // 4. Lấy chi tiết bài viết theo ID
     @GetMapping("/{id}")
     public ResponseEntity<Blog> getBlogById(@PathVariable Long id) {
         return blogRepository.findById(id)
@@ -30,39 +46,31 @@ public class BlogController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // 3. Tạo bài viết mới
+    // 5. Tạo bài viết mới
     @PostMapping
     public Blog createBlog(@RequestBody Blog blog) {
         return blogRepository.save(blog);
     }
 
-    // 4. Cập nhật bài viết
+    // 6. Cập nhật bài viết
     @PutMapping("/{id}")
     public Blog updateBlog(@PathVariable Long id, @RequestBody Blog blogDetails) {
         return blogRepository.findById(id).map(blog -> {
-            // Cập nhật Tiêu đề đa ngôn ngữ
             blog.setTitleVi(blogDetails.getTitleVi());
             blog.setTitleEn(blogDetails.getTitleEn());
-            
-            // Cập nhật Tóm tắt đa ngôn ngữ
             blog.setSummaryVi(blogDetails.getSummaryVi());
             blog.setSummaryEn(blogDetails.getSummaryEn());
-            
-            // Cập nhật Nội dung đa ngôn ngữ
             blog.setContentVi(blogDetails.getContentVi());
             blog.setContentEn(blogDetails.getContentEn());
-            
-            // Các trường chung giữ nguyên
             blog.setSlug(blogDetails.getSlug());
             blog.setImgUrl(blogDetails.getImgUrl());
             blog.setAuthorName(blogDetails.getAuthorName());
-            blog.setActive(blogDetails.isActive()); // Ẩn hoặc Hiện bài viết
-            
+            blog.setActive(blogDetails.isActive());
             return blogRepository.save(blog);
         }).orElseThrow(() -> new RuntimeException("Không tìm thấy blog với ID: " + id));
     }
 
-    // 5. Xóa bài viết
+    // 7. Xóa bài viết
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBlog(@PathVariable Long id) {
         try {

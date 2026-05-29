@@ -4,166 +4,46 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chi Tiết Bài Viết - Celesté House</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="../style/style.css" />
     <link rel="stylesheet" href="../style/blogStyle.css" />
-
     <style>
-      /* Lang switcher */
-      .lang-switcher-nav {
-        display: inline-flex;
-        gap: 10px;
-        align-items: center;
-        margin-left: 10px;
-      }
-      .btn-lang {
-        background: transparent;
-        border: 1px solid #c5a880;
-        color: #fff;
-        padding: 8px 16px;
-        cursor: pointer;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        border-radius: 30px;
-        transition: all 0.3s ease;
-      }
-      .btn-lang:hover,
-      .btn-lang.active-lang {
-        background: #c5a880;
-        color: #000;
-      }
-
-      /* Hero: dùng ảnh bìa bài viết làm background */
-      .blog-hero {
-        position: relative;
-        height: 80vh;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-      }
-      #hero-bg-layer {
-        position: absolute;
-        inset: 0;
-        background-size: cover;
-        background-position: center;
-        /* Overlay đè lên, giống blogStyle */
-        background-color: #111;
-      }
-      #hero-bg-layer::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.72);
-      }
-      /* nav và hero-content2 cần nằm trên overlay */
-      .blog-hero nav,
-      .blog-hero .hero-content2 {
-        position: relative;
-        z-index: 2;
-      }
-
-      /* Loading / error / not-found */
-      .state-box {
-        text-align: center;
-        padding: 100px 20px;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 14px;
-        letter-spacing: 1px;
-      }
+      .lang-switcher-nav { display: inline-flex; gap: 10px; align-items: center; margin-left: 10px; }
+      .btn-lang { background: transparent; border: 1px solid #c5a880; color: #fff; padding: 8px 16px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; border-radius: 30px; transition: all 0.3s ease; }
+      .btn-lang:hover, .btn-lang.active-lang { background: #c5a880; color: #000; }
+      .blog-hero { position: relative; height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
+      #hero-bg-layer { position: absolute; inset: 0; background-size: cover; background-position: center; background-color: #111; }
+      #hero-bg-layer::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.72); }
+      .blog-hero nav, .blog-hero .hero-content2 { position: relative; z-index: 2; }
+      .state-box { text-align: center; padding: 100px 20px; font-family: 'Montserrat', sans-serif; font-size: 14px; letter-spacing: 1px; }
       .state-loading { color: #888; display: flex; align-items: center; justify-content: center; gap: 14px; }
-      .state-error   { color: #c0392b; }
-      .state-404 h2  { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--gold, #c5a880); margin-bottom: 12px; }
-      .state-404 p   { color: #888; }
-      .spinner {
-        width: 28px; height: 28px;
-        border: 2px solid #333;
-        border-top-color: #c5a880;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        flex-shrink: 0;
-      }
+      .state-error { color: #c0392b; }
+      .state-404 h2 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--gold, #c5a880); margin-bottom: 12px; }
+      .state-404 p { color: #888; }
+      .spinner { width: 28px; height: 28px; border: 2px solid #333; border-top-color: #c5a880; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
       @keyframes spin { to { transform: rotate(360deg); } }
-
-      /* Fade-in */
       .fade-in { animation: fadeIn 0.5s ease both; }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(16px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-
-      /* Author footer */
-      .blog-author-footer {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 0 30px 80px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 20px;
-        border-top: 1px solid rgba(197,160,89,0.2);
-        padding-top: 40px;
-      }
-      .author-badge {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-      }
-      .author-avatar {
-        width: 46px; height: 46px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #c5a880, #9a7d5a);
-        display: flex; align-items: center; justify-content: center;
-        color: #000;
-        font-family: 'Playfair Display', serif;
-        font-size: 18px;
-        font-style: italic;
-        font-weight: 700;
-        flex-shrink: 0;
-      }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+      .blog-author-footer { max-width: 1000px; margin: 0 auto; padding: 40px 30px 80px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; border-top: 1px solid rgba(197,160,89,0.2); }
+      .author-badge { display: flex; align-items: center; gap: 14px; }
+      .author-avatar { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #c5a880, #9a7d5a); display: flex; align-items: center; justify-content: center; color: #000; font-family: 'Playfair Display', serif; font-size: 18px; font-style: italic; font-weight: 700; flex-shrink: 0; }
       .author-info { font-family: 'Montserrat', sans-serif; }
-      .author-label {
-        font-size: 10px; font-weight: 600; letter-spacing: 1.5px;
-        text-transform: uppercase; color: var(--gold, #c5a880); margin-bottom: 2px;
-      }
+      .author-label { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold, #c5a880); margin-bottom: 2px; }
       .author-name { font-size: 15px; font-weight: 600; color: #fff; }
-
-      /* Fix tràn viền khi nội dung không có khoảng trắng */
-      .blog-detail-content p,
-      .blog-detail-content blockquote {
-        word-break: break-word;
-        overflow-wrap: break-word;
-      }
-
-      @media (max-width: 640px) {
-        .blog-author-footer { flex-direction: column; align-items: flex-start; }
-      }
+      .blog-detail-content p, .blog-detail-content blockquote { word-break: break-word; overflow-wrap: break-word; }
     </style>
   </head>
-
   <body>
-    <!-- HEADER -->
     <header class="blog-hero" id="blog-hero">
       <div id="hero-bg-layer"></div>
-
       <nav>
         <div class="logo">CELESTÉ HOUSE</div>
-        <button class="menu-toggle" id="mobile-menu">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
+        <button class="menu-toggle" id="mobile-menu"><span class="material-symbols-outlined">menu</span></button>
         <ul class="nav-links">
           <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
-          <li><a href="./menu.html"   data-i18n="navbar.nav_menu">Thực Đơn</a></li>
-          <li><a href="./team.html"   data-i18n="navbar.nav_team">Nhà Hàng</a></li>
+          <li><a href="./menu.html" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
+          <li><a href="./team.html" data-i18n="navbar.nav_team">Nhà Hàng</a></li>
           <li><a href="./booking.html" data-i18n="navbar.nav_booking">Đặt Bàn</a></li>
           <li><a href="./blog.html" class="active" data-i18n="navbar.nav_blog">Blog</a></li>
           <li><a href="./contact.html" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
@@ -175,14 +55,12 @@
           </li>
         </ul>
       </nav>
-
       <div class="hero-content2" id="hero-content" style="display:none;">
         <h1 id="hero-title"></h1>
         <div class="line"></div>
       </div>
     </header>
 
-    <!-- NỘI DUNG CHÍNH -->
     <section class="blog-detail-section">
       <div class="blog-detail-container" id="detail-root">
         <div class="state-box state-loading" id="state-loading">
@@ -203,87 +81,98 @@
         return new URLSearchParams(window.location.search).get("slug") || "";
       }
 
-      function formatDateVI(iso) {
+      function getCurrentLang() {
+        return localStorage.getItem("selected_language") || localStorage.getItem("language") || "vi";
+      }
+
+      function getTitle(blog) {
+        const lng = getCurrentLang();
+        return lng === "en" ? (blog.titleEn || blog.titleVi || "") : (blog.titleVi || blog.titleEn || "");
+      }
+
+      function getSummary(blog) {
+        const lng = getCurrentLang();
+        return lng === "en" ? (blog.summaryEn || blog.summaryVi || "") : (blog.summaryVi || blog.summaryEn || "");
+      }
+
+      function getContent(blog) {
+        const lng = getCurrentLang();
+        return lng === "en" ? (blog.contentEn || blog.contentVi || "") : (blog.contentVi || blog.contentEn || "");
+      }
+
+      function getAuthorLabel() {
+        return getCurrentLang() === "en" ? "Author" : "Tác giả";
+      }
+
+      function getBackLabel() {
+        return getCurrentLang() === "en" ? "← Back to Blog" : "← Quay Lại Blog";
+      }
+
+      function formatDate(iso) {
         if (!iso) return "";
         const d = new Date(iso);
-        return `${d.getDate()} Tháng ${d.getMonth() + 1}, ${d.getFullYear()}`;
+        const day = d.getDate(), month = d.getMonth() + 1, year = d.getFullYear();
+        if (getCurrentLang() === "en") {
+          const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+          return `${months[month-1]} ${day}, ${year}`;
+        }
+        return `${day} Tháng ${month}, ${year}`;
       }
 
       function esc(str) {
         if (!str) return "";
-        return str.replace(/&/g,"&amp;").replace(/</g,"&lt;")
-                  .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+        return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
       }
 
       function initial(name) {
         return name ? name.trim().charAt(0).toUpperCase() : "C";
       }
 
+      let cachedBlog = null;
+
       function renderBlog(blog) {
         const root = document.getElementById("detail-root");
+        const imgSrc = blog.imgUrl && blog.imgUrl.trim() ? blog.imgUrl : "../img/blog/default.jpg";
 
-        const imgSrc = blog.imgUrl && blog.imgUrl.trim()
-          ? blog.imgUrl : "../img/blog/default.jpg";
+        const title = getTitle(blog);
+        const summary = getSummary(blog);
+        const content = getContent(blog);
+        const author = blog.authorName || "Celesté House";
+        const dateStr = formatDate(blog.createdAt);
 
-        // Cập nhật hero
+        // Update hero
         document.getElementById("hero-bg-layer").style.backgroundImage = `url('${esc(imgSrc)}')`;
-        document.getElementById("hero-title").textContent = blog.title || "";
+        document.getElementById("hero-title").textContent = title;
         document.getElementById("hero-content").style.display = "";
-
-        // Cập nhật <title>
-        document.title = `${blog.title} — Celesté House`;
-
-        const dateStr  = formatDateVI(blog.createdAt);
-        const summary  = blog.summary  || "";
-        const content  = blog.content  || "";
-        const author   = blog.authorName || "Celesté House";
+        document.title = `${title} — Celesté House`;
 
         root.innerHTML = `
           <div class="fade-in">
-
-            <!-- Tiêu đề -->
             <div class="blog-detail-title-wrapper">
-              <h1 class="blog-detail-title">${esc(blog.title)}</h1>
+              <h1 class="blog-detail-title">${esc(title)}</h1>
             </div>
-
-            <!-- Meta: ngày + tác giả -->
             <div class="blog-detail-meta-wrapper">
               ${dateStr ? `<span class="blog-detail-meta">${esc(dateStr)}</span>` : ""}
-              ${author  ? `<span class="blog-detail-meta">${esc(author)}</span>`  : ""}
+              ${author  ? `<span class="blog-detail-meta">${esc(author)}</span>` : ""}
             </div>
-
-            <!-- Ảnh bìa lớn -->
-            <img
-              class="blog-detail-img"
-              src="${esc(imgSrc)}"
-              alt="${esc(blog.title)}"
-              onerror="this.src='../img/blog/default.jpg'"
-            />
-
-            <!-- Nội dung -->
+            <img class="blog-detail-img" src="${esc(imgSrc)}" alt="${esc(title)}" onerror="this.src='../img/blog/default.jpg'" />
             <div class="blog-detail-content">
               ${summary ? `<blockquote>${esc(summary)}</blockquote>` : ""}
-              ${content.split(/\n\n+/).map(para =>
-                para.trim() ? `<p>${esc(para.trim())}</p>` : ""
-              ).join("")}
+              ${content.split(/\n\n+/).map(para => para.trim() ? `<p>${esc(para.trim())}</p>` : "").join("")}
             </div>
-
-            <!-- Tác giả + Nút quay lại -->
             <div class="blog-author-footer">
               <div class="author-badge">
                 <div class="author-avatar">${esc(initial(author))}</div>
                 <div class="author-info">
-                  <div class="author-label">Tác giả</div>
+                  <div class="author-label">${getAuthorLabel()}</div>
                   <div class="author-name">${esc(author)}</div>
                 </div>
               </div>
               <div class="blog-back-wrapper" style="padding:0;">
-                <a href="./blog.html" class="back-to-blog">← Quay Lại Blog</a>
+                <a href="./blog.html" class="back-to-blog">${getBackLabel()}</a>
               </div>
             </div>
-
-          </div>
-        `;
+          </div>`;
       }
 
       function renderError(msg) {
@@ -307,19 +196,22 @@
       async function loadBlogDetail() {
         const slug = getSlug();
         if (!slug) { renderNotFound(); return; }
-
         try {
           const res = await fetch(`${API_BASE}/slug/${encodeURIComponent(slug)}`);
           if (res.status === 404) { renderNotFound(); return; }
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const blog = await res.json();
+          cachedBlog = await res.json();
           document.getElementById("state-loading")?.remove();
-          renderBlog(blog);
+          renderBlog(cachedBlog);
         } catch (err) {
           console.error(err);
           renderError(err.message);
         }
       }
+
+      document.addEventListener('langChanged', () => {
+        if (cachedBlog) renderBlog(cachedBlog);
+      });
 
       document.addEventListener("DOMContentLoaded", loadBlogDetail);
     </script>
