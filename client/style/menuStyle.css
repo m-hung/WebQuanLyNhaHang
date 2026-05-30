@@ -72,9 +72,10 @@ body {
 .hero-bg {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(to bottom, rgba(9,9,9,0.2) 0%, rgba(9,9,9,0.05) 40%, rgba(9,9,9,0.75) 80%, var(--bg) 100%),
-    url('https://i.pinimg.com/1200x/18/4f/ef/184fef5f941f9d0a6bcf9061a65b5cf8.jpg') center/cover no-repeat;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Đảm bảo video tự co giãn phủ kín khung wrap mà không biến dạng */
+  z-index: 1;        /* Nằm dưới phần text hero-body */
 }
  
 .hero-body {
