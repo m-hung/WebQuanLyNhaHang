@@ -32,6 +32,10 @@ public class MenuItem {
 
     private BigDecimal price;
     private Double discount;
+
+    @Lob // Thêm @Lob để Spring Boot hiểu đây là dữ liệu lớn
+    @Column(name = "image_url", columnDefinition = "LONGTEXT")
     private String imageUrl;
+    
     private Boolean isAvailable;
 }
