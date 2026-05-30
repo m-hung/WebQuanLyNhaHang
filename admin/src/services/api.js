@@ -1,7 +1,7 @@
 const BASE_URL = "http://localhost:8080";
 
 export const apiFetch = async (path, options = {}) => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const res = await fetch(`${BASE_URL}${path}`, {
         ...options,
         headers: {
@@ -12,7 +12,7 @@ export const apiFetch = async (path, options = {}) => {
     });
 
     if (res.status === 401) {
-        localStorage.clear();
+        sessionStorage.clear();
         window.location.href = "/login";
     }
 

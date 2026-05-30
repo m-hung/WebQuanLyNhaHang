@@ -13,9 +13,10 @@ export default function LoginPage() {
         setLoading(true);
         try {
             const data = await login(username, password);
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("role", data.role);
-            localStorage.setItem("fullName", data.fullName);
+            sessionStorage.setItem("token", data.token);
+            sessionStorage.setItem("role", data.role);
+            sessionStorage.setItem("fullName", data.fullName);
+            sessionStorage.setItem("username", username);
             window.location.href = "/";
         } catch (err) {
             setError(err.message || "Đăng nhập thất bại!");
@@ -45,6 +46,7 @@ export default function LoginPage() {
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
+                            autoComplete="off"
                             className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500 text-sm"
                             placeholder="Nhập username..."
                             required
@@ -58,6 +60,7 @@ export default function LoginPage() {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            autoComplete="new-password"
                             className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-none focus:border-blue-500 text-sm"
                             placeholder="Nhập mật khẩu..."
                             required

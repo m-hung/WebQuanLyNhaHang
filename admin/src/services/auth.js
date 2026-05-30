@@ -9,12 +9,12 @@ export const login = async (username, password) => {
 };
 
 export const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("role");
-    localStorage.removeItem("fullName");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("role");
+    sessionStorage.removeItem("fullName");
     window.location.href = "/login";
 };
 
-export const getToken = () => localStorage.getItem("token");
-export const getRole = () => localStorage.getItem("role");
+export const getToken = () => sessionStorage.getItem("token");
+export const getRole = () => sessionStorage.getItem("role");
 export const isLoggedIn = () => !!getToken();

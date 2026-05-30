@@ -61,13 +61,29 @@ public class UserController {
             if (body.get("role") != null) user.setRole(body.get("role"));
             if (body.get("status") != null) user.setStatus(body.get("status"));
 
-            // Chỉ đổi password nếu có truyền lên và không rỗng
             String newPassword = body.get("password");
             if (newPassword != null && !newPassword.isBlank()) {
+                String oldPassword = body.get("oldPassword");
+
+                // Kiểm tra xem mật khẩu cũ truyền lên có khớp với CSDL không
+                if (oldPassword == null || !passwordEncoder.matches(oldPassword, user.getPassword())) {
+                    return ResponseEntity.badRequest().body("Mật khẩu cũ không chính xác!");
+                }
+
+                // Nếu khớp thì mới mã hóa và lưu mật khẩu mới
                 user.setPassword(passwordEncoder.encode(newPassword));
             }
-
             return ResponseEntity.ok(userRepository.save(user));
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/reset-password")
+    public ResponseEntity<?> resetPassword(@PathVariable Long id) {
+        return userRepository.findById(id).map(user -> {
+            // Đặt lại mật khẩu về mặc định là 123456
+            user.setPassword(passwordEncoder.encode("123456"));
+            userRepository.save(user);
+            return ResponseEntity.ok().body("Reset mật khẩu thành công!");
         }).orElse(ResponseEntity.notFound().build());
     }
 
