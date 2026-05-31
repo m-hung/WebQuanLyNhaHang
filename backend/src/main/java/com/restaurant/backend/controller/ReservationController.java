@@ -49,4 +49,15 @@ public class ReservationController {
 
         return reservationRepository.save(reservation);
     }
+    @PutMapping("/{id}/complete")
+    public Reservation completeReservation(@PathVariable Long id) {
+        Reservation reservation = reservationRepository
+                .findById(id)
+                .orElseThrow();
+
+        // Chuyển trạng thái thành COMPLETED (Hoàn thành)
+        reservation.setStatus("COMPLETED");
+
+        return reservationRepository.save(reservation);
+    }
 }

@@ -4,6 +4,7 @@ import com.restaurant.backend.entity.OrderItem;
 import com.restaurant.backend.repository.OrderItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,5 +25,12 @@ public class OrderItemController {
     @PostMapping
     public OrderItem addOrderItem(@RequestBody OrderItem orderItem) {
         return orderItemRepository.save(orderItem);
+    }
+    @DeleteMapping("/order/{orderId}")
+    @Transactional
+    public org.springframework.http.ResponseEntity<?> deleteItemsByOrder(@PathVariable Long orderId) {
+        List<OrderItem> items = orderItemRepository.findByOrder_OrderId(orderId);
+        orderItemRepository.deleteAll(items);
+        return org.springframework.http.ResponseEntity.ok().build();
     }
 }

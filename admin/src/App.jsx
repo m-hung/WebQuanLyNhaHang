@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // <--- 1. Thêm useEffect ở đây
+import React, { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar";
 import DashBoard from "./pages/Dashboard";
 import Categories from "./pages/Categories";
@@ -36,14 +36,17 @@ export default function App() {
           totalPrice: order.totalAmount,
           cashierName: order.cashierName || "Thu ngân",
           cart: (order.orderItems || []).map((item) => {
+            // Lấy thẳng menuItem từ DB
             const menuItem = item.menuItem || {};
             return {
               itemId: menuItem.itemId || item.itemId,
-              name: menuItem.name || item.name || "",
-              price: menuItem.price || item.price || 0,
-              discount: menuItem.discount || item.discount || 0,
-              imageUrl: menuItem.imageUrl || item.imageUrl || "",
-              qty: item.quantity || item.qty || 1,
+              // KHÓA MỤC TIÊU: Chỉ lấy trực tiếp từ menuItem, loại bỏ nhiễu
+              nameVi: menuItem.nameVi || menuItem.name || "",
+              nameEn: menuItem.nameEn || menuItem.englishName || "",
+              price: menuItem.price || 0,
+              discount: menuItem.discount || 0,
+              imageUrl: menuItem.imageUrl || "",
+              qty: item.quantity || 1,
             };
           }),
         }));
