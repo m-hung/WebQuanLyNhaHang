@@ -82,54 +82,117 @@
     </header>
 
     <section class="features">
-      <h2 data-i18n="page.features_title">Tại Sao Chọn Chúng Tôi</h2>
+      <h2 class="reveal" data-i18n="page.features_title">Tại Sao Chọn Chúng Tôi</h2>
       <div class="features-grid">
-        <div class="feature-item">
+        <div class="feature-item reveal reveal-delay-1">
           <span class="icon material-symbols-outlined">chef_hat</span>
           <h3 data-i18n="page.feature_chef_title">Đầu Bếp Chuyên Nghiệp</h3>
           <p data-i18n="page.feature_chef_desc">Đội ngũ giàu kinh nghiệm với hơn 10 năm trong nghề.</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-item reveal reveal-delay-2">
           <span class="icon material-symbols-outlined">av_timer</span>
           <h3 data-i18n="page.feature_service_speed_title">Phục Vụ Nhanh Chóng</h3>
           <p data-i18n="page.feature_service_speed_desc">Cam kết phục vụ món ăn trong thời gian ngắn nhất.</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-item reveal reveal-delay-3">
           <span class="icon material-symbols-outlined">workspace_premium</span>
           <h3 data-i18n="page.feature_quality_title">Chất Lượng Đảm Bảo</h3>
           <p data-i18n="page.feature_quality_desc">Nguyên liệu tươi ngon, được chọn lựa kỹ lưỡng.</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-item reveal reveal-delay-4">
           <span class="icon material-symbols-outlined">person_heart</span>
           <h3 data-i18n="page.feature_dedication_title">Dịch Vụ Tận Tâm</h3>
           <p data-i18n="page.feature_dedication_desc">Đội ngũ nhân viên thân thiện, chuyên nghiệp.</p>
         </div>
       </div>
     </section>
-
-    <section class="about">
-      <div class="about-container">
-        <div class="about-image">
-          <img src="img/VeChungToi.jpg" alt="Không gian nhà hàng" />
-        </div>
-        <div class="about-content">
-          <h2 class="about-title" data-i18n="page.about_title">Về Chúng Tôi</h2>
-          <p class="about-text" data-i18n="page.about_p1">
-            Chính thức thành lập vào tháng 03/2026, CELESTÉ HOUSE tự hào là điểm đến lý tưởng cho những ai yêu thích ẩm thực Âu tinh tế. Với không gian sang trọng, quyến rũ và được chăm chút tỉ mỉ đến từng chi tiết, chúng tôi mang đến cho quý khách một trải nghiệm Fine Dining đẳng cấp quốc tế đúng nghĩa.
-          </p>
-          <p class="about-text" data-i18n="page.about_p2">
-            Đặc biệt, món bò Wagyu đã làm nên thương hiệu của chúng tôi tại Nhật Bản. Dưới bàn tay tài hoa của các đầu bếp hàng đầu thế giới, từng thớ thịt vân mỡ cẩm thạch được chế biến hoàn hảo theo phương pháp truyền thống, giữ trọn vẹn sự tinh túy và mềm tan ngay khi thưởng thức.
-          </p>
-        </div>
+    <section class="gallery-section">
+  <h2 class="reveal" data-i18n="page.gallery_title">Không Gian &amp; Ẩm Thực</h2>
+  <p class="section-subtitle reveal" data-i18n="page.gallery_subtitle">Khám phá từng góc nhìn của Celesté House</p>
+ 
+  <div class="masonry-grid">
+ 
+    <!-- Item 1: Phòng ăn chính (chiếm 2 cột, hàng 1) -->
+    <div class="masonry-item reveal reveal-delay-1" data-idx="0">
+      <img src="img/gallery/phong-an-chinh.jpg" alt="Phòng ăn chính Celesté House" />
+      <div class="masonry-overlay">
+        <span class="material-symbols-outlined gallery-zoom-icon">open_in_full</span>
       </div>
-    </section>
-
-    <section class="menu">
-  <h2 data-i18n="page.special_menu_title">Món Ăn Đặc Biệt</h2>
+      <div class="photo-label" data-i18n="page.gallery_label_dining">Phòng Ăn Chính</div>
+    </div>
+ 
+    <!-- Item 2: Hầm rượu -->
+    <div class="masonry-item reveal reveal-delay-2" data-idx="1">
+      <img src="img/gallery/ham-ruou.jpg" alt="Hầm rượu Celesté House" />
+      <div class="masonry-overlay">
+        <span class="material-symbols-outlined gallery-zoom-icon">open_in_full</span>
+      </div>
+      <div class="photo-label" data-i18n="page.gallery_label_wine">Hầm Rượu</div>
+    </div>
+ 
+    <!-- Item 3: Wagyu (chiếm 2 hàng, cột 4) -->
+    <div class="masonry-item reveal reveal-delay-3" data-idx="2">
+      <img src="img/menu/wayguA5.jpg" alt="Wagyu Beef A5" />
+      <div class="masonry-overlay">
+        <span class="material-symbols-outlined gallery-zoom-icon">open_in_full</span>
+      </div>
+      <div class="photo-label" data-i18n="page.gallery_label_wagyu">Wagyu A5</div>
+    </div>
+ 
+    <!-- Item 4: Phòng riêng tư -->
+    <div class="masonry-item reveal reveal-delay-4" data-idx="3">
+      <img src="img/gallery/phong-rieng.jpg" alt="Phòng riêng tư" />
+      <div class="masonry-overlay">
+        <span class="material-symbols-outlined gallery-zoom-icon">open_in_full</span>
+      </div>
+      <div class="photo-label" data-i18n="page.gallery_label_private">Phòng Riêng Tư</div>
+    </div>
+ 
+    <!-- Item 5: Quầy Bar (chiếm 2 cột, hàng 2) -->
+    <div class="masonry-item reveal reveal-delay-5" data-idx="4">
+      <img src="img/gallery/quay-bar.jpg" alt="Quầy Bar Celesté House" />
+      <div class="masonry-overlay">
+        <span class="material-symbols-outlined gallery-zoom-icon">open_in_full</span>
+      </div>
+      <div class="photo-label" data-i18n="page.gallery_label_bar">Quầy Bar</div>
+    </div>
+ 
+  </div>
+ 
+  <p class="gallery-hint" data-i18n="page.gallery_hint">Nhấn vào ảnh để xem chi tiết</p>
+</section>
+ 
+<!-- Lightbox Overlay -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Xem ảnh">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lb-close" aria-label="Đóng lightbox">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+    <button class="lb-nav lb-prev" id="lb-prev" aria-label="Ảnh trước">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <button class="lb-nav lb-next" id="lb-next" aria-label="Ảnh tiếp theo">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+    <div class="lightbox-content">
+      <div class="lightbox-img-area">
+        <img id="lb-img" src="" alt="" />
+      </div>
+      <div class="lightbox-caption">
+        <p class="lb-tag" id="lb-tag"></p>
+        <h3 id="lb-title"></h3>
+        <p id="lb-desc"></p>
+      </div>
+    </div>
+    <div class="lb-dots" id="lb-dots"></div>
+  </div>
+</div>
+<section class="menu">
+  <h2 class="reveal" data-i18n="page.special_menu_title">Món Ăn Đặc Biệt</h2>
   <div class="menu-grid">
 
     <!-- Card 1: Wagyu -->
-    <div class="menu-card" onclick="this.classList.toggle('is-flipped')">
+    <div class="menu-card reveal reveal-delay-1" onclick="this.classList.toggle('is-flipped')">
       <div class="card-inner">
 
         <!-- Mặt trước -->
@@ -183,7 +246,7 @@
     </div>
 
     <!-- Card 2: Duck Confit -->
-    <div class="menu-card" onclick="this.classList.toggle('is-flipped')">
+    <div class="menu-card reveal reveal-delay-2" onclick="this.classList.toggle('is-flipped')">
       <div class="card-inner">
 
         <div class="card-front">
@@ -235,7 +298,7 @@
     </div>
 
     <!-- Card 3: Lobster Thermidor -->
-    <div class="menu-card" onclick="this.classList.toggle('is-flipped')">
+    <div class="menu-card reveal reveal-delay-3" onclick="this.classList.toggle('is-flipped')">
       <div class="card-inner">
 
         <div class="card-front">
@@ -292,11 +355,99 @@
     <button class="view-more" data-i18n="page.btn_view_all_menu">Xem Toàn Bộ Thực Đơn</button>
   </a>
 </section>
+ 
+<!-- ===== SECTION: EXPERIENCE TIMELINE ===== -->
+
+    <section class="about">
+      <div class="about-container">
+        <div class="about-image reveal reveal-left">
+          <img src="img/VeChungToi.jpg" alt="Không gian nhà hàng" />
+        </div>
+        <div class="about-content reveal reveal-right">
+          <h2 class="about-title" data-i18n="page.about_title">Về Chúng Tôi</h2>
+          <p class="about-text" data-i18n="page.about_p1">
+            Chính thức thành lập vào tháng 03/2026, CELESTÉ HOUSE tự hào là điểm đến lý tưởng cho những ai yêu thích ẩm thực Âu tinh tế. Với không gian sang trọng, quyến rũ và được chăm chút tỉ mỉ đến từng chi tiết, chúng tôi mang đến cho quý khách một trải nghiệm Fine Dining đẳng cấp quốc tế đúng nghĩa.
+          </p>
+          <p class="about-text" data-i18n="page.about_p2">
+            Đặc biệt, món bò Wagyu đã làm nên thương hiệu của chúng tôi tại Nhật Bản. Dưới bàn tay tài hoa của các đầu bếp hàng đầu thế giới, từng thớ thịt vân mỡ cẩm thạch được chế biến hoàn hảo theo phương pháp truyền thống, giữ trọn vẹn sự tinh túy và mềm tan ngay khi thưởng thức.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    
+<section class="timeline-section">
+  <h2 class="reveal" data-i18n="page.timeline_title">Hành Trình Trải Nghiệm</h2>
+  <p class="section-subtitle reveal" data-i18n="page.timeline_subtitle">Từng khoảnh khắc tại Celesté House</p>
+ 
+  <div class="timeline-track reveal">
+    <div class="timeline-spine"></div>
+ 
+    <div class="tl-step active reveal reveal-delay-1" data-step="0">
+      <div class="tl-icon-wrap">
+        <span class="tl-num">01</span>
+      </div>
+      <div class="tl-label" data-i18n="page.tl_step1_label">Khởi Đầu</div>
+      <div class="tl-title" data-i18n="page.tl_step1_title">Đặt Bàn</div>
+      <div class="tl-desc" data-i18n="page.tl_step1_desc">Liên hệ qua hotline hoặc website. Xác nhận trong 15 phút.</div>
+    </div>
+ 
+    <div class="tl-step reveal reveal-delay-2" data-step="1">
+      <div class="tl-icon-wrap">
+        <span class="tl-num">02</span>
+      </div>
+      <div class="tl-label" data-i18n="page.tl_step2_label">Đón Tiếp</div>
+      <div class="tl-title" data-i18n="page.tl_step2_title">Chào Đón</div>
+      <div class="tl-desc" data-i18n="page.tl_step2_desc">Đội ngũ đón khách tại cửa. Dẫn đến bàn trong không gian riêng tư.</div>
+    </div>
+ 
+    <div class="tl-step reveal reveal-delay-3" data-step="2">
+      <div class="tl-icon-wrap">
+        <span class="tl-num">03</span>
+      </div>
+      <div class="tl-label" data-i18n="page.tl_step3_label">Khai Vị</div>
+      <div class="tl-title" data-i18n="page.tl_step3_title">Ăn Nhẹ</div>
+      <div class="tl-desc" data-i18n="page.tl_step3_desc">Rượu khai vị và bánh mì nướng bơ thảo mộc thượng hạng.</div>
+    </div>
+ 
+    <div class="tl-step reveal reveal-delay-4" data-step="3">
+      <div class="tl-icon-wrap">
+        <span class="tl-num">04</span>
+      </div>
+      <div class="tl-label" data-i18n="page.tl_step4_label">Món Chính</div>
+      <div class="tl-title" data-i18n="page.tl_step4_title">Thưởng Thức</div>
+      <div class="tl-desc" data-i18n="page.tl_step4_desc">Wagyu, Duck Confit hoặc Lobster Thermidor — chế biến tại bàn.</div>
+    </div>
+ 
+    <div class="tl-step reveal reveal-delay-5" data-step="4">
+      <div class="tl-icon-wrap">
+        <span class="tl-num">05</span>
+      </div>
+      <div class="tl-label" data-i18n="page.tl_step5_label">Kết Thúc</div>
+      <div class="tl-title" data-i18n="page.tl_step5_title">Tráng Miệng</div>
+      <div class="tl-desc" data-i18n="page.tl_step5_desc">Soufflé nóng, sorbet trái cây và cà phê Arabica đặc biệt.</div>
+    </div>
+ 
+  </div>
+ 
+  <!-- Detail Panel — cập nhật khi click/hover từng bước -->
+  <div class="tl-detail-panel reveal" id="tl-detail">
+    <div class="dp-icon" id="dp-icon">01</div>
+    <div class="dp-text">
+      <h4 id="dp-title">Đặt Bàn Trước</h4>
+      <p id="dp-desc">Đặt bàn qua hotline hoặc website chính thức. Đội ngũ tư vấn xác nhận và ghi chú yêu cầu đặc biệt của quý khách — dị ứng thực phẩm, sở thích rượu vang, decor sinh nhật hay kỷ niệm.</p>
+    </div>
+    <div class="dp-time-block">
+      <div class="dp-time-val" id="dp-time">15'</div>
+      <div class="dp-time-label" id="dp-time-label">xác nhận</div>
+    </div>
+  </div>
+</section>
 
 
     <section class="cta">
-      <h2 style="color: #fff; border: none" data-i18n="page.cta_title">Đặt Bàn Ngay Hôm Nay</h2>
-      <p style="margin-bottom: 30px" data-i18n="page.cta_desc">
+      <h2 class="reveal" style="color: #fff; border: none" data-i18n="page.cta_title">Đặt Bàn Ngay Hôm Nay</h2>
+      <p class="reveal reveal-delay-1" style="margin-bottom: 30px" data-i18n="page.cta_desc">
         Trải nghiệm bữa tối lãng mạn trong không gian sang trọng của CELESTÉ HOUSE
       </p>
       <a href="src/booking.html">
@@ -307,6 +458,7 @@
     <script src="script/i18n.js"></script>
     <script src="script/script.js"></script>
     <script src="script/main.js"></script>
+    <script src="script/gallery.js"></script>
     <script>
   document.addEventListener('click', function(e) {
     if (!e.target.closest('.menu-card')) {
@@ -314,6 +466,28 @@
         .forEach(card => card.classList.remove('is-flipped'));
     }
   });
+</script>
+    <script>
+  /* ── SCROLL REVEAL: IntersectionObserver ─────────────── */
+  (function () {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target); /* Chỉ chạy 1 lần */
+          }
+        });
+      },
+      {
+        threshold: 0.12,     /* Hiện khi 12% phần tử xuất hiện */
+        rootMargin: '0px 0px -40px 0px' /* Delay nhẹ so với mép màn hình */
+      }
+    );
+
+    /* Observe tất cả phần tử có class .reveal */
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  })();
 </script>
   </body>
 </html>
