@@ -146,16 +146,52 @@ export default function UserManagement() {
         if (user.role === "ADMIN") return;
 
         const newStatus = user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-        try {
-            await fetch(`http://localhost:8080/api/users/${user.userId}`, {
-                method: "PUT", headers: {
-                    "Content-Type": "application/json", Authorization: `Bearer ${token}`
-                }, body: JSON.stringify({...user, password: undefined, status: newStatus})
-            });
-            fetchUsers();
-        } catch (err) {
-            console.error("Lỗi:", err);
-        }
+
+        setConfirmDialog({
+            isOpen: true,
+            title:
+                newStatus === "INACTIVE"
+                    ? "Khóa tài khoản?"
+                    : "Mở khóa tài khoản?",
+            message:
+                newStatus === "INACTIVE"
+                    ? `Bạn có chắc muốn khóa tài khoản "${user.username}" không?`
+                    : `Bạn có chắc muốn mở khóa tài khoản "${user.username}" không?`,
+            onConfirm: async () => {
+                try {
+                    await fetch(`http://localhost:8080/api/users/${user.userId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            ...user,
+                            password: undefined,
+                            status: newStatus
+                        })
+                    });
+
+                    fetchUsers();
+
+                    setMessage({
+                        type: "success",
+                        text:
+                            newStatus === "INACTIVE"
+                                ? "Đã khóa tài khoản thành công!"
+                                : "Đã mở khóa tài khoản thành công!"
+                    });
+
+                } catch (err) {
+                    console.error("Lỗi:", err);
+
+                    setMessage({
+                        type: "error",
+                        text: "Có lỗi xảy ra khi cập nhật trạng thái!"
+                    });
+                }
+            }
+        });
     };
 
     return (<div className="bg-gray-50 min-h-screen p-6 rounded-2xl">
@@ -365,21 +401,22 @@ export default function UserManagement() {
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Role</label>
                             <select value={formData.role}
                                     onChange={(e) => setFormData({...formData, role: e.target.value})}
-                                    disabled={editingUser?.role === "ADMIN"}
+                                    disabled={currentUserRole !== "ADMIN" || editingUser?.role === "ADMIN"}
                                     className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm bg-white disabled:bg-gray-100 disabled:text-gray-500"
                             >
                                 <option value="" disabled hidden>-- Chọn phân quyền --</option>
-                                <option value="ADMIN">ADMIN</option>
+                                {editingUser?.role === "ADMIN" && (
+                                    <option value="ADMIN">ADMIN (Quản trị viên)</option>
+                                )}
                                 <option value="MANAGER">MANAGER (Quản lý)</option>
                                 <option value="CASHIER">CASHIER (Thu ngân)</option>
-                                <option value="WAITER">WAITER (Phục vụ bàn)</option>
                             </select>
                         </div>
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Trạng thái</label>
                             <select value={formData.status}
                                     onChange={(e) => setFormData({...formData, status: e.target.value})}
-                                    disabled={editingUser?.role === "ADMIN"}
+                                    disabled={currentUserRole !== "ADMIN" || editingUser?.role === "ADMIN"}
                                     className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-none focus:border-blue-500 text-sm bg-white disabled:bg-gray-100 disabled:text-gray-500"
                             >
                                 <option value="" disabled hidden>-- Chọn trạng thái --</option>

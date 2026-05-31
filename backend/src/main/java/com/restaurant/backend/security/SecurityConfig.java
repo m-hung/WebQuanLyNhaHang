@@ -28,12 +28,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 2. Mở cửa toàn bộ API để test Frontend
-                        .anyRequest().permitAll()
+                .anyRequest().permitAll()
                 );
-
-        // 3. Tạm thời tắt bộ lọc JWT
-        // .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -43,7 +39,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 4. Khai báo luật CORS cho phép React (5173) truy cập
+    // 2. Khai báo luật CORS cho phép React (5173) truy cập
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

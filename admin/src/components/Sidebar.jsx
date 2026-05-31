@@ -16,12 +16,12 @@ export default function Sidebar({setPage, currentPage}) {
         id: "main_dashboard",
         label: "Quản lý bàn",
         icon: <Home size={20}/>,
-        allowedRoles: ["ADMIN", "MANAGER", "CASHIER", "WAITER"]
+        allowedRoles: ["ADMIN", "MANAGER", "CASHIER"]
     }, {
         id: "reservations",
         label: "Lịch đặt bàn",
         icon: <Calendar size={20}/>,
-        allowedRoles: ["ADMIN", "MANAGER", "CASHIER", "WAITER"]
+        allowedRoles: ["ADMIN", "MANAGER", "CASHIER"]
     }, {
         id: "invoice_history",
         label: "Lịch sử hóa đơn",
@@ -51,7 +51,7 @@ export default function Sidebar({setPage, currentPage}) {
         id: "users",
         label: "Quản lý tài khoản",
         icon: <Users size={20}/>,
-        allowedRoles: ["ADMIN", "MANAGER", "CASHIER", "WAITER"] // ĐÃ THÊM QUYỀN
+        allowedRoles: ["ADMIN", "MANAGER", "CASHIER"]
     }
     ];
 
