@@ -10,6 +10,7 @@
   "lbl_email": "Email",
   "placeholder_email": "example@mail.com",
   "section_booking_info": "Reservation Info",
+  "placeholder_date": "Select date",
   "opt_guests_default": "Guests",
   "opt_time_default": "Select time",
   "opt_guests_2": "2 People",
