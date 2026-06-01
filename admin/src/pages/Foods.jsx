@@ -68,11 +68,23 @@ export default function Foods() {
     setIsModalOpen(true);
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setFormData(prev => ({ ...prev, imageUrl }));
+  // Thay thế hàm handleFileChange cũ bằng hàm này
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    // Kiểm tra kích thước ảnh (Base64 làm tăng ~33% dung lượng, nên giới hạn < 2MB để tránh nặng DB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 2MB.");
+      return;
+    }
+
+  const reader = new FileReader();
+    reader.onloadend = () => {
+      // reader.result sẽ là chuỗi có dạng "data:image/png;base64,iVBORw0K..."
+      const base64String = reader.result;
+      setFormData(prev => ({ ...prev, imageUrl: base64String }));
+    };
+      reader.readAsDataURL(file); // Hàm này thực hiện chuyển đổi file thành Base64
     }
   };
 

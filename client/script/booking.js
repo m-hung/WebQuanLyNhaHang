@@ -7,6 +7,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const tableList = document.getElementById('table-list');
 
     const bookDate = document.getElementById('book-date');
+
+    let datePicker = null;
+
+    function initDatePicker(lang = 'vi') {
+        if (datePicker) {
+            datePicker.destroy();
+        }
+
+        datePicker = flatpickr(bookDate, {
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            locale: lang === 'en' ? 'default' : 'vn'
+        });
+    }
+
+    window.initDatePicker = initDatePicker;
+
     const bookTime = document.getElementById('book-time');
     const bookGuests = document.getElementById('book-guests');
 
@@ -22,6 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // === 1. RÀNG BUỘC NGÀY GIỜ (CHẶN QUÁ KHỨ) ===
     const today = new Date().toISOString().split('T')[0];
     bookDate.setAttribute('min', today); // Chặn chọn ngày cũ trên lịch
+
+    const currentLang = localStorage.getItem('selected_language') || 'vi';
+    initDatePicker(currentLang);
 
     const checkTimeValidity = () => {
         const now = new Date();

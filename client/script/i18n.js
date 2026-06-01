@@ -123,9 +123,8 @@ async function applyLanguage(lng) {
     const activeBtn = document.getElementById('btn-' + lng);
     if (activeBtn) activeBtn.classList.add('active-lang');
 
-    const dateInput = document.getElementById('book-date');
-    if (dateInput) {
-        dateInput.setAttribute('lang', lng === 'en' ? 'en-US' : 'vi-VN');
+    if (window.initDatePicker) {
+        window.initDatePicker(lng);
     }
 
     const dynamicTables = document.querySelectorAll('.table-select');

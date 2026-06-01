@@ -16,13 +16,27 @@ INSERT INTO restaurant_tables (table_id, table_number, capacity, status)
 VALUES
 (1, '1', 2, 'Available'),
 (2, '2', 2, 'Available'),
-(3, '3', 4, 'Available'),
-(4, '4', 4, 'Available'),
-(5, '5', 10, 'Available'),
-(6, '6', 10, 'Available')
+(3, '3', 2, 'Available'),
+(4, '4', 2, 'Available'),
+(5, '5', 2, 'Available'),
+(6, '6', 2, 'Available'),
+(7, '7', 2, 'Available'),
+(8, '8', 4, 'Available'),
+(9, '9', 4, 'Available'),
+(10, '10', 4, 'Available'),
+(11, '11', 4, 'Available'),
+(12, '12', 4, 'Available'),
+(13, '13', 4, 'Available'),
+(14, '14', 4, 'Available'),
+(15, '15', 10, 'Available'),
+(16, '16', 10, 'Available'),
+(17, '17', 10, 'Available'),
+(18, '18', 10, 'Available'),
+(19, '19', 10, 'Available'),
+(20, '20', 10, 'Available')
 ON DUPLICATE KEY UPDATE
     table_number = VALUES(table_number),
     capacity = VALUES(capacity),
     status = VALUES(status);
 
-ALTER TABLE restaurant_tables AUTO_INCREMENT = 7;
+ALTER TABLE restaurant_tables AUTO_INCREMENT = 21;

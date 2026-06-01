@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style/style.css">
     <link rel="stylesheet" href="../style/bookingStyle.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
       /* Khung và kiểu dáng nút chuyển ngữ bo tròn đồng bộ phong cách như file index.html */
       .lang-switcher-nav {
@@ -33,6 +34,98 @@
         background: #c5a880; 
         color: #000;
       }
+
+      /* ── CẬP NHẬT GIAO DIỆN FLATPICKR (SỬA LỖI TRÙNG MÀU CHỮ/NỀN) ── */
+      .flatpickr-calendar {
+        background: #111111 !important; /* Đổi nền lịch sang màu tối sang trọng */
+        border: 1px solid #c5a880 !important; /* Viền màu vàng Gold */
+        box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.5) !important;
+      }
+      
+      /* SỬA LỖI: Định dạng ô chọn Tháng/Năm thả xuống */
+      .flatpickr-monthDropdown-months {
+        background: #111111 !important; /* Nền tối cho thanh chọn */
+        color: #c5a880 !important; /* Chữ màu vàng gold */
+      }
+
+      /* SỬA LỖI: Định dạng các dòng option lựa chọn tháng bên trong */
+      .flatpickr-monthDropdown-months option {
+        background-color: #111111 !important; /* Ép nền của danh sách xổ xuống thành màu tối */
+        color: #ffffff !important; /* Ép chữ hiển thị thành màu trắng rõ ràng */
+      }
+
+      /* Đổi màu chữ menu thả xuống (Tháng/Năm) và các thứ trong tuần */
+      .flatpickr-months .flatpickr-month,
+      .flatpickr-months .flatpickr-prev-month, 
+      .flatpickr-months .flatpickr-next-month,
+      span.flatpickr-weekday {
+        color: #c5a880 !important;
+        fill: #c5a880 !important;
+      }
+      /* Đổi màu chữ của các ngày trong tháng */
+      .flatpickr-day {
+        color: #e5e5e5 !important;
+      }
+      /* Màu chữ và nền cho ngày đang chọn */
+      .flatpickr-day.selected, .flatpickr-day.selected:hover {
+        background: #c5a880 !important;
+        border-color: #c5a880 !important;
+        color: #111111 !important;
+        font-weight: bold;
+      }
+      /* Màu các ngày thuộc tháng cũ/mới ngoài lề */
+      .flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay {
+        color: #444444 !important;
+      }
+      /* Hiệu ứng di chuột (hover) qua các ngày */
+      .flatpickr-day:hover {
+        background: rgba(197, 168, 128, 0.2) !important;
+        color: #fff !important;
+      }
+      /* Màu cho ngày hôm nay */
+      .flatpickr-day.today {
+        border-color: #c5a880 !important;
+      }
+      /* Chặn ngày quá khứ (disabled) */
+      .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover {
+        color: #333333 !important;
+        background: transparent !important;
+      }
+
+      /* ── SỬA LỖI VỠ KHUNG THANH CHỌN BÀN NGANG ── */
+      .search-bar-inline {
+        display: flex !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        align-items: stretch !important; /* Ép tất cả các ô cao bằng nhau */
+        overflow: hidden !important; /* Giữ các ô con không bị tràn viền bo */
+      }
+      
+      .search-input-item {
+        flex: 1 !important; /* Chia đều không gian cho 3 ô nhập liệu */
+        display: flex !important;
+        align-items: center !important;
+        min-width: 0 !important; /* Ngăn chặn flex item tự phình to làm vỡ khung */
+      }
+      
+      .search-input-item input, 
+      .search-input-item select {
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important; /* Bỏ viền riêng để dùng chung viền thanh lớn */
+        background: transparent !important; /* Đồng bộ màu nền */
+        padding: 10px 12px !important; /* Thu nhỏ padding vừa vặn */
+        box-sizing: border-box !important;
+      }
+      
+      /* Định vị nút Tìm bàn nằm gọn trong thanh */
+      .btn-find {
+        flex: none !important; /* Không cho nút tự co giãn lung tung */
+        width: 110px !important; /* Cố định chiều rộng vừa đủ chứa chữ */
+        height: auto !important; /* Tự động khít theo chiều cao thanh chứa */
+        margin: 4px !important; /* Tạo khoảng cách trống nhỏ so với viền */
+        border-radius: 4px !important;
+      }
     </style>
 </head>
 <body>
@@ -50,8 +143,8 @@
             <li><a href="./contact.html" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
             <li>
                 <div class="lang-switcher-nav">
-                    <button class="btn-lang" onclick="changeLanguage('vi')">VI</button>
-                    <button class="btn-lang" onclick="changeLanguage('en')">EN</button>
+                    <button id="btn-vi" class="btn-lang" onclick="changeLanguage('vi')">VI</button>
+                    <button id="btn-en" class="btn-lang" onclick="changeLanguage('en')">EN</button>
                 </div>
             </li>
         </ul>
@@ -95,7 +188,7 @@
                     <label class="section-label" data-i18n="page.section_booking_info">Thông tin đặt chỗ</label>
                     <div class="search-bar-inline">
                         <div class="search-input-item">
-                            <input type="date" id="book-date" required>
+                            <input type="date" id="book-date" data-i18n="page.placeholder_date" placeholder="Chọn ngày" required>
                         </div>
                         <div class="search-input-item">
                             <select id="book-time" required>
@@ -160,5 +253,8 @@
     <script src="../script/i18n.js"></script>
     <script src="../script/booking.js"></script>
     <script src="../script/main.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
 </body>
 </html>
