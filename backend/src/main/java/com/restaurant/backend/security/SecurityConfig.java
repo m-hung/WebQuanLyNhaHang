@@ -23,12 +23,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // 1. Kích hoạt cấu hình CORS toàn cục cho Spring Security
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
@@ -39,11 +38,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 2. Khai báo luật CORS cho phép React (5173) truy cập
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:5173",   // React admin
+            "http://localhost:5500",   // Web khách HTML
+            "http://127.0.0.1:5500"   // Web khách HTML (alternate)
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
