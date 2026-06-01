@@ -88,27 +88,26 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
           <tbody>
             {rawItems.length > 0 ? (
               rawItems.map((item, index) => {
-                // XỬ LÝ DỮ LIỆU ĐA NGUỒN: DB (menuItem) vs Pos (trực tiếp)
-                const itemName = item.menuItem ? item.menuItem.name : item.name;
+                // FIX: Dò tìm tên món ăn thông minh từ nhiều kiểu format khác nhau
+                const itemName =
+                  item.menuItem?.nameVi ||
+                  item.menuItem?.name ||
+                  item.nameVi ||
+                  item.nameEn ||
+                  item.name ||
+                  "Tên món ăn";
 
-                // Lấy giá gốc và giảm giá
-                const basePrice = item.menuItem
-                  ? item.menuItem.price
-                  : item.price;
-                const discount = item.menuItem
-                  ? item.menuItem.discount
-                  : item.discount;
+                // Lấy giá gốc và giảm giá an toàn
+                const basePrice = item.menuItem?.price ?? item.price ?? 0;
+                const discount = item.menuItem?.discount ?? item.discount ?? 0;
 
                 // Tính giá trị thực tế sau giảm
-                const effectivePrice = Math.max(
-                  0,
-                  (basePrice || 0) - (discount || 0),
-                );
+                const effectivePrice = Math.max(0, basePrice - discount);
 
                 // Số lượng
-                const itemQty = item.quantity || item.qty;
+                const itemQty = item.quantity || item.qty || 1;
 
-                // Tổng tiền món (Nếu từ DB thì lấy subtotal, nếu từ Pos thì tự nhân)
+                // Tổng tiền món
                 const itemTotal =
                   item.subtotal !== undefined
                     ? item.subtotal

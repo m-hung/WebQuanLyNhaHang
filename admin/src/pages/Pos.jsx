@@ -21,34 +21,50 @@ export default function Pos({
   );
 
   const normalizeCartItem = (item) => {
-    const menuItem = item.menuItem || {};
+    // App.jsx đã đẩy dữ liệu sạch xuống, ta chỉ cần gán thẳng
     return {
-      itemId: menuItem.itemId || item.itemId,
-      name: menuItem.name || item.name || "",
-      price: menuItem.price || item.price || 0,
-      discount: menuItem.discount || item.discount || 0,
-      imageUrl: menuItem.imageUrl || item.imageUrl || "",
-      qty: item.quantity || item.qty || 1,
+      itemId: item.itemId,
+      nameVi: item.nameVi || "Unknown",
+      nameEn: item.nameEn || "",
+      price: item.price || 0,
+      discount: item.discount || 0,
+      imageUrl: item.imageUrl || "",
+      qty: item.qty || 1,
     };
   };
 
-  const [cart, setCart] = useState(
-    (editingInvoice?.cart || []).map(normalizeCartItem),
-  );
+  const getInitialCart = () => {
+    if (!editingInvoice || !editingInvoice.cart) return [];
+
+    const rawCart = editingInvoice.cart.map(normalizeCartItem);
+    const mergedCartMap = {};
+
+    rawCart.forEach((item) => {
+      if (mergedCartMap[item.itemId]) {
+        mergedCartMap[item.itemId].qty += item.qty;
+      } else {
+        mergedCartMap[item.itemId] = { ...item };
+      }
+    });
+
+    return Object.values(mergedCartMap);
+  };
+
+  const [cart, setCart] = useState(getInitialCart());
+  const [lastSavedCart, setLastSavedCart] = useState(getInitialCart());
+
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
 
-  // HÀM TÍNH GIÁ ĐÃ GIẢM
   const getEffectivePrice = (item) => {
     const basePrice = item.price || 0;
     const discountAmount = item.discount || 0;
     return Math.max(0, basePrice - discountAmount);
   };
 
-  // GỌI API LẤY DỮ LIỆU TỪ SPRING BOOT
   useEffect(() => {
     fetch("http://localhost:8080/api/categories")
       .then((res) => res.json())
@@ -60,7 +76,6 @@ export default function Pos({
       .then((data) => setProducts(data))
       .catch((err) => console.error("Lỗi lấy món ăn:", err));
 
-    // LẤY DANH SÁCH BÀN VÀ LỌC BÀN "TRỐNG"
     fetch("http://localhost:8080/api/tables")
       .then((res) => res.json())
       .then((data) => {
@@ -74,36 +89,49 @@ export default function Pos({
       .catch((err) => console.error("Lỗi lấy bàn:", err));
   }, [editingInvoice, initialTableNumber]);
 
-  // HÀM LỌC SẢN PHẨM (TÌM KIẾM + DANH MỤC)
   const filteredProducts = products.filter((product) => {
-    const productName = String(product?.name || "").toLowerCase();
+    const productName = String(
+      product?.nameVi || product?.name || "",
+    ).toLowerCase();
     const matchSearch = productName.includes(searchTerm.toLowerCase());
 
+    const productCatName = product?.category?.nameVi || product?.category?.name;
     const matchCategory =
       selectedCategory === "Tất cả" ||
-      (product?.category && product.category.name === selectedCategory);
+      (product?.category && productCatName === selectedCategory);
 
     return matchSearch && matchCategory;
   });
 
-  // CÁC HÀM XỬ LÝ GIỎ HÀNG
   const handleAddToCart = (product) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.name === product.name);
+      const existingItem = prevCart.find(
+        (item) => item.itemId === product.itemId,
+      );
       if (existingItem) {
         return prevCart.map((item) =>
-          item.name === product.name ? { ...item, qty: item.qty + 1 } : item,
+          item.itemId === product.itemId
+            ? { ...item, qty: item.qty + 1 }
+            : item,
         );
       } else {
-        return [...prevCart, { ...product, qty: 1 }];
+        return [
+          ...prevCart,
+          {
+            ...product,
+            nameVi: product.nameVi || product.name || "",
+            nameEn: product.nameEn || product.englishName || "",
+            qty: 1,
+          },
+        ];
       }
     });
   };
 
-  const handleUpdateQty = (itemName, delta) => {
+  const handleUpdateQty = (itemId, delta) => {
     setCart((prevCart) => {
       return prevCart.map((item) => {
-        if (item.name === itemName) {
+        if (item.itemId === itemId) {
           const newQty = item.qty + delta;
           return { ...item, qty: newQty > 0 ? newQty : 1 };
         }
@@ -112,11 +140,64 @@ export default function Pos({
     });
   };
 
-  const handleRemoveFromCart = (itemName) => {
-    setCart((prevCart) => prevCart.filter((item) => item.name !== itemName));
+  const handleRemoveFromCart = (itemId) => {
+    setCart((prevCart) => prevCart.filter((item) => item.itemId !== itemId));
   };
 
-  // SỬA LẠI TÍNH TỔNG TIỀN DỰA TRÊN GIÁ ĐÃ GIẢM
+  const getCartChanges = () => {
+    if (!editingInvoice) return [];
+
+    const changes = [];
+
+    const originalMap = {};
+    lastSavedCart.forEach((item) => {
+      originalMap[item.itemId] = item;
+    });
+
+    const currentMap = {};
+    cart.forEach((item) => {
+      currentMap[item.itemId] = item;
+    });
+
+    const allItemIds = new Set([
+      ...Object.keys(originalMap),
+      ...Object.keys(currentMap),
+    ]);
+
+    allItemIds.forEach((itemId) => {
+      const origQty = originalMap[itemId]?.qty || 0;
+      const currQty = currentMap[itemId]?.qty || 0;
+      const changeQty = currQty - origQty;
+
+      const effectivePrice = getEffectivePrice(
+        currentMap[itemId] || originalMap[itemId],
+      );
+
+      if (changeQty !== 0) {
+        changes.push({
+          itemId: itemId,
+          // Đã fix lỗi Unknown: Trỏ trực tiếp vào nameVi
+          nameVi:
+            currentMap[itemId]?.nameVi ||
+            originalMap[itemId]?.nameVi ||
+            "Unknown",
+          nameEn:
+            currentMap[itemId]?.nameEn || originalMap[itemId]?.nameEn || "",
+          changeQty: changeQty,
+          price: effectivePrice,
+        });
+      }
+    });
+
+    return changes;
+  };
+
+  const cartChanges = getCartChanges();
+  const totalChangeAmount = cartChanges.reduce(
+    (sum, change) => sum + change.changeQty * change.price,
+    0,
+  );
+
   const calculatedTotal = cart.reduce(
     (sum, item) => sum + getEffectivePrice(item) * item.qty,
     0,
@@ -143,28 +224,45 @@ export default function Pos({
           <div className="flex flex-wrap items-center justify-between mb-4 gap-2">
             <div className="flex gap-2 flex-wrap">
               <button
-                className={`px-4 py-2 rounded shadow-sm transition ${
+                className={`px-4 py-2 rounded shadow-sm transition whitespace-nowrap ${
                   selectedCategory === "Tất cả"
                     ? "bg-blue-600 text-white"
                     : "bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white"
                 }`}
                 onClick={() => setSelectedCategory("Tất cả")}
               >
-                Tất cả
+                Tất cả / All
               </button>
-              {categories.map((category) => (
-                <button
-                  key={category.categoryId}
-                  className={`px-4 py-2 rounded transition ${
-                    selectedCategory === category.name
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white"
-                  }`}
-                  onClick={() => setSelectedCategory(category.name)}
-                >
-                  {category.name}
-                </button>
-              ))}
+              {categories.map((category) => {
+                const catNameVi =
+                  category.nameVi || category.name || "Danh mục";
+                const catNameEn = category.nameEn || category.englishName || "";
+
+                return (
+                  <button
+                    key={category.categoryId}
+                    className={`px-4 py-2 rounded transition whitespace-nowrap flex gap-1 ${
+                      selectedCategory === catNameVi
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-blue-500 hover:text-white"
+                    }`}
+                    onClick={() => setSelectedCategory(catNameVi)}
+                  >
+                    <span>{catNameVi}</span>
+                    {catNameEn && (
+                      <span
+                        className={
+                          selectedCategory === catNameVi
+                            ? "text-blue-200"
+                            : "text-gray-400"
+                        }
+                      >
+                        / {catNameEn}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
             <div className="flex w-full sm:w-auto">
               <input
@@ -193,21 +291,29 @@ export default function Pos({
                       {product.imageUrl ? (
                         <img
                           src={product.imageUrl}
-                          alt={product.name}
+                          alt={product.nameVi || product.name}
                           className="w-full h-full object-cover"
                         />
                       ) : (
                         <span>Chưa có ảnh</span>
                       )}
                     </div>
-                    <p
-                      className="font-bold text-gray-700 text-sm line-clamp-2 leading-snug h-10"
-                      title={product.name}
-                    >
-                      {product.name}
-                    </p>
 
-                    {/* XỬ LÝ GIAO DIỆN HIỂN THỊ GIẢM GIÁ */}
+                    <div className="flex flex-col items-center justify-start h-12 w-full mb-1">
+                      <p
+                        className="font-bold text-gray-700 text-sm line-clamp-1 leading-snug w-full"
+                        title={product.nameVi || product.name}
+                      >
+                        {product.nameVi || product.name}
+                      </p>
+                      <p
+                        className="text-[11px] text-gray-400 line-clamp-1 w-full mt-0.5"
+                        title={product.nameEn || product.englishName}
+                      >
+                        {product.nameEn || product.englishName}
+                      </p>
+                    </div>
+
                     <div className="flex flex-col items-center mt-auto">
                       {product.discount > 0 ? (
                         <>
@@ -220,7 +326,7 @@ export default function Pos({
                           </p>
                         </>
                       ) : (
-                        <p className="text-blue-600 text-sm font-bold">
+                        <p className="text-blue-600 text-sm font-bold mt-3">
                           {product.price ? product.price.toLocaleString() : 0} đ
                         </p>
                       )}
@@ -244,103 +350,190 @@ export default function Pos({
             Hóa đơn tạm tính
           </h3>
 
-          <div className="flex-1 border border-gray-200 rounded-lg mb-4 flex flex-col overflow-hidden bg-white shadow-sm max-h-[calc(100vh-400px)]">
-            <div className="overflow-y-auto custom-scrollbar flex-1">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-gray-100 sticky top-0 z-10 shadow-sm">
-                  <tr>
-                    <th className="p-3 font-semibold text-gray-600 w-2/5">
-                      Tên món
-                    </th>
-                    <th className="p-3 font-semibold text-gray-600 text-center">
-                      SL
-                    </th>
-                    <th className="p-3 font-semibold text-gray-600 text-right">
-                      Tổng
-                    </th>
-                    <th className="p-3 font-semibold text-gray-600 text-center w-10"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {cart.length > 0 ? (
-                    cart.map((item, index) => (
-                      <tr
-                        key={item.name || index}
-                        className="hover:bg-blue-50/30 transition group"
-                      >
-                        <td className="p-3">
-                          <p className="font-medium text-gray-700 line-clamp-2">
-                            {item.name}
-                          </p>
-                          <p className="text-xs text-gray-400 mt-0.5">
-                            {/* MỚI THÊM: SỬA LẠI GIÁ BÁN HIỂN THỊ TRONG GIỎ HÀNG */}
-                            {getEffectivePrice(item).toLocaleString()}đ
-                          </p>
-                        </td>
-                        <td className="p-3">
-                          <div className="flex items-center justify-center gap-2">
-                            <button
-                              onClick={() => handleUpdateQty(item.name, -1)}
-                              className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200"
+          <div className="flex-1 flex flex-col gap-4 min-h-0 mb-4">
+            {/* BẢNG GIỎ HÀNG CHÍNH */}
+            <div className="flex-1 border border-gray-200 rounded-lg flex flex-col overflow-hidden bg-white shadow-sm min-h-[200px]">
+              <div className="overflow-y-auto custom-scrollbar flex-1">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-gray-100 sticky top-0 z-10 shadow-sm">
+                    <tr>
+                      <th className="p-3 font-semibold text-gray-600 w-2/5">
+                        Tên món
+                      </th>
+                      <th className="p-3 font-semibold text-gray-600 text-center">
+                        SL
+                      </th>
+                      <th className="p-3 font-semibold text-gray-600 text-right">
+                        Tổng
+                      </th>
+                      <th className="p-3 font-semibold text-gray-600 text-center w-10"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {cart.length > 0 ? (
+                      cart.map((item, index) => (
+                        <tr
+                          key={item.itemId || index}
+                          className="hover:bg-blue-50/30 transition group"
+                        >
+                          <td className="p-3">
+                            <p
+                              className="font-medium text-gray-700 line-clamp-1"
+                              title={item.nameVi}
                             >
-                              <Minus size={14} />
-                            </button>
-                            <span className="font-semibold w-4 text-center">
-                              {item.qty}
-                            </span>
-                            <button
-                              onClick={() => handleUpdateQty(item.name, 1)}
-                              className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-200"
+                              {item.nameVi}
+                            </p>
+                            <p
+                              className="text-[11px] text-gray-400 line-clamp-1 mt-0.5"
+                              title={item.nameEn}
                             >
-                              <Plus size={14} />
+                              {item.nameEn}
+                            </p>
+                          </td>
+                          <td className="p-3">
+                            <div className="flex items-center justify-center gap-1.5">
+                              <button
+                                onClick={() => handleUpdateQty(item.itemId, -1)}
+                                className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200"
+                              >
+                                <Minus size={14} />
+                              </button>
+                              <span className="font-semibold w-5 text-center">
+                                {item.qty}
+                              </span>
+                              <button
+                                onClick={() => handleUpdateQty(item.itemId, 1)}
+                                className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-200"
+                              >
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                          </td>
+                          <td className="p-3 text-right font-bold text-blue-600 whitespace-nowrap">
+                            {(
+                              getEffectivePrice(item) * item.qty
+                            ).toLocaleString()}
+                            đ
+                          </td>
+                          <td className="p-3 text-center">
+                            <button
+                              onClick={() => handleRemoveFromCart(item.itemId)}
+                              className="text-gray-300 hover:text-red-500 transition"
+                            >
+                              <Trash2 size={16} />
                             </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="4"
+                          className="py-12 text-center text-gray-400"
+                        >
+                          <div className="flex flex-col items-center justify-center">
+                            <p className="font-medium">Chưa có món nào</p>
+                            <p className="text-xs mt-1">
+                              Vui lòng chọn món ở bên trái
+                            </p>
                           </div>
                         </td>
-                        <td className="p-3 text-right font-bold text-blue-600">
-                          {}
-                          {(
-                            getEffectivePrice(item) * item.qty
-                          ).toLocaleString()}
-                          đ
-                        </td>
-                        <td className="p-3 text-center">
-                          <button
-                            onClick={() => handleRemoveFromCart(item.name)}
-                            className="text-gray-300 hover:text-red-500 transition"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="4"
-                        className="py-12 text-center text-gray-400"
-                      >
-                        <div className="flex flex-col items-center justify-center">
-                          <p className="font-medium">Chưa có món nào</p>
-                          <p className="text-xs mt-1">
-                            Vui lòng chọn món ở bên trái
-                          </p>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
+
+            {/* BẢNG THAY ĐỔI HÓA ĐƠN (Chỉ hiện khi có sự thay đổi) */}
+            {editingInvoice && cartChanges.length > 0 && (
+              <div className="border border-orange-200 rounded-lg flex flex-col overflow-hidden bg-white shadow-sm max-h-56 shrink-0">
+                <div className="bg-orange-100 px-3 py-2 text-sm font-bold text-orange-800 border-b border-orange-200 flex justify-between items-center">
+                  <span>THAY ĐỔI HÓA ĐƠN</span>
+                  <span className="text-xs bg-orange-200 px-2 py-0.5 rounded-full text-orange-700">
+                    {cartChanges.length} mục
+                  </span>
+                </div>
+                <div className="overflow-y-auto custom-scrollbar flex-1">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-gray-50 sticky top-0 z-10 text-xs">
+                      <tr>
+                        <th className="p-2 font-semibold text-gray-600 pl-3">
+                          Tên món
+                        </th>
+                        <th className="p-2 font-semibold text-gray-600 text-center w-16">
+                          SL đổi
+                        </th>
+                        <th className="p-2 font-semibold text-gray-600 text-right pr-3 w-24">
+                          Tiền đổi
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {cartChanges.map((change) => (
+                        <tr
+                          key={change.itemId}
+                          className="hover:bg-orange-50/50 transition"
+                        >
+                          <td className="p-2 pl-3">
+                            <p
+                              className="font-medium text-gray-700 line-clamp-1"
+                              title={change.nameVi}
+                            >
+                              {change.nameVi}
+                            </p>
+                            <p
+                              className="text-[11px] text-gray-400 line-clamp-1 mt-0.5"
+                              title={change.nameEn}
+                            >
+                              {change.nameEn}
+                            </p>
+                          </td>
+                          <td className="p-2 text-center font-bold">
+                            <span
+                              className={`inline-block w-10 py-0.5 rounded text-xs ${change.changeQty > 0 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                            >
+                              {change.changeQty > 0
+                                ? `+${change.changeQty}`
+                                : change.changeQty}
+                            </span>
+                          </td>
+                          <td
+                            className={`p-2 text-right pr-3 font-bold whitespace-nowrap text-xs ${change.changeQty > 0 ? "text-green-600" : "text-red-500"}`}
+                          >
+                            {change.changeQty > 0 ? "+" : ""}
+                            {(change.changeQty * change.price).toLocaleString()}
+                            đ
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* FOOTER HIỂN THỊ TỔNG TIỀN THAY ĐỔI */}
+                <div className="bg-orange-50 px-3 py-2 text-sm font-bold border-t border-orange-200 flex justify-between items-center">
+                  <span className="text-orange-800">TỔNG TIỀN ĐỔI:</span>
+                  <span
+                    className={
+                      totalChangeAmount >= 0 ? "text-green-600" : "text-red-500"
+                    }
+                  >
+                    {totalChangeAmount > 0 ? "+" : ""}
+                    {totalChangeAmount.toLocaleString()} VNĐ
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
-          <div className="flex justify-between items-end mb-4 bg-blue-50 p-4 rounded-lg">
+          <div className="flex justify-between items-end mb-4 bg-blue-50 p-4 rounded-lg shrink-0">
             <span className="text-gray-600 font-semibold">TỔNG CỘNG:</span>
             <span className="text-2xl font-bold text-blue-700">
               {calculatedTotal.toLocaleString()} VNĐ
             </span>
           </div>
 
-          <div className="flex gap-4 mb-4">
+          <div className="flex gap-4 mb-4 shrink-0">
             <div className="flex-1">
               <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
                 Thu ngân
@@ -387,7 +580,7 @@ export default function Pos({
             </div>
           </div>
 
-          <div className="flex gap-3 mt-auto">
+          <div className="flex gap-3 mt-auto shrink-0">
             <button
               className={`flex-1 py-3.5 rounded-lg font-bold transition shadow-sm ${
                 !isDisablePay
@@ -419,6 +612,7 @@ export default function Pos({
                         orderDate: localDateTime,
                         totalAmount: calculatedTotal,
                         status: "Serving",
+                        cashierName: selectedCashier,
                       };
 
                       return fetch("http://localhost:8080/api/orders", {
@@ -433,7 +627,6 @@ export default function Pos({
                           order: { orderId: savedOrder.orderId },
                           menuItem: { itemId: item.itemId },
                           quantity: item.qty,
-                          // MỚI THÊM: LƯU TỔNG TIỀN MÓN ĂN XUỐNG DB DỰA TRÊN GIÁ ĐÃ GIẢM
                           subtotal: getEffectivePrice(item) * item.qty,
                           note: "",
                         };
@@ -456,6 +649,7 @@ export default function Pos({
                             cashierName: selectedCashier,
                           });
                         }
+                        setLastSavedCart(cart.map((item) => ({ ...item })));
                       });
                     })
                     .catch((err) => {
@@ -479,6 +673,35 @@ export default function Pos({
                     const updateOrderPayload = {
                       table: { tableId: finalTableId },
                       totalAmount: calculatedTotal,
+                      cashierName: selectedCashier,
+                    };
+
+                    const syncCartItems = () => {
+                      return fetch(
+                        `http://localhost:8080/api/order-items/order/${editingInvoice.id}`,
+                        {
+                          method: "DELETE",
+                        },
+                      ).then(() => {
+                        const itemPromises = cart.map((item) => {
+                          const orderItemPayload = {
+                            order: { orderId: editingInvoice.id },
+                            menuItem: { itemId: item.itemId },
+                            quantity: item.qty,
+                            subtotal: getEffectivePrice(item) * item.qty,
+                            note: "",
+                          };
+                          return fetch(
+                            "http://localhost:8080/api/order-items",
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify(orderItemPayload),
+                            },
+                          );
+                        });
+                        return Promise.all(itemPromises);
+                      });
                     };
 
                     if (oldTableId !== finalTableId && newTableObj) {
@@ -510,6 +733,7 @@ export default function Pos({
                             },
                           );
                         })
+                        .then(() => syncCartItems())
                         .then(() => {
                           onSaveInvoice({
                             id: editingInvoice.id,
@@ -519,6 +743,7 @@ export default function Pos({
                             cart: cart,
                             cashierName: selectedCashier,
                           });
+                          setLastSavedCart(cart.map((item) => ({ ...item })));
                         })
                         .catch((err) =>
                           console.error("Lỗi khi chuyển bàn:", err),
@@ -532,6 +757,7 @@ export default function Pos({
                           body: JSON.stringify(updateOrderPayload),
                         },
                       )
+                        .then(() => syncCartItems())
                         .then(() => {
                           onSaveInvoice({
                             id: editingInvoice.id,
@@ -541,6 +767,7 @@ export default function Pos({
                             cart: cart,
                             cashierName: selectedCashier,
                           });
+                          setLastSavedCart(cart.map((item) => ({ ...item })));
                         })
                         .catch((err) =>
                           console.error("Lỗi cập nhật hóa đơn:", err),

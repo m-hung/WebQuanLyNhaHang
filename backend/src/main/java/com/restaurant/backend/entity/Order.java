@@ -24,6 +24,9 @@ public class Order {
 
     private LocalDateTime orderDate;
     private BigDecimal totalAmount;
+
+    @Column(name = "cashier_name")
+    private String cashierName;
     
     // Thêm thuộc tính VAT để lưu số tiền thuế hoặc phần trăm thuế
     private BigDecimal vat; 
