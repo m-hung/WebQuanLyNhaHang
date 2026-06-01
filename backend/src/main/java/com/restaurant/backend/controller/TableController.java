@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tables")
-@CrossOrigin(origins = "*")
 public class TableController {
 
     @Autowired
