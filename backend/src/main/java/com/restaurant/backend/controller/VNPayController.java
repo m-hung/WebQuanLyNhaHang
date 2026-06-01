@@ -18,7 +18,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payment")
-@CrossOrigin(origins = "*")
 public class VNPayController {
 
     @Autowired private VNPayService vnPayService;

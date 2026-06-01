@@ -23,7 +23,7 @@ public class User {
     private String fullName;
 
     @Column(nullable = false)
-    private String role; // ADMIN, STAFF
+    private String role;
 
     @Column(nullable = false)
     private String status = "ACTIVE";

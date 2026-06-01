@@ -10,8 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/order-items")
-// Cấu hình CrossOrigin để React (chạy ở cổng 5173) có thể gọi được API này
-@CrossOrigin(origins = "http://localhost:5173")
 public class OrderItemController {
 
     @Autowired
