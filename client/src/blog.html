@@ -4,124 +4,30 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blog - Celesté House</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="../style/style.css" />
     <link rel="stylesheet" href="../style/blogStyle.css" />
     <style>
-      .lang-switcher-nav {
-        display: inline-flex;
-        gap: 10px;
-        align-items: center;
-        margin-left: 10px;
-      }
-      .btn-lang {
-        background: transparent;
-        border: 1px solid #c5a880;
-        color: #fff;
-        padding: 8px 16px;
-        cursor: pointer;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        border-radius: 30px;
-        transition: all 0.3s ease;
-      }
-      .btn-lang:hover, .btn-lang.active-lang {
-        background: #c5a880;
-        color: #000;
-      }
-
-      /* Loading skeleton */
-      .blog-loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 80px 20px;
-        color: #888;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 14px;
-        letter-spacing: 1px;
-      }
-      .blog-loading-spinner {
-        width: 32px;
-        height: 32px;
-        border: 2px solid #ddd;
-        border-top-color: #c5a880;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin-right: 12px;
-      }
+      .lang-switcher-nav { display: inline-flex; gap: 10px; align-items: center; margin-left: 10px; }
+      .btn-lang { background: transparent; border: 1px solid #c5a880; color: #fff; padding: 8px 16px; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; border-radius: 30px; transition: all 0.3s ease; }
+      .btn-lang:hover, .btn-lang.active-lang { background: #c5a880; color: #000; }
+      .blog-loading { display: flex; justify-content: center; align-items: center; padding: 80px 20px; color: #888; font-family: 'Montserrat', sans-serif; font-size: 14px; letter-spacing: 1px; }
+      .blog-loading-spinner { width: 32px; height: 32px; border: 2px solid #ddd; border-top-color: #c5a880; border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 12px; }
       @keyframes spin { to { transform: rotate(360deg); } }
-
-      /* Empty state */
-      .blog-empty {
-        grid-column: 1 / -1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 80px 20px;
-        font-family: 'Montserrat', sans-serif;
-      }
-      .blog-empty-icon {
-        font-size: 52px;
-        color: var(--gold, #c5a880);
-        margin-bottom: 24px;
-        opacity: 0.6;
-      }
-      .blog-empty-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 26px;
-        color: #fff;
-        margin-bottom: 12px;
-        font-weight: 700;
-      }
-      .blog-empty-sub {
-        font-size: 14px;
-        color: #888;
-        letter-spacing: 0.5px;
-        line-height: 1.7;
-      }
-
-      /* Error state */
-      .blog-error {
-        text-align: center;
-        padding: 60px 20px;
-        color: #c0392b;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 14px;
-      }
-
-      /* Dynamic blog date badge */
-      .blog-date {
-        position: absolute;
-        bottom: 12px;
-        left: 12px;
-        background: rgba(0,0,0,0.65);
-        color: #fff;
-        padding: 4px 10px;
-        font-size: 12px;
-        border-radius: 4px;
-        font-family: 'Montserrat', sans-serif;
-      }
+      .blog-empty { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 20px; font-family: 'Montserrat', sans-serif; }
+      .blog-empty-icon { font-size: 52px; color: var(--gold, #c5a880); margin-bottom: 24px; opacity: 0.6; }
+      .blog-empty-title { font-family: 'Playfair Display', serif; font-size: 26px; color: #fff; margin-bottom: 12px; font-weight: 700; }
+      .blog-empty-sub { font-size: 14px; color: #888; letter-spacing: 0.5px; line-height: 1.7; }
+      .blog-error { text-align: center; padding: 60px 20px; color: #c0392b; font-family: 'Montserrat', sans-serif; font-size: 14px; }
+      .blog-date { position: absolute; bottom: 12px; left: 12px; background: rgba(0,0,0,0.65); color: #fff; padding: 4px 10px; font-size: 12px; border-radius: 4px; font-family: 'Montserrat', sans-serif; }
     </style>
   </head>
   <body>
     <header class="blog-hero">
       <nav>
         <div class="logo">CELESTÉ HOUSE</div>
-        <button class="menu-toggle" id="mobile-menu">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
+        <button class="menu-toggle" id="mobile-menu"><span class="material-symbols-outlined">menu</span></button>
         <ul class="nav-links">
           <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
           <li><a href="./menu.html" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
@@ -146,7 +52,6 @@
 
     <section class="blog-section">
       <div class="blog-container" id="blog-container">
-        <!-- Bài viết sẽ được render động từ API -->
         <div class="blog-loading">
           <div class="blog-loading-spinner"></div>
           Đang tải bài viết...
@@ -161,109 +66,78 @@
     <script>
       const API_BASE = "http://localhost:8080/api/blogs";
 
-      // Lấy ngôn ngữ hiện tại từ localStorage (đồng bộ với i18n.js)
       function getCurrentLang() {
-        return localStorage.getItem("selected_language")
-            || localStorage.getItem("language")
-            || "vi";
+        return localStorage.getItem("selected_language") || localStorage.getItem("language") || "vi";
       }
 
-      // Format ngày
       function formatDate(isoString) {
         if (!isoString) return "";
         const date = new Date(isoString);
         const day = date.getDate();
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
-        const lng = getCurrentLang();
-        if (lng === "en") {
+        if (getCurrentLang() === "en") {
           const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
           return `${months[month - 1]} ${day}, ${year}`;
         }
         return `${day} Tháng ${month}, ${year}`;
       }
 
-      // Tạo HTML cho 1 bài viết — dùng field song ngữ, fallback về field cũ
-      function createBlogPostHTML(blog) {
+      function getTitle(blog) {
         const lng = getCurrentLang();
-        const imgSrc = blog.imgUrl && blog.imgUrl.trim() !== ""
-          ? blog.imgUrl
-          : "../img/blog/default.jpg";
+        return lng === "en" ? (blog.titleEn || blog.titleVi || "") : (blog.titleVi || blog.titleEn || "");
+      }
 
-        // Tiêu đề: ưu tiên field mới theo ngôn ngữ, fallback về title cũ
-        const title = (lng === "en" ? (blog.title_en || blog.title_vi) : blog.title_vi)
-                      || blog.title || "";
+      function getSummary(blog) {
+        const lng = getCurrentLang();
+        return lng === "en" ? (blog.summaryEn || blog.summaryVi || "") : (blog.summaryVi || blog.summaryEn || "");
+      }
 
-        // Tóm tắt
-        const summary = (lng === "en" ? (blog.summary_en || blog.summary_vi) : blog.summary_vi)
-                        || blog.summary || "";
+      function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+      }
 
+      function createBlogPostHTML(blog) {
+        const imgSrc = blog.imgUrl && blog.imgUrl.trim() !== "" ? blog.imgUrl : "../img/blog/default.jpg";
+        const title = getTitle(blog);
+        const summary = getSummary(blog);
         const dateStr = formatDate(blog.createdAt);
         const slug = blog.slug || "";
-        const readMoreLabel = lng === "en" ? "Read More" : "Đọc Tiếp";
+        const readMoreLabel = getCurrentLang() === "en" ? "Read More" : "Đọc Tiếp";
 
         return `
           <article class="blog-post">
             <div class="blog-img" style="position:relative;">
-              <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(title)}"
-                onerror="this.src='../img/blog/default.jpg'" />
+              <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(title)}" onerror="this.src='../img/blog/default.jpg'" />
               ${dateStr ? `<span class="blog-date">${escapeHtml(dateStr)}</span>` : ""}
             </div>
             <div class="blog-info">
               <h3>${escapeHtml(title)}</h3>
               <p>${escapeHtml(summary)}</p>
-              <a href="./blog-detail.html?slug=${encodeURIComponent(slug)}" class="read-more">
-                ${readMoreLabel} &rsaquo;
-              </a>
+              <a href="./blog-detail.html?slug=${encodeURIComponent(slug)}" class="read-more">${readMoreLabel} &rsaquo;</a>
             </div>
           </article>
         `;
       }
 
-      // Escape HTML để tránh XSS
-      function escapeHtml(str) {
-        if (!str) return "";
-        return str
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#039;");
-      }
-
-      // Cache blogs để re-render khi đổi ngôn ngữ mà không cần gọi API lại
       let cachedBlogs = null;
 
       function renderBlogs() {
         const container = document.getElementById("blog-container");
         const lng = getCurrentLang();
-
         if (!cachedBlogs || cachedBlogs.length === 0) {
           container.innerHTML = `
             <div class="blog-empty">
-              <div class="blog-empty-icon">
-              <svg width="72" height="72" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g transform="translate(60,60) rotate(-38)">
-                  <rect x="-6" y="-38" width="12" height="48" rx="4" fill="none" stroke="#c5a880" stroke-width="2"/>
-                  <rect x="-6" y="-38" width="12" height="9" rx="4" fill="#c5a880" opacity="0.5"/>
-                  <polygon points="-6,10 6,10 1,26 -1,26" fill="#c5a880"/>
-                </g>
-                <path d="M18,88 Q38,72 60,80 Q82,88 102,70" fill="none" stroke="#c5a880" stroke-width="1.8" stroke-linecap="round"/>
-                <line x1="18" y1="96" x2="102" y2="96" stroke="#c5a880" stroke-width="0.8" opacity="0.35"/>
-              </svg>
-            </div>
+              <div class="blog-empty-icon">📝</div>
               <div class="blog-empty-title">${lng === "en" ? "No articles yet" : "Chưa có bài viết nào"}</div>
-              <div class="blog-empty-sub">${lng === "en"
-                ? "Culinary stories are being prepared.<br>Check back soon!"
-                : "Những câu chuyện ẩm thực đang được chuẩn bị.<br>Hãy quay lại sau nhé!"}</div>
-            </div>
-          `;
+              <div class="blog-empty-sub">${lng === "en" ? "Check back soon!" : "Hãy quay lại sau nhé!"}</div>
+            </div>`;
           return;
         }
         container.innerHTML = cachedBlogs.map(createBlogPostHTML).join("");
       }
 
-      // Tải bài viết từ API
       async function loadBlogs() {
         const container = document.getElementById("blog-container");
         try {
@@ -275,19 +149,12 @@
           renderBlogs();
         } catch (err) {
           console.error("Lỗi khi tải blog:", err);
-          container.innerHTML = `
-            <div class="blog-error">
-              Không thể tải bài viết. Vui lòng thử lại sau.<br>
-              <small style="color:#bbb; font-size:11px; margin-top:8px; display:block;">${err.message}</small>
-            </div>
-          `;
+          container.innerHTML = `<div class="blog-error">Không thể tải bài viết. Vui lòng thử lại sau.<br><small>${err.message}</small></div>`;
         }
       }
 
-      // Re-render khi người dùng đổi ngôn ngữ (event từ i18n.js)
-      document.addEventListener("langChanged", () => renderBlogs());
+      document.addEventListener('langChanged', renderBlogs);
 
-      // Chạy khi trang load xong
       document.addEventListener("DOMContentLoaded", loadBlogs);
     </script>
   </body>
