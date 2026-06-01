@@ -1,108 +1,345 @@
 <!doctype html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thực Đơn - Celesté House</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../style/style.css" />
-    <link rel="stylesheet" href="../style/menuStyle.css" />
-    <style>
-      /* CSS đồng bộ giao diện cụm nút ngôn ngữ giống file index.html */
-      .lang-switcher-nav {
-        display: inline-flex;
-        gap: 10px;
-        align-items: center;
-        margin-left: 10px;
-      }
-      .btn-lang {
-        background: transparent;
-        border: 1px solid #c5a880; /* Viền khung màu vàng Gold đặc trưng */
-        color: #fff;
-        padding: 8px 16px;
-        cursor: pointer;
-        font-family: 'Montserrat', sans-serif;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        border-radius: 30px; /* Bo tròn góc sang trọng */
-        transition: all 0.3s ease;
-      }
-      .btn-lang:hover, .btn-lang.active-lang {
-        background: #c5a880; 
-        color: #000;
-      }
-    </style>
-  </head>
-  <body>
-    <header class="menu-hero">
-      <nav>
-        <div class="logo">CELESTÉ HOUSE</div>
-        <button class="menu-toggle" id="mobile-menu">
-          <span class="material-symbols-outlined">menu</span>
-        </button>
-        <ul class="nav-links">
-          <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
-          <li><a href="./menu.html" class="active" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
-          <li><a href="./team.html" data-i18n="navbar.nav_team">Nhà Hàng</a></li>
-          <li><a href="./booking.html" data-i18n="navbar.nav_booking">Đặt Bàn</a></li>
-          <li><a href="./blog.html" data-i18n="navbar.nav_blog">Blog</a></li>
-          <li><a href="./contact.html" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thực Đơn - Celesté House</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../style/style.css" />
+  <link rel="stylesheet" href="../style/menuStyle.css" />
+</head>
+<body>
+ 
+  <!-- ── NAV ── -->
+  <header class="menu-hero">
+    <nav id="main-nav">
+      <div class="logo">CELESTÉ HOUSE</div>
+      <button class="menu-toggle" id="mobile-menu">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
+        <li><a href="./menu.html" class="active" data-i18n="navbar.nav_menu">Thực Đơn</a></li>
+        <li><a href="./team.html" data-i18n="navbar.nav_team">Nhà Hàng</a></li>
+        <li><a href="./booking.html" data-i18n="navbar.nav_booking">Đặt Bàn</a></li>
+        <li><a href="./blog.html" data-i18n="navbar.nav_blog">Blog</a></li>
+        <li><a href="./contact.html" data-i18n="navbar.nav_contact">Liên Hệ</a></li>
+        <li>
+          <div class="lang-switcher-nav">
+            <button class="btn-lang" onclick="changeLanguage('vi')">VI</button>
+            <button class="btn-lang" onclick="changeLanguage('en')">EN</button>
+          </div>
+        </li>
+      </ul>
+    </nav>
+ 
+    <!-- ── HERO ── -->
+    <video class="hero-bg" autoplay loop muted playsinline>
+      <source src="../video/menuBackground.mp4" type="video/mp4">
+    </video>
+    <div class="hero-body">
+      <div>
+        <p class="hero-eyebrow">Celesté House &mdash; Menu</p>
+        <h1 class="hero-title">
+          <span data-lang-key="page.hero_title_line1">Thực Đơn</span><br>
+          <em data-lang-key="page.hero_title_line2">Tinh Hoa</em>
+        </h1>
+        <p class="hero-subtitle" data-lang-key="page.hero_subtitle">Khám phá nghệ thuật ẩm thực Châu Âu giữa lòng thành phố</p>
+      </div>
+      <p class="hero-scroll" data-lang-key="page.hero_scroll">Khám phá</p>
+    </div>
+  </header>
+ 
+  <!-- ── MAIN ── -->
+  <div class="page-layout">
+ 
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div>
+        <p class="sidebar-section-label" data-lang-key="page.label_search">Tìm Kiếm</p>
+        <div class="search-wrap">
+          <input type="text" id="menu-search" data-i18n-placeholder="page.search_placeholder" placeholder="Món ăn bạn tìm..."/>
+          <i class="fas fa-search"></i>
+        </div>
+      </div>
+ 
+      <div class="sidebar-divider"></div>
+ 
+      <div>
+        <p class="sidebar-section-label" data-lang-key="page.label_category">Danh Mục</p>
+        <ul class="filter-list" id="filter-list">
           <li>
-            <div class="lang-switcher-nav">
-              <button class="btn-lang" onclick="changeLanguage('vi')">VI</button>
-              <button class="btn-lang" onclick="changeLanguage('en')">EN</button>
-            </div>
+            <button class="active" data-filter="all">
+              <span>Tất Cả</span>
+              <span class="count" id="count-all">—</span>
+            </button>
           </li>
         </ul>
-      </nav>
-      <div class="hero-content">
-        <h1 data-i18n="page.hero_title">Thực Đơn Tinh Hoa</h1>
-        <p data-i18n="page.hero_subtitle">Khám phá nghệ thuật ẩm thực Châu Âu giữa lòng thành phố</p>
-        <div class="gold-line-center"></div>
       </div>
-    </header>
-
-    <div class="filter-section">
-      <div class="search-container">
-        <i class="fas fa-search search-icon"></i>
-        <input
-          type="text"
-          id="menu-search"
-          data-i18n="page.search_placeholder"
-          placeholder="Bạn đang tìm món ăn nào?"
-        />
+    </aside>
+ 
+    <!-- Content -->
+    <main class="content-area">
+      <div class="content-header">
+        <span class="active-label" id="active-label">Tất Cả</span>
+        <span class="result-count" id="result-count">— món</span>
       </div>
-
-      <div class="filter-tabs">
-        <button class="filter-btn active" data-filter="all" data-i18n="page.filter_all">Tất Cả</button>
-      </div>
+      <div class="menu-grid" id="main-menu-grid"></div>
+    </main>
+  </div>
+ 
+  <!-- ── CTA FOOTER ── -->
+  <footer class="cta-section">
+    <div class="cta-text">
+      <h2 id="footer-title">Sẵn Sàng Cho Một <em>Bữa Tối Tuyệt Vời?</em></h2>
+      <p data-lang-key="page.footer_subtitle">Đặt bàn trước để có trải nghiệm tốt nhất</p>
     </div>
-
-    <section class="menu-display">
-      <div class="menu-grid" id="main-menu-grid">
-        </div>
-    </section>
-
-    <footer class="cta-section">
-      <h2 data-i18n="page.footer_title">Sẵn Sàng Cho Một Bữa Tối Tuyệt Vời?</h2>
-      <a href="./booking.html" class="btn-primary-gold" data-i18n="page.btn_book_now">Đặt Bàn Ngay</a>
-    </footer>
-
-    <script src="../script/i18n.js"></script>
-    <script src="../script/script.js"></script>
-    <script src="../script/menu.js"></script>
-    <script src="../script/main.js"></script>
-  </body>
+    <a href="./booking.html" class="btn-primary-gold" data-i18n="page.btn_book_now">Đặt Bàn Ngay</a>
+  </footer>
+ 
+  <script src="../script/i18n.js"></script>
+  <script src="../script/script.js"></script>
+  <script src="../script/main.js"></script>
+ 
+  <script>
+    /* ── Nav: trong suốt → mờ khi scroll ── */
+    const mainNav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      mainNav.classList.toggle('scrolled', window.scrollY > 60);
+    });
+ 
+    /* ── Mobile menu toggle ── */
+    document.getElementById('mobile-menu').addEventListener('click', () => {
+      document.getElementById('nav-links').classList.toggle('active');
+    });
+  </script>
+ 
+  <!-- ── MENU DATA SCRIPT (giữ nguyên logic từ menu.js gốc) ── -->
+  <script>
+    const API_URL = 'http://localhost:8080/api/menu-items';
+    const CAT_URL = 'http://localhost:8080/api/categories';
+ 
+    document.addEventListener('DOMContentLoaded', async () => {
+      const menuGrid    = document.getElementById('main-menu-grid');
+      const filterList  = document.getElementById('filter-list');
+      const searchInput = document.getElementById('menu-search');
+      const activeLabel = document.getElementById('active-label');
+      const resultCount = document.getElementById('result-count');
+ 
+      let allFoods = [], allCategories = [], activeFilter = 'all';
+ 
+      function getCurrentLang() {
+        return localStorage.getItem('selected_language')
+            || localStorage.getItem('language')
+            || 'vi';
+      }
+ 
+      function getName(obj) {
+        if (!obj) return '';
+        const lang = getCurrentLang();
+        return lang === 'en' ? (obj.nameEn || obj.nameVi || '') : (obj.nameVi || obj.nameEn || '');
+      }
+ 
+      function getDescription(food) {
+        const lang = getCurrentLang();
+        return lang === 'en'
+          ? (food.descriptionEn || food.descriptionVi || '')
+          : (food.descriptionVi || food.descriptionEn || '');
+      }
+ 
+      function updateStaticTexts() {
+        const isEn = getCurrentLang() === 'en';
+ 
+        // Hero title
+        const titleLine1 = document.querySelector('[data-lang-key="page.hero_title_line1"]');
+        const titleLine2 = document.querySelector('[data-lang-key="page.hero_title_line2"]');
+        if (titleLine1) titleLine1.textContent = isEn ? 'Our' : 'Thực Đơn';
+        if (titleLine2) titleLine2.textContent = isEn ? 'Menu' : 'Tinh Hoa';
+ 
+        // Hero subtitle
+        const heroSub = document.querySelector('[data-lang-key="page.hero_subtitle"]');
+        if (heroSub) heroSub.textContent = isEn
+          ? 'Discover the art of European cuisine in the heart of the city'
+          : 'Khám phá nghệ thuật ẩm thực Châu Âu giữa lòng thành phố';
+ 
+        // Hero scroll
+        document.querySelectorAll('[data-lang-key="page.hero_scroll"]').forEach(el => {
+          el.textContent = isEn ? 'Explore' : 'Khám phá';
+        });
+ 
+        // Sidebar labels
+        document.querySelectorAll('[data-lang-key="page.label_search"]').forEach(el => {
+          el.textContent = isEn ? 'Search' : 'Tìm Kiếm';
+        });
+        document.querySelectorAll('[data-lang-key="page.label_category"]').forEach(el => {
+          el.textContent = isEn ? 'Category' : 'Danh Mục';
+        });
+ 
+        // Footer title
+        const footerTitle = document.getElementById('footer-title');
+        if (footerTitle) {
+          footerTitle.innerHTML = isEn
+            ? 'Ready for an <em>Exceptional Dinner?</em>'
+            : 'Sẵn Sàng Cho Một <em>Bữa Tối Tuyệt Vời?</em>';
+        }
+ 
+        // Footer subtitle
+        document.querySelectorAll('[data-lang-key="page.footer_subtitle"]').forEach(el => {
+          el.textContent = isEn ? 'Reserve your table for the best experience' : 'Đặt bàn trước để có trải nghiệm tốt nhất';
+        });
+ 
+        // Search placeholder
+        updateSearchPlaceholder();
+      }
+ 
+      function updateSearchPlaceholder() {
+        searchInput.placeholder = getCurrentLang() === 'en'
+          ? 'Search dishes…'
+          : 'Món ăn bạn tìm...';
+      }
+ 
+      function formatPrice(price) {
+        if (!price) return '';
+        return Number(price).toLocaleString('vi-VN') + ' ₫';
+      }
+ 
+      async function fetchCategories() {
+        try {
+          const res = await fetch(CAT_URL);
+          const data = await res.json();
+          allCategories = data.filter(c => c.active);
+        } catch (e) {
+          console.error('Lỗi load danh mục:', e);
+        }
+        renderFilterList();
+      }
+ 
+      async function fetchFoods() {
+        try {
+          const res = await fetch(API_URL);
+          const data = await res.json();
+          allFoods = data.filter(f => f.isAvailable);
+        } catch (e) {
+          console.error('Lỗi load món ăn:', e);
+          allFoods = [];
+        }
+        renderMenu();
+        renderFilterList(); // cập nhật lại count sau khi có data
+      }
+ 
+      function renderFilterList() {
+        filterList.innerHTML = '';
+ 
+        const allLi = document.createElement('li');
+        const allText = getCurrentLang() === 'en' ? 'All' : 'Tất Cả';
+        allLi.innerHTML = `<button class="${activeFilter === 'all' ? 'active' : ''}" data-filter="all">
+          <span>${allText}</span>
+          <span class="count">${allFoods.length || '—'}</span>
+        </button>`;
+        filterList.appendChild(allLi);
+ 
+        // Đồng bộ active-label nếu đang chọn "all"
+        if (activeFilter === 'all') {
+          activeLabel.textContent = allText;
+        }
+ 
+        allCategories.forEach(cat => {
+          const cnt = allFoods.filter(f => f.category && String(f.category.categoryId) === String(cat.categoryId)).length;
+          const li = document.createElement('li');
+          li.innerHTML = `<button class="${activeFilter === String(cat.categoryId) ? 'active' : ''}" data-filter="${cat.categoryId}">
+            <span>${getName(cat)}</span>
+            <span class="count">${cnt}</span>
+          </button>`;
+          filterList.appendChild(li);
+        });
+ 
+        filterList.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            filterList.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeFilter = btn.dataset.filter;
+            activeLabel.textContent = btn.querySelector('span:first-child').textContent;
+            renderMenu();
+          });
+        });
+      }
+ 
+      function renderMenu() {
+        const searchText = searchInput.value.toLowerCase().trim();
+ 
+        const filtered = allFoods.filter(food => {
+          const nameVi = (food.nameVi || '').toLowerCase();
+          const nameEn = (food.nameEn || '').toLowerCase();
+          const matchSearch = nameVi.includes(searchText) || nameEn.includes(searchText);
+          const catId = food.category ? String(food.category.categoryId) : '';
+          const matchFilter = activeFilter === 'all' || catId === activeFilter;
+          return matchSearch && matchFilter;
+        });
+ 
+        resultCount.textContent = filtered.length + (getCurrentLang() === 'en' ? ' dishes' : ' món');
+        menuGrid.innerHTML = '';
+ 
+        if (filtered.length === 0) {
+          const msg = document.createElement('div');
+          msg.className = 'empty-msg';
+          msg.innerHTML = `<p>${getCurrentLang() === 'en' ? 'No matching dishes found.' : 'Không tìm thấy món ăn phù hợp.'}</p>`;
+          menuGrid.appendChild(msg);
+          return;
+        }
+ 
+        filtered.forEach((food, i) => {
+          const hasDiscount = food.discount && Number(food.discount) > 0;
+          const finalPrice  = hasDiscount ? Number(food.price) - Number(food.discount) : Number(food.price);
+          const displayName = getName(food);
+          const displayDesc = getDescription(food);
+          const catName     = food.category ? getName(food.category) : '';
+ 
+          const card = document.createElement('div');
+          card.className = 'menu-card show-animation';
+          card.dataset.category = food.category ? food.category.categoryId : '';
+          card.style.animationDelay = `${Math.min(i * 0.05, 0.4)}s`;
+ 
+          const imgHTML = food.imageUrl
+            ? `<img src="${food.imageUrl}" alt="${displayName}" onerror="this.parentElement.innerHTML='<div class=card-no-img>&#127869;</div>'">`
+            : `<div class="card-no-img">&#127869;</div>`;
+ 
+          const priceHTML = hasDiscount
+            ? `<span class="card-price-old">${formatPrice(food.price)}</span>
+               <span class="card-price">${formatPrice(finalPrice)}</span>`
+            : `<span class="card-price">${formatPrice(food.price)}</span>`;
+ 
+          card.innerHTML = `
+            <div class="card-img">${imgHTML}</div>
+            <div class="card-overlay"></div>
+            ${hasDiscount ? `<span class="card-discount-badge">Ưu Đãi</span>` : ''}
+            <div class="card-body">
+              <p class="card-cat">${catName}</p>
+              <h3 class="card-name">${displayName}</h3>
+              ${displayDesc ? `<p class="card-desc">${displayDesc}</p>` : ''}
+              <div class="card-price-row">${priceHTML}</div>
+            </div>
+          `;
+ 
+          menuGrid.appendChild(card);
+        });
+      }
+ 
+      searchInput.addEventListener('input', renderMenu);
+ 
+      // Lắng nghe custom event từ i18n.js sau khi applyLanguage() hoàn tất
+      document.addEventListener('langChanged', () => {
+        updateStaticTexts();
+        renderFilterList();
+        renderMenu();
+      });
+ 
+      updateStaticTexts();
+      await fetchCategories();
+      await fetchFoods();
+    });
+  </script>
+ 
+</body>
 </html>

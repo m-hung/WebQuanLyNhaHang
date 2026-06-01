@@ -7,17 +7,14 @@ import java.util.List;
 
 @Repository
 public interface BlogRepository extends JpaRepository<Blog, Long> {
-    
-    // Tìm kiếm bài viết theo slug (Giữ nguyên - Phục vụ trang chi tiết blog bên Frontend)
+
+    // Tìm bài viết theo slug (dùng cho trang chi tiết)
     Blog findBySlug(String slug);
 
-    // =========================================================================
-    // BỔ SUNG THÊM (Tùy chọn): Phục vụ cho chức năng tìm kiếm bài viết sau này
-    // =========================================================================
+    // Lấy các bài viết đang hiển thị (active = true)
+    List<Blog> findByActiveTrue();
 
-    // Tìm kiếm bài viết theo từ khóa Tiêu đề tiếng Việt
+    // Tìm kiếm theo tiêu đề (tùy chọn, dùng sau)
     List<Blog> findByTitleViContainingIgnoreCase(String titleVi);
-
-    // Tìm kiếm bài viết theo từ khóa Tiêu đề tiếng Anh
     List<Blog> findByTitleEnContainingIgnoreCase(String titleEn);
 }
