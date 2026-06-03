@@ -114,10 +114,6 @@
       mainNav.classList.toggle('scrolled', window.scrollY > 60);
     });
  
-    /* ── Mobile menu toggle ── */
-    document.getElementById('mobile-menu').addEventListener('click', () => {
-      document.getElementById('nav-links').classList.toggle('active');
-    });
   </script>
  
   <!-- ── MENU DATA SCRIPT (giữ nguyên logic từ menu.js gốc) ── -->
@@ -342,6 +338,7 @@
       updateStaticTexts();
       await fetchCategories();
       await fetchFoods();
+      
     });
   </script>
  

@@ -1,0 +1,356 @@
+/* ============================================================
+   teamResponsive.css — Celesté House · Team Page
+   Full Responsive: Mobile First, all breakpoints
+   Import AFTER teamStyle.css
+   ============================================================ */
+
+/* ============================================================
+   LG — Tablet landscape / Small desktop (max 1200px)
+   ============================================================ */
+@media (max-width: 1200px) {
+  .hero-left-content { padding: 0 40px 48px; }
+  .hero-right { padding: 50px 40px; }
+
+  .chefs-section .section-header-row { margin: 0 4% 0; }
+  .chefs-section .sh-sub { padding: 28px 8%; }
+
+  .staff-section-new { padding: 70px 4%; }
+  .awards-section-new { padding: 70px 4%; }
+  .footer-cta { padding: 60px 4%; }
+}
+
+/* ============================================================
+   MD — Tablet portrait (max 1024px)
+   Already in teamStyle.css — extended here for completeness
+   ============================================================ */
+@media (max-width: 1024px) {
+  /* Hero */
+  .hero-split {
+    grid-template-columns: 1fr;
+    padding-top: 70px;
+  }
+  .hero-left { min-height: 500px; }
+  .hero-left-content { padding: 0 6% 44px; }
+  .hero-big-number { font-size: 120px; }
+
+  .hero-right {
+    border-left: none;
+    border-top: 1px solid var(--gold-line);
+    padding: 50px 6%;
+  }
+
+  /* Hero stats — side by side on tablet */
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+  }
+  .stat-row {
+    border-bottom: none;
+    border-right: 1px solid var(--gold-line);
+    padding: 20px 16px;
+  }
+  .stat-row:last-child { border-right: none; }
+
+  /* Chef bands */
+  .chef-band,
+  .chef-band-reverse {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .chef-band-reverse .cb-img { order: 0; }
+  .chef-band-reverse .cb-info {
+    order: 0;
+    border-right: none;
+    border-top: 1px solid var(--gold-line);
+    background: var(--ink);
+  }
+  .cb-img { min-height: 400px; }
+  .cb-info {
+    border-left: none;
+    border-top: 1px solid var(--gold-line);
+    padding: 40px 6%;
+  }
+
+  /* Staff */
+  .staff-intro { grid-template-columns: 1fr; gap: 20px; }
+  .staff-grid-new { grid-template-columns: repeat(2, 1fr); }
+  .sc-img-wrap { height: 420px; }
+
+  /* Awards */
+  .awards-grid-new { grid-template-columns: 1fr; }
+  .award-cell {
+    border-right: none;
+    border-bottom: 1px solid var(--gold-line);
+  }
+  .award-cell:last-child { border-bottom: none; }
+
+  /* Footer CTA */
+  .footer-cta { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   SM — Tablet portrait narrow / Large mobile (max 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  /* Nav hamburger (already handled by style.css) */
+  nav { padding: 0 5% !important; }
+
+  /* Hero */
+  .hero-split { padding-top: 70px; }
+  .hero-left { min-height: 420px; }
+  .hero-left-content { padding: 0 5% 36px; }
+  .hero-big-number { font-size: 90px; bottom: 12px; }
+  .hero-eyebrow { font-size: 9px; letter-spacing: 4px; }
+
+  .hero-h1 {
+    font-size: clamp(36px, 8vw, 52px);
+    margin-bottom: 16px;
+  }
+  .hero-tagline { font-size: 12px; max-width: 100%; }
+
+  .hero-right { padding: 40px 5%; }
+
+  /* Stats — stacked on small tablet */
+  .hero-stats { grid-template-columns: 1fr; }
+  .stat-row {
+    border-right: none;
+    border-bottom: 1px solid var(--gold-line);
+    padding: 18px 0;
+  }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-num { font-size: 42px; }
+
+  .hero-cta-group { margin-top: 28px; }
+
+  /* Section headers */
+  .sh-count { font-size: 60px; }
+  .sh-title { font-size: clamp(24px, 5vw, 36px); }
+
+  /* Chefs section */
+  .chefs-section { padding: 60px 0; }
+  .chefs-section .section-header-row { margin: 0 5%; }
+  .sh-sub { padding: 22px 5%; font-size: 12px; }
+
+  .cb-img { min-height: 320px; }
+  .cb-info { padding: 32px 5%; }
+  .cb-name { font-size: clamp(26px, 6vw, 38px); }
+  .cb-desc { max-width: 100%; font-size: 12px; }
+  .cb-index { font-size: 42px; }
+
+  /* Staff */
+  .staff-section-new { padding: 60px 5%; }
+  .staff-grid-new { grid-template-columns: repeat(2, 1fr); }
+  .sc-img-wrap { height: 360px; }
+  .sc-name { font-size: 15px; }
+
+  /* Awards */
+  .awards-section-new { padding: 60px 5%; }
+  .award-val { font-size: 44px; }
+  .award-cell { padding: 36px 24px; }
+
+  /* Footer CTA */
+  .footer-cta {
+    padding: 56px 5%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .fc-title { font-size: clamp(20px, 5vw, 28px); }
+  .fc-btns { flex-wrap: wrap; }
+}
+
+/* ============================================================
+   XS — Mobile landscape / Large phone (max 600px)
+   ============================================================ */
+@media (max-width: 600px) {
+  /* Nav */
+  nav { height: 64px !important; }
+  .logo { font-size: 17px !important; }
+
+  /* Hero */
+  .hero-split { padding-top: 64px; }
+  .hero-left { min-height: 380px; }
+  .hero-h1 { font-size: clamp(32px, 9vw, 46px); }
+  .hero-big-number { font-size: 100px; }
+
+  /* Hero CTA stacked */
+  .hero-cta-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .btn-cta-main,
+  .btn-cta-ghost {
+    width: 100%;
+    text-align: center;
+    padding: 14px 20px;
+  }
+
+  /* Section count numbers */
+  .sh-count { font-size: 55px; }
+
+  /* Chef bands */
+  .cb-img { min-height: 280px; }
+  .cb-info { padding: 28px 5%; }
+
+  /* Staff grid: 1 column on small screens */
+  .staff-grid-new { grid-template-columns: 1fr 1fr; }
+  .sc-img-wrap { height: 300px; }
+
+  /* Awards */
+  .awards-grid-new { grid-template-columns: 1fr; }
+
+  /* Footer CTA buttons stacked */
+  .fc-btns { flex-direction: column; gap: 10px; width: 100%; }
+  .fc-btns .btn-cta-main,
+  .fc-btns .btn-cta-ghost {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Marquee slightly faster on small screen */
+  .marquee-track { animation-duration: 18s; }
+}
+
+/* ============================================================
+   XXS — Mobile portrait (max 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  /* Nav */
+  nav { height: 60px !important; padding: 0 4% !important; }
+  .logo { font-size: 15px !important; letter-spacing: 1px !important; }
+  .lang-switcher-nav { gap: 6px; }
+  .btn-lang { padding: 5px 10px; font-size: 10px; }
+
+  /* Hero */
+  .hero-split { padding-top: 60px; }
+  .hero-left { min-height: 340px; }
+  .hero-left-content { padding: 0 4% 28px; }
+  .hero-big-number { font-size: 80px; right: -4px; }
+  .hero-eyebrow { font-size: 8px; letter-spacing: 3px; margin-bottom: 12px; }
+  .hero-h1 { font-size: clamp(28px, 10vw, 40px); margin-bottom: 12px; }
+  .hero-tagline { font-size: 11px; line-height: 1.65; }
+
+  .hero-right { padding: 32px 4%; }
+  .stat-num { font-size: 36px; }
+  .stat-label { font-size: 10px; letter-spacing: 1.5px; }
+  .stat-row { padding: 14px 0; }
+
+  .hero-cta-group { margin-top: 24px; gap: 8px; }
+  .btn-cta-main, .btn-cta-ghost { font-size: 10px; padding: 12px 16px; letter-spacing: 1.5px; }
+
+  /* Section headers */
+  .sh-count { font-size: 46px; }
+  .sh-kicker { font-size: 8px; letter-spacing: 4px; }
+  .sh-title { font-size: clamp(22px, 7vw, 32px); }
+  .section-header-row { padding-bottom: 20px; }
+
+  /* Chefs */
+  .chefs-section { padding: 50px 0; }
+  .sh-sub { padding: 18px 4%; font-size: 11px; }
+  .cb-img { min-height: 260px; }
+  .cb-info { padding: 24px 4%; }
+  .cb-index { font-size: 36px; margin-bottom: 14px; }
+  .cb-name { font-size: clamp(22px, 7vw, 32px); }
+  .cb-role { font-size: 9px; letter-spacing: 3px; }
+  .cb-desc { font-size: 12px; line-height: 1.75; }
+  .cb-tags span { font-size: 9px; padding: 4px 10px; }
+
+  /* Staff */
+  .staff-section-new { padding: 50px 4%; }
+  .staff-intro { margin-bottom: 36px; }
+  .staff-intro-text { font-size: 12px; line-height: 1.7; }
+  .staff-grid-new { grid-template-columns: 1fr 1fr; gap: 1px; }
+  .sc-img-wrap { height: 240px; }
+  .sc-body { padding: 14px 12px 16px; }
+  .sc-name { font-size: 14px; }
+  .sc-role { font-size: 9px; letter-spacing: 1.5px; }
+
+  /* Awards */
+  .awards-section-new { padding: 50px 4%; }
+  .awards-section-new .section-header-row { margin-bottom: 30px; }
+  .award-cell { padding: 30px 20px; }
+  .award-ico { font-size: 24px; margin-bottom: 14px; }
+  .award-val { font-size: 40px; }
+  .award-lbl { font-size: 9px; letter-spacing: 2px; }
+
+  /* Footer CTA */
+  .footer-cta { padding: 48px 4%; }
+  .fc-title { font-size: clamp(18px, 6vw, 26px); }
+  .fc-sub { font-size: 12px; }
+}
+
+/* ============================================================
+   XXXS — Very small phones (max 360px)
+   ============================================================ */
+@media (max-width: 360px) {
+  .logo { font-size: 13px !important; letter-spacing: 0.5px !important; }
+
+  .hero-h1 { font-size: clamp(24px, 11vw, 34px); line-height: 1.15; }
+  .hero-big-number { font-size: 70px; }
+  .hero-tagline { font-size: 10.5px; }
+
+  .stat-num { font-size: 32px; }
+
+  .cb-name { font-size: clamp(20px, 8vw, 28px); }
+
+  .staff-grid-new { grid-template-columns: 1fr; }
+  .sc-img-wrap { height: 280px; }
+
+  .sh-count { font-size: 40px; }
+  .sh-title { font-size: clamp(20px, 8vw, 28px); }
+
+  .award-val { font-size: 36px; }
+
+  .btn-cta-main, .btn-cta-ghost { font-size: 9px; letter-spacing: 1px; padding: 11px 14px; }
+}
+
+/* ============================================================
+   LANDSCAPE PHONE (max-height 500px, landscape orientation)
+   ============================================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-split { min-height: auto; padding-top: 60px; }
+  .hero-left { min-height: 260px; }
+  .hero-left-content { padding: 0 5% 24px; }
+  .hero-h1 { font-size: clamp(24px, 5vh, 38px); margin-bottom: 10px; }
+  .hero-tagline { display: none; }
+  .hero-big-number { font-size: 70px; }
+
+  .hero-right { padding: 28px 5%; }
+  .hero-stats { grid-template-columns: repeat(3, 1fr); }
+  .stat-row {
+    border-right: 1px solid var(--gold-line);
+    border-bottom: none;
+    padding: 12px 8px;
+  }
+  .stat-row:last-child { border-right: none; }
+  .stat-num { font-size: 30px; }
+  .hero-cta-group { margin-top: 20px; flex-direction: row; }
+}
+
+/* ============================================================
+   TOUCH DEVICES — disable hover-only effects
+   ============================================================ */
+@media (hover: none) {
+  .sc-new:hover .sc-img-wrap img {
+    transform: none;
+    filter: grayscale(25%);
+  }
+  .sc-new:hover .sc-line { width: 0; }
+  .award-cell:hover { background: transparent; }
+  .award-cell:hover::after { width: 0; }
+  .cb-img:hover .cb-overlay { opacity: 0; }
+}
+
+/* ============================================================
+   LARGE SCREENS (min 1400px) — breathing room
+   ============================================================ */
+@media (min-width: 1400px) {
+  .hero-left-content { padding: 0 60px 64px; }
+  .hero-right { padding: 70px 60px; }
+  .chefs-section .section-header-row { margin: 0 8% 0; }
+  .sh-sub { padding: 32px 12%; }
+  .staff-section-new { padding: 100px 8%; }
+  .awards-section-new { padding: 100px 8%; }
+  .footer-cta { padding: 80px 8%; }
+}
