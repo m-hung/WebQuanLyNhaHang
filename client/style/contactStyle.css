@@ -160,39 +160,231 @@
     background-color: #b38f4d; /* Màu vàng đậm hơn khi hover */
     transform: scale(1.05);    /* Phóng to nhẹ nút khi di chuột */
 }
-/* 5. Responsive */
-@media (max-width: 992px) {
-    .contact-container {
-        grid-template-columns: 1fr; /* Chuyển về 1 cột trên điện thoại */
-        gap: 50px;
-    }
-    
-    .contact-section {
-        padding: 60px 5%;
-    }
+/* ═══════════════════════════════════════════════════
+   5. RESPONSIVE — Contact Page
+   ═══════════════════════════════════════════════════ */
+
+/* ── Hamburger Button (hidden on desktop) ── */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #b38f4d;
+    padding: 8px;
+    z-index: 1001;
 }
+
+.menu-toggle .material-symbols-outlined {
+    font-size: 28px;
+    line-height: 1;
+}
+
+/* ── MD Tablet (≤ 992px) ── */
 @media (max-width: 992px) {
     .contact-container {
         grid-template-columns: 1fr;
         gap: 50px;
     }
-
-    .blog-container {
-        grid-template-columns: 1fr 1fr; /* 2 cột trên Tablet */
+    .contact-section {
+        padding: 60px 5%;
     }
 }
 
-@media (max-width: 650px) {
-    .blog-container {
-        grid-template-columns: 1fr; /* 1 cột trên Mobile */
+/* ── SM Tablet portrait (≤ 768px) ── */
+@media (max-width: 768px) {
+    /* Nav: sync with style.css hamburger pattern */
+    .contact-hero nav {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0 5% !important;
+        height: 70px !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        backdrop-filter: blur(8px);
     }
 
-    .blog-detail-title {
-        font-size: 28px;
+    .menu-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
     }
 
-    .blog-detail-meta-wrapper {
-        flex-direction: column;
-        align-items: flex-start;
+    .nav-links {
+        position: fixed !important;
+        top: 0 !important;
+        right: -100% !important;
+        width: 75% !important;
+        height: 100vh !important;
+        background: rgba(8, 8, 8, 0.99) !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 28px !important;
+        transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1) !important;
+        z-index: 1000 !important;
+        box-shadow: -8px 0 30px rgba(0,0,0,0.6) !important;
+        border-left: 1px solid rgba(197, 160, 89, 0.1) !important;
+        flex-wrap: nowrap !important;
+        padding-top: 80px !important;
+        /* Reset display so transition works */
+        display: flex !important;
+    }
+
+    .nav-links.active {
+        right: 0 !important;
+    }
+
+    .nav-links a {
+        font-size: 16px !important;
+        letter-spacing: 2px !important;
+    }
+
+    .lang-switcher-nav {
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    /* Contact layout */
+    .contact-hero {
+        height: 60vh;
+        min-height: 320px;
+    }
+
+    .hero-content2 {
+        padding: 80px 6% 30px;
+    }
+
+    .hero-content2 h1 {
+        font-size: clamp(1.8rem, 7vw, 36px);
+        letter-spacing: 2px;
+    }
+
+    .hero-content2 p {
+        font-size: 13px;
+    }
+
+    .contact-section {
+        padding: 60px 5%;
+    }
+
+    .contact-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .contact-title {
+        font-size: 26px;
+        margin-bottom: 28px;
+    }
+
+    .cta {
+        padding: 60px 5%;
+    }
+
+    .cta h2 {
+        font-size: 26px;
+    }
+}
+
+/* ── XS Mobile (≤ 480px) ── */
+@media (max-width: 480px) {
+    .contact-hero nav {
+        height: 64px !important;
+        padding: 0 4% !important;
+    }
+
+    .logo {
+        font-size: 16px !important;
+        letter-spacing: 1px !important;
+    }
+
+    .nav-links {
+        width: 85% !important;
+        gap: 22px !important;
+    }
+
+    .nav-links a {
+        font-size: 15px !important;
+    }
+
+    .lang-switcher-nav {
+        gap: 8px;
+    }
+
+    .btn-lang {
+        padding: 6px 12px;
+        font-size: 11px;
+    }
+
+    .contact-hero {
+        height: 55vh;
+        min-height: 280px;
+    }
+
+    .hero-content2 h1 {
+        font-size: clamp(1.5rem, 8vw, 28px);
+        letter-spacing: 1.5px;
+    }
+
+    .hero-content2 p {
+        font-size: 12px;
+    }
+
+    .contact-section {
+        padding: 50px 4%;
+    }
+
+    .contact-title {
+        font-size: 22px;
+        margin-bottom: 24px;
+    }
+
+    .info-item p {
+        font-size: 13px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    .contact-form .btn-gold {
+        padding: 14px 20px;
+        font-size: 12px;
+    }
+
+    .cta {
+        padding: 50px 4%;
+    }
+
+    .cta h2 {
+        font-size: 22px !important;
+    }
+
+    .cta p {
+        font-size: 13px !important;
+    }
+}
+
+/* ── XXS Very small (≤ 360px) ── */
+@media (max-width: 360px) {
+    .logo {
+        font-size: 14px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .hero-content2 h1 {
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+    }
+
+    .contact-title {
+        font-size: 20px;
+    }
+
+    .info-item p {
+        font-size: 12px;
     }
 }
