@@ -33,6 +33,7 @@ public class UserController {
         String username = body.get("username");
         String password = body.get("password");
         String fullName = body.get("fullName");
+        String email = body.get("email");
         String role = body.get("role");
         String status = body.get("status");
 
@@ -44,6 +45,7 @@ public class UserController {
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setFullName(fullName);
+        user.setEmail(email);
         user.setRole(role != null ? role : "STAFF");
         user.setStatus(status != null ? status : "ACTIVE");
         user.setCreatedAt(LocalDateTime.now());
@@ -57,6 +59,7 @@ public class UserController {
                                         @RequestBody Map<String, String> body) {
         return userRepository.findById(id).map(user -> {
             if (body.get("fullName") != null) user.setFullName(body.get("fullName"));
+            if (body.get("email") != null) user.setEmail(body.get("email"));
             if (body.get("role") != null) user.setRole(body.get("role"));
             if (body.get("status") != null) user.setStatus(body.get("status"));
 

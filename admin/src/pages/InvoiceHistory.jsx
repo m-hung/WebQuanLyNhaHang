@@ -317,31 +317,51 @@ export default function InvoiceHistory() {
                                     </thead>
 
                                     <tbody>
-                                    {selectedOrder.orderItems &&
-                                    selectedOrder.orderItems.length > 0 ? (
-                                        selectedOrder.orderItems.map((item, idx) => (
-                                            <tr key={idx} className="border-b border-dashed border-gray-300">
-                                                <td className="px-2 py-4 text-center">
-                                                    {idx + 1}
-                                                </td>
-                                                <td className="px-4 py-4 font-medium text-gray-800">
-                                                    {item.menuItem
-                                                        ? item.menuItem.name
-                                                        : "Món đã xóa"}
-                                                </td>
-                                                <td className="px-4 py-4 text-center">
-                                                    {item.quantity}
-                                                </td>
-                                                <td className="px-4 py-4 text-right">
-                                                    {formatCurrency(item.menuItem?.price)}
-                                                </td>
-                                                <td className="px-4 py-4 text-right font-semibold">
-                                                    {formatCurrency(
-                                                        item.subtotal || item.menuItem?.price * item.quantity
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        ))) : (
+                                    {selectedOrder.orderItems && selectedOrder.orderItems.length > 0 ? (
+                                        selectedOrder.orderItems.map((item, idx) => {
+                                            // Lấy tên tiếng Việt và tiếng Anh an toàn
+                                            const nameVi = item.menuItem?.nameVi || item.menuItem?.name || "Tên món";
+                                            const nameEn = item.menuItem?.nameEn || item.menuItem?.englishName || "";
+
+                                            return (
+                                                <tr key={idx} className="border-b border-dashed border-gray-300">
+                                                    <td className="px-2 py-4 text-center">
+                                                        {idx + 1}
+                                                    </td>
+
+                                                    {/* ĐÃ SỬA CỘT TÊN MÓN ĂN Ở ĐÂY */}
+                                                    <td className="px-4 py-4 text-left">
+                                                        {item.menuItem ? (
+                                                            <>
+                                                                <p className="font-medium text-gray-800 line-clamp-1">
+                                                                    {nameVi}
+                                                                </p>
+                                                                {nameEn && (
+                                                                    <p className="text-[11px] text-gray-500 mt-0.5 line-clamp-1 font-normal">
+                                                                        {nameEn}
+                                                                    </p>
+                                                                )}
+                                                            </>
+                                                        ) : (
+                                                            <span className="italic text-gray-400">Món đã xóa</span>
+                                                        )}
+                                                    </td>
+
+                                                    <td className="px-4 py-4 text-center">
+                                                        {item.quantity}
+                                                    </td>
+                                                    <td className="px-4 py-4 text-right">
+                                                        {formatCurrency(item.menuItem?.price)}
+                                                    </td>
+                                                    <td className="px-4 py-4 text-right font-semibold">
+                                                        {formatCurrency(
+                                                            item.subtotal || item.menuItem?.price * item.quantity
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
+                                    ) : (
                                         <tr>
                                             <td colSpan="5" className="text-center py-6 text-gray-500">
                                                 Không có dữ liệu món ăn

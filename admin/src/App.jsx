@@ -13,6 +13,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import UserManagement from "./pages/UserManagement";
+import ResetPassword from "./pages/ResetPassword";
 
 export default function App() {
   const [page, setPage] = React.useState("main_dashboard");
@@ -161,6 +162,7 @@ export default function App() {
         <Routes>
           {/* Route đăng nhập không cần bảo vệ */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Mọi route khác (/*) sẽ được bọc bởi ProtectedRoute */}
           <Route
