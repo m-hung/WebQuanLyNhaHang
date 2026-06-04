@@ -7,14 +7,12 @@ export default function Pos({
   editingInvoice,
   initialTableNumber,
 }) {
-  const cashiers = [
-    "Nguyễn Thanh Huy",
-    "Nguyễn Thành Huy",
-    "Bùi Hữu Hùng",
-    "Trần Minh Huấn",
-  ];
+  const getCurrentUserName = () =>
+    sessionStorage.getItem("fullName") ||
+    sessionStorage.getItem("username") ||
+    "Thu ngân";
 
-  const [selectedCashier, setSelectedCashier] = useState(cashiers[0]);
+  const [selectedCashier] = useState(getCurrentUserName());
   const [availableTables, setAvailableTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(
     editingInvoice ? editingInvoice.tableName : initialTableNumber || "",
@@ -538,17 +536,9 @@ export default function Pos({
               <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
                 Thu ngân
               </label>
-              <select
-                className="w-full border border-gray-300 p-2.5 rounded-lg outline-none bg-white focus:border-blue-500 text-sm font-medium"
-                value={selectedCashier}
-                onChange={(e) => setSelectedCashier(e.target.value)}
-              >
-                {cashiers.map((name, index) => (
-                  <option key={index} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
+              <div className="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 text-sm font-medium text-gray-900">
+                {selectedCashier}
+              </div>
             </div>
 
             <div className="w-1/3">

@@ -110,18 +110,33 @@ export default function Statistics({ invoices = [] }) {
 
         const items = order.orderItems || [];
         items.forEach((item) => {
-          const dishName =
-            item.menuItem?.name || item.name || "Món chưa rõ tên";
-          if (!dishMap[dishName]) {
-            dishMap[dishName] = { name: dishName, qty: 0, revenue: 0 };
+          const dishNameVi =
+            item.menuItem?.nameVi ||
+            item.nameVi ||
+            item.name ||
+            "Món chưa rõ tên";
+          const dishNameEn =
+            item.menuItem?.nameEn ||
+            item.nameEn ||
+            (dishNameVi !== "Món chưa rõ tên" ? "" : item.name || "");
+          const dishKey =
+            item.menuItem?.itemId || item.itemId || dishNameVi || dishNameEn;
+
+          if (!dishMap[dishKey]) {
+            dishMap[dishKey] = {
+              nameVi: dishNameVi,
+              nameEn: dishNameEn,
+              qty: 0,
+              revenue: 0,
+            };
           }
           const qty = Number(item.quantity) || Number(item.qty) || 0;
           const subtotal =
             Number(item.subtotal) ||
             (Number(item.menuItem?.price) || Number(item.price) || 0) * qty;
 
-          dishMap[dishName].qty += qty;
-          dishMap[dishName].revenue += subtotal;
+          dishMap[dishKey].qty += qty;
+          dishMap[dishKey].revenue += subtotal;
         });
       }
 
@@ -152,7 +167,8 @@ export default function Statistics({ invoices = [] }) {
       .slice(0, 10)
       .map((dish, index) => ({
         rank: index + 1,
-        name: dish.name,
+        nameVi: dish.nameVi,
+        nameEn: dish.nameEn,
         qty: dish.qty,
         revenue: dish.revenue.toLocaleString(),
       }));
@@ -160,7 +176,8 @@ export default function Statistics({ invoices = [] }) {
     while (topDishes.length < 10) {
       topDishes.push({
         rank: topDishes.length + 1,
-        name: "-",
+        nameVi: "-",
+        nameEn: "",
         qty: 0,
         revenue: "0",
       });
@@ -184,9 +201,11 @@ export default function Statistics({ invoices = [] }) {
 
   // Hàm render thứ hạng (đã sửa để đồng đều)
   const renderRank = (rank) => {
-  // Dùng inline-block, w-6 và text-center để cột số canh giữa thẳng hàng với nhau, bao gồm cả số 10
-  return <span className="text-gray-500 inline-block w-6 text-center">{rank}</span>;
-};
+    // Dùng inline-block, w-6 và text-center để cột số canh giữa thẳng hàng với nhau, bao gồm cả số 10
+    return (
+      <span className="text-gray-500 inline-block w-6 text-center">{rank}</span>
+    );
+  };
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -302,7 +321,7 @@ export default function Statistics({ invoices = [] }) {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={stats.weeklyData}
-                margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
+                margin={{ top: 0, right: 20, left: 20, bottom: 0 }}
               >
                 <CartesianGrid
                   strokeDasharray="3 3"
@@ -348,7 +367,7 @@ export default function Statistics({ invoices = [] }) {
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-[420px] overflow-hidden">
           <div className="p-5 border-b border-gray-100 bg-white">
             <h2 className="font-bold text-gray-800">
-              Món ăn phổ biến (Tháng này)
+              Món ăn phổ biến tháng này
             </h2>
           </div>
           <div className="flex-1 overflow-y-auto p-2">
@@ -376,12 +395,18 @@ export default function Statistics({ invoices = [] }) {
                     className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
                   >
                     <td className="p-3 font-medium">{renderRank(dish.rank)}</td>
-                    <td
-                      className="p-3 text-gray-700 font-medium truncate max-w-[120px]"
-                      title={dish.name}
-                    >
-                      {dish.name}
-                    </td>
+                    <td className="p-3 text-gray-700 font-medium">
+                    <div className="max-w-[220px]">
+                      <div className="truncate font-medium text-gray-800">
+                        {dish.nameVi}
+                      </div>
+                      {dish.nameEn ? (
+                        <div className="truncate text-xs text-gray-400 mt-0.5">
+                          {dish.nameEn}
+                        </div>
+                      ) : null}
+                    </div>
+                  </td>
                     <td className="p-3 text-center text-gray-500">
                       {dish.qty}
                     </td>
