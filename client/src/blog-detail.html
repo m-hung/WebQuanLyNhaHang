@@ -158,7 +158,7 @@
             <img class="blog-detail-img" src="${esc(imgSrc)}" alt="${esc(title)}" onerror="this.src='../img/blog/default.jpg'" />
             <div class="blog-detail-content">
               ${summary ? `<blockquote>${esc(summary)}</blockquote>` : ""}
-              ${content.split(/\n\n+/).map(para => para.trim() ? `<p>${esc(para.trim())}</p>` : "").join("")}
+              ${content.includes('<p>') ? content : content.split(/\n\n+/).map(para => para.trim() ? `<p>${esc(para.trim())}</p>` : "").join("")}
             </div>
             <div class="blog-author-footer">
               <div class="author-badge">
