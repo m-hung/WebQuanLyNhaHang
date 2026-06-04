@@ -32,12 +32,44 @@
         background: #c5a880;
         color: #000;
       }
+      @media (max-width: 820px) {
+    /* Thiết lập trạng thái ban đầu của menu (nằm ngoài màn hình bên phải) */
+    .nav-links {
+        display: flex !important; /* Ghi đè các thuộc tính ẩn nếu có */
+        flex-direction: column !important;
+        position: fixed !important;
+        top: 0;
+        right: -100%; /* Đẩy toàn bộ menu sang phải */
+        width: 75%; /* Độ rộng của menu khi trượt ra */
+        height: 100vh;
+        background: rgba(10, 10, 10, 0.98);
+        padding-top: 100px;
+        z-index: 999;
+        transition: right 0.5s cubic-bezier(0.23, 1, 0.32, 1) !important; /* Hiệu ứng trượt mượt mà */
+        box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+    }
+
+    /* Khi class .active được thêm vào bởi main.js, menu sẽ trượt vào */
+    .nav-links.active {
+        right: 0 !important;
+    }
+
+    /* Giữ nút Hamburger/Dấu X luôn nằm trên cùng để nhấn tắt */
+    .menu-toggle {
+        position: relative;
+        z-index: 1001; 
+        display: block !important;
+    }
+}
     </style>
 </head>
 <body>
 
 <nav>
     <div class="logo">CELESTÉ HOUSE</div>
+    <button class="menu-toggle" id="mobile-menu">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
     <ul class="nav-links">
         <li><a href="../index.html" data-i18n="navbar.nav_home">Trang Chủ</a></li>
         <li><a href="./menu.html" data-i18n="navbar.nav_menu">Thực Đơn</a></li>

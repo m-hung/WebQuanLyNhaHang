@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Tên: Không số, không ký tự đặc biệt
     custName.addEventListener('input', (e) => {
-        const regex = /[^a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÂÊÔƠƯ \s]/g;
+        const regex = /[0-9!@#$%^&*()_+=\[\]{};':"\\|,.<>\/?`~]/g;
         e.target.value = e.target.value.replace(regex, '');
     });
 

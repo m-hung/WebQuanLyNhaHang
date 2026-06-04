@@ -2,30 +2,32 @@ import React, {useState, useEffect} from "react";
 import {Search, Plus, Minus, Trash2, AlertCircle} from "lucide-react";
 
 export default function Pos({
-                                setPage, onSaveInvoice, editingInvoice, initialTableNumber,
-                            }) {
-    // 1. Chuyển cashiers thành state rỗng ban đầu
-    const [cashiers, setCashiers] = useState([]);
+  setPage,
+  onSaveInvoice,
+  editingInvoice,
+  initialTableNumber,
+}) {
+  const getCurrentUserName = () =>
+    sessionStorage.getItem("fullName") ||
+    sessionStorage.getItem("username") ||
+    "Thu ngân";
 
-    // 2. Khởi tạo người thu ngân
-    const [selectedCashier, setSelectedCashier] = useState("");
+  const [selectedCashier] = useState(getCurrentUserName());
+  const [availableTables, setAvailableTables] = useState([]);
+  const [selectedTable, setSelectedTable] = useState(
+    editingInvoice ? editingInvoice.tableName : initialTableNumber || "",
+  );
 
-    // STATE MỚI: Quản lý lỗi để hiển thị chữ đỏ thay vì dùng alert
-    const [saveError, setSaveError] = useState("");
-
-    const [availableTables, setAvailableTables] = useState([]);
-    const [selectedTable, setSelectedTable] = useState(editingInvoice ? editingInvoice.tableName : initialTableNumber || "",);
-
-    const normalizeCartItem = (item) => {
-        return {
-            itemId: item.itemId,
-            nameVi: item.nameVi || "Unknown",
-            nameEn: item.nameEn || "",
-            price: item.price || 0,
-            discount: item.discount || 0,
-            imageUrl: item.imageUrl || "",
-            qty: item.qty || 1,
-        };
+  const normalizeCartItem = (item) => {
+    // App.jsx đã đẩy dữ liệu sạch xuống, ta chỉ cần gán thẳng
+    return {
+      itemId: item.itemId,
+      nameVi: item.nameVi || "Unknown",
+      nameEn: item.nameEn || "",
+      price: item.price || 0,
+      discount: item.discount || 0,
+      imageUrl: item.imageUrl || "",
+      qty: item.qty || 1,
     };
 
     const getInitialCart = () => {
@@ -476,62 +478,17 @@ export default function Pos({
                     <span className="text-2xl font-bold text-blue-700">
               {calculatedTotal.toLocaleString()} VNĐ
             </span>
-                </div>
+          </div>
 
-                <div className="flex gap-4 mb-4 shrink-0 items-start">
-                    {/* THÊM relative VÀ CLASS ĐỔI MÀU NẾU CÓ LỖI */}
-                    <div className="flex-1 flex flex-col relative">
-                        <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
-                            Thu ngân
-                        </label>
-                        <select
-                            className={`w-full border p-2.5 rounded-lg outline-none text-sm font-medium transition-colors ${
-                                saveError ? "border-red-500 bg-red-50 text-red-700" : "border-gray-300 bg-white focus:border-blue-500"
-                            }`}
-                            value={selectedCashier}
-                            onChange={(e) => {
-                                setSelectedCashier(e.target.value);
-                                setSaveError(""); // Chọn lại thu ngân thì tắt báo lỗi
-                            }}
-                        >
-                            <option value="" disabled hidden>
-                                -- Chọn thu ngân --
-                            </option>
-
-                            {cashiers.map((name, index) => (
-                                <option key={index} value={name}>
-                                    {name}
-                                </option>
-                            ))}
-
-                            {cashiers.length === 0 && (
-                                <option value="" disabled>
-                                    Không có thu ngân nào
-                                </option>
-                            )}
-                        </select>
-
-                        {/* DÒNG CHỮ HIỂN THỊ LỖI THAY CHO ALERT */}
-                        {saveError && (
-                            <span className="text-red-500 text-xs font-medium mt-1">
-                                    {saveError}
-                                </span>
-                        )}
-                    </div>
-
-                    <div className="w-1/3">
-                        <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
-                            Bàn
-                        </label>
-                        <select
-                            className={`w-full border p-2.5 rounded-lg outline-none text-sm font-medium ${isTableFull ? "bg-red-50 border-red-300 text-red-500" : "bg-white border-gray-300 focus:border-blue-500"}`}
-                            value={selectedTable}
-                            onChange={(e) => setSelectedTable(e.target.value)}
-                            disabled={isTableFull}
-                        >
-                            {editingInvoice && (<option value={editingInvoice.tableName}>
-                                {editingInvoice.tableName} (Bàn hiện tại)
-                            </option>)}
+          <div className="flex gap-4 mb-4 shrink-0">
+            <div className="flex-1">
+              <label className="block text-xs font-semibold text-gray-500 mb-1 uppercase tracking-wide">
+                Thu ngân
+              </label>
+              <div className="w-full border border-gray-300 p-2.5 rounded-lg bg-gray-50 text-sm font-medium text-gray-900">
+                {selectedCashier}
+              </div>
+            </div>
 
                             {availableTables.map((table) => (<option key={table.tableId} value={table.tableNumber}>
                                 {table.tableNumber}

@@ -482,17 +482,264 @@ nav {
 }
 .btn-modal-close:hover { box-shadow: 0 0 25px rgba(201,168,76,0.4); }
 
-/* RESPONSIVE */
+/* =============================================
+   RESPONSIVE — Tất cả thiết bị
+   ============================================= */
+
+/* ── Tablet rộng / Laptop nhỏ (≤ 1024px) ── */
+@media (max-width: 1024px) {
+    .payment-container {
+        grid-template-columns: 1fr 360px;
+        gap: 2rem;
+        padding: 2.5rem 1.5rem;
+    }
+    nav {
+        padding: 1rem 1.5rem;
+    }
+    .nav-links { gap: 1.2rem; }
+    .nav-links a { font-size: 0.72rem; }
+}
+
+/* ── Tablet đứng / Phablet (≤ 820px) ── */
 @media (max-width: 820px) {
+    /* Nav */
+    nav {
+        padding: 1rem 1.2rem;
+    }
+    .nav-links { display: none; }
+    body {
+        padding-top: 80px; /* Cao hơn chiều cao của Nav một chút */
+    }
+
+    /* Đảm bảo thanh tiến trình hiển thị rõ ràng */
+    .progress-bar-wrap {
+        position: relative;
+        z-index: 50; /* Thấp hơn Nav (100) nhưng đủ để hiển thị */
+        margin-top: 0;
+    }
+    /* Progress bar */
+    .progress-bar-wrap {
+        padding: 1rem 1.2rem;
+        overflow-x: auto;
+    }
+    .progress-steps {
+        min-width: 320px;
+    }
+    .step span {
+        font-size: 0.65rem;
+    }
+
+    /* Layout: stack thành 1 cột, payment panel lên trước */
     .payment-container {
         grid-template-columns: 1fr;
-        padding: 2rem 1rem;
+        padding: 1.5rem 1rem;
+        gap: 1.5rem;
     }
     .summary-card { order: 2; }
     .payment-panel { order: 1; }
-    nav { padding: 1rem 1.2rem; }
-    .progress-bar-wrap { padding: 1rem 1.2rem; }
-    .nav-links { display: none; }
+}
+@media (max-width: 768px) {
+    .nav-links {
+        z-index: 1001 !important; /* Phải cao hơn Nav và Overlay */
+    }
+}
+/* ── Mobile lớn (≤ 600px) ── */
+@media (max-width: 600px) {
+    /* Nav */
+    nav {
+        padding: 0.9rem 1rem;
+    }
+    .logo {
+        font-size: 1.05rem;
+        letter-spacing: 0.18em;
+    }
+
+    /* Progress bar: ẩn text, chỉ hiện số + line */
+    .progress-bar-wrap {
+        padding: 0.85rem 1rem;
+    }
+    .step span {
+        display: none;
+    }
+    .step-num {
+        width: 28px;
+        height: 28px;
+    }
+    .step-line {
+        margin: 0 0.4rem;
+    }
+
+    /* Container */
+    .payment-container {
+        padding: 1rem 0.75rem;
+        gap: 1.2rem;
+    }
+
+    /* Summary card */
+    .summary-card {
+        padding: 1.5rem 1.2rem;
+    }
+    .card-title {
+        font-size: 0.7rem;
+        margin-bottom: 1.4rem;
+    }
+    .booking-summary-row {
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 0.75rem 0;
+    }
+    .summary-label {
+        font-size: 0.65rem;
+        flex-shrink: 0;
+        max-width: 45%;
+    }
+    .summary-value {
+        font-size: 0.82rem;
+        text-align: right;
+        word-break: break-word;
+    }
+    .price-total .price-value {
+        font-size: 1.25rem;
+    }
+    .note-box {
+        font-size: 0.72rem;
+        padding: 0.85rem 1rem;
+    }
+
+    /* Panel title */
+    .panel-title {
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+    }
+    .panel-subtitle {
+        font-size: 0.73rem;
+    }
+
+    /* VNPay box */
+    .vnpay-info-box {
+        padding: 1.1rem;
+    }
+    .vnpay-methods {
+        gap: 0.4rem;
+    }
+    .method-chip {
+        font-size: 0.65rem;
+        padding: 0.35rem 0.55rem;
+    }
+
+    /* Amount */
+    .amount-display {
+        padding: 0.85rem 1rem;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    .amount-value {
+        font-size: 1.35rem;
+    }
+    .amount-label {
+        font-size: 0.68rem;
+    }
+
+    /* Order ref */
+    .order-ref-box {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    .order-ref-value {
+        font-size: 0.75rem;
+        word-break: break-all;
+    }
+
+    /* Buttons */
+    .btn-vnpay-pay {
+        font-size: 0.78rem;
+        padding: 1rem;
+        letter-spacing: 0.08em;
+    }
+    .btn-back {
+        font-size: 0.7rem;
+        padding: 0.8rem;
+    }
+
+    /* Security badges */
+    .security-row {
+        gap: 0.6rem;
+        flex-wrap: wrap;
+    }
+    .security-badge {
+        font-size: 0.6rem;
+    }
+
+    /* Modal */
+    .modal-content {
+        padding: 2.5rem 1.5rem;
+    }
+    .modal-content h2 {
+        font-size: 1.1rem;
+    }
+
+    /* Result card */
+    .result-card {
+        padding: 2.5rem 1.5rem;
+    }
+    .result-title {
+        font-size: 1.2rem;
+    }
+}
+
+/* ── Mobile nhỏ / iPhone SE (≤ 390px) ── */
+@media (max-width: 390px) {
+    .logo {
+        font-size: 0.95rem;
+        letter-spacing: 0.12em;
+    }
+    nav {
+        padding: 0.8rem 0.9rem;
+    }
+    .payment-container {
+        padding: 0.75rem 0.6rem;
+    }
+    .summary-card {
+        padding: 1.2rem 1rem;
+    }
+    .panel-title {
+        font-size: 0.92rem;
+    }
+    .amount-value {
+        font-size: 1.2rem;
+    }
+    .price-total .price-value {
+        font-size: 1.1rem;
+    }
+    .btn-vnpay-pay {
+        font-size: 0.72rem;
+        padding: 0.95rem;
+    }
+    .method-chip {
+        font-size: 0.6rem;
+    }
+    .result-card {
+        padding: 2rem 1rem;
+    }
+    .result-title {
+        font-size: 1rem;
+    }
+    .modal-content {
+        padding: 2rem 1.2rem;
+    }
+}
+
+/* ── Landscape mobile (chiều ngang, chiều cao thấp) ── */
+@media (max-height: 500px) and (orientation: landscape) {
+    nav {
+        position: relative;
+    }
+    .progress-bar-wrap {
+        padding: 0.6rem 1.2rem;
+    }
+    .payment-container {
+        padding: 1rem;
+    }
 }
 /* =============================================
    VNPAY — Thêm vào cuối payment-custom.css

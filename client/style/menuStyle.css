@@ -58,8 +58,12 @@ body {
   color: var(--gold);
   cursor: pointer;
   font-size: 28px;
+  position: relative; /* Đảm bảo nó có vị trí */
+  z-index: 1001;      /* Cao hơn nav-links (999) */
 }
- 
+.menu-toggle * {
+  pointer-events: none;
+}
 /* ───────────── HERO ───────────── */
 .menu-hero {
   height: 100vh;
@@ -507,70 +511,285 @@ body {
   color: #000;
 }
  
-/* ───────────── RESPONSIVE ───────────── */
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — menuStyle.css
+   Breakpoints: 1280 | 1024 | 900 | 768 | 560 | 480 | 360
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── LG — Wide desktop (≤ 1280px) ── */
+@media (max-width: 1280px) {
+  .hero-title { font-size: clamp(56px, 7vw, 100px); }
+  .hero-body { padding: 0 6% 72px; }
+  .sidebar { padding: 60px 28px 60px 6%; }
+  .content-area { padding: 60px 6% 100px 40px; }
+}
+
+/* ── MD — Laptop / small desktop (≤ 1024px) ── */
+@media (max-width: 1024px) {
+  .page-layout { grid-template-columns: 220px 1fr; }
+
+  .sidebar {
+    padding: 48px 20px 48px 5%;
+    gap: 36px;
+  }
+
+  .menu-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2px; }
+
+  .hero-title { font-size: clamp(48px, 6.5vw, 88px); }
+  .hero-body { padding: 0 5% 64px; gap: 28px; }
+  .cta-section { padding: 80px 6%; gap: 32px; }
+}
+
+/* ── SM — Tablet landscape & large tablet portrait (≤ 900px) ── */
 @media (max-width: 900px) {
+  /* Nav: hamburger */
+
+nav {
+  padding: 0 5% !important;
+  height: 72px !important;
+  background: rgba(9,9,9,0.85) !important;
+  backdrop-filter: blur(12px);
+  position: relative;   /* ← thêm dòng này */
+  z-index: 1002;        /* ← thêm dòng này, cao hơn nav-links */
+}
+
+  .menu-toggle { display: block; }
+
+  .nav-links {
+    position: fixed;
+    top: 0; 
+    right: -100%; /* Đang ẩn ở bên phải */
+    width: 72%; 
+    height: 100vh;
+    background: rgba(9,9,9,0.98);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    transition: right 0.4s cubic-bezier(0.23,1,0.32,1);
+    display: flex;
+    z-index: 999;
+    border-left: 1px solid rgba(197,160,89,0.1);
+    box-shadow: -8px 0 32px rgba(0,0,0,0.6);
+    padding-top: 72px;
+    z-index: 999;
+    transition: right 0.4s ease;
+  }
+
+  .nav-links.active { right: 0; }
+  .nav-links.active {
+    right: 0 !important; /* Đẩy menu vào lại màn hình */
+  }
+  .nav-links a { font-size: 15px !important; letter-spacing: 2px; }
+
+  /* Layout: sidebar trên, content dưới */
   .page-layout { grid-template-columns: 1fr; }
- 
+
   .sidebar {
     position: static;
     height: auto;
-    padding: 40px 5%;
+    padding: 36px 5% 32px;
     border-right: none;
     border-bottom: 1px solid rgba(197,160,89,0.08);
     flex-direction: row;
     flex-wrap: wrap;
     gap: 24px;
+    align-items: flex-start;
   }
- 
+
+  .sidebar > div { flex: 1; min-width: 200px; }
+  .sidebar-divider { display: none; }
+
   .filter-list {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 8px 0;
+    gap: 8px;
   }
- 
+
   .filter-list li button {
-    padding: 8px 16px;
+    padding: 7px 16px;
     border: 1px solid rgba(197,160,89,0.2);
+    border-radius: 2px;
     font-size: 10px;
     border-bottom: 1px solid rgba(197,160,89,0.2);
+    width: auto;
+    justify-content: flex-start;
+    gap: 8px;
   }
- 
+
   .filter-list li button.active {
     background: var(--gold-pale);
     border-color: var(--gold);
   }
- 
+
   .content-area { padding: 40px 5% 80px; }
- 
+
+  /* Hero */
+  .hero-title { font-size: clamp(44px, 8vw, 80px); }
+  .hero-body { padding: 0 5% 60px; grid-template-columns: 1fr auto; gap: 24px; }
+  .hero-subtitle { font-size: 16px; max-width: 360px; }
+
+  /* Grid: 2 columns */
+  .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 2px; }
+  .menu-card { aspect-ratio: 3/4; }
+
+  /* CTA */
   .cta-section {
     grid-template-columns: 1fr;
     text-align: center;
     justify-items: center;
+    padding: 80px 5%;
+    gap: 32px;
   }
- 
-  .menu-toggle { display: block; }
- 
-  .nav-links {
-    position: fixed;
-    top: 0; right: -100%;
-    width: 70%; height: 100vh;
-    background: rgba(9,9,9,0.98);
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 28px;
-    transition: right 0.4s ease;
-    display: flex;
-    z-index: 999;
-  }
- 
-  .nav-links.active { right: 0; }
-  .nav-links a { font-size: 14px; }
+
+  .content-header .active-label { font-size: 28px; }
 }
- 
+
+/* ── SM — Tablet portrait (≤ 768px) ── */
+@media (max-width: 768px) {
+  nav { height: 68px !important; }
+  .logo { font-size: 18px; letter-spacing: 1.5px; }
+  .nav-links { width: 78% !important; gap: 24px !important; }
+
+  .menu-hero { height: 90vh; }
+  .hero-title { font-size: clamp(40px, 9vw, 68px); }
+  .hero-eyebrow { font-size: 9px; letter-spacing: 4px; }
+  .hero-subtitle { font-size: 15px; margin-top: 18px; max-width: 320px; }
+  .hero-body { padding: 0 5% 52px; gap: 20px; }
+
+  .sidebar { padding: 28px 5% 24px; gap: 20px; }
+  .sidebar > div { min-width: 160px; }
+
+  .content-area { padding: 32px 5% 64px; }
+  .content-header { margin-bottom: 32px; padding-bottom: 18px; }
+  .content-header .active-label { font-size: 26px; }
+  .content-header .result-count { font-size: 9px; }
+
+  .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 2px; }
+  .card-name { font-size: 20px; }
+
+  .cta-section { padding: 70px 5%; }
+  .cta-text h2 { font-size: clamp(26px, 5vw, 42px); }
+}
+
+/* ── XS — Mobile landscape / large phone (≤ 560px) ── */
 @media (max-width: 560px) {
+  nav { height: 64px !important; padding: 0 4% !important; }
+  .logo { font-size: 17px; letter-spacing: 1px; }
+  .menu-toggle span { font-size: 26px; }
+  .nav-links { width: 85% !important; gap: 22px !important; padding-top: 60px !important; }
+  .nav-links a { font-size: 14px !important; letter-spacing: 1.5px !important; }
+  .btn-lang { padding: 5px 11px; font-size: 10px; }
+
+  .menu-hero { height: 85vh; }
+  .hero-title { font-size: clamp(36px, 10vw, 58px); }
+  .hero-body { grid-template-columns: 1fr; padding: 0 5% 48px; }
+  .hero-scroll { display: none; }
+  .hero-subtitle { font-size: 14px; max-width: 100%; margin-top: 14px; }
+  .hero-eyebrow { font-size: 8px; margin-bottom: 14px; }
+
+  .sidebar {
+    padding: 24px 4% 20px;
+    gap: 16px;
+    flex-direction: column;
+  }
+
+  .sidebar > div { min-width: unset; width: 100%; }
+
+  .filter-list { gap: 6px; }
+  .filter-list li button { padding: 7px 14px; font-size: 10px; }
+
+  .content-area { padding: 28px 4% 60px; }
+  .content-header .active-label { font-size: 24px; }
+
+  /* 1 column on small phones */
   .menu-grid { grid-template-columns: 1fr; gap: 2px; }
   .menu-card { aspect-ratio: 4/3; }
-  .hero-body { grid-template-columns: 1fr; }
-  .hero-scroll { display: none; }
+
+  .card-name { font-size: 22px; }
+  .card-price { font-size: 18px; }
+  .card-body { padding: 22px 20px; }
+  .card-desc { font-size: 12px; }
+
+  .cta-section { padding: 60px 4%; gap: 24px; }
+  .cta-text h2 { font-size: clamp(22px, 6vw, 36px); }
+  .cta-text p { font-size: 12px; }
+  .btn-primary-gold { padding: 16px 40px; font-size: 9px; letter-spacing: 2.5px; }
+}
+
+/* ── XXS — Mobile portrait (≤ 480px) ── */
+@media (max-width: 480px) {
+  .menu-hero { height: 80vh; min-height: 480px; }
+  .hero-title { font-size: clamp(32px, 10.5vw, 52px); line-height: 0.92; }
+  .hero-subtitle { font-size: 13px; }
+  .hero-body { padding: 0 4% 44px; }
+
+  .sidebar { padding: 20px 4% 18px; gap: 14px; }
+  .sidebar-section-label { margin-bottom: 14px; }
+  .search-wrap input { font-size: 12px; padding: 9px 28px 9px 0; }
+
+  .filter-list { gap: 5px; }
+  .filter-list li button { padding: 6px 12px; font-size: 9px; letter-spacing: 1.5px; }
+
+  .content-area { padding: 24px 4% 56px; }
+  .content-header { margin-bottom: 24px; padding-bottom: 14px; }
+  .content-header .active-label { font-size: 22px; }
+  .content-header .result-count { font-size: 8px; letter-spacing: 2px; }
+
+  .menu-grid { gap: 2px; }
+  .menu-card { aspect-ratio: 1/1; }
+  .card-name { font-size: 20px; }
+  .card-price { font-size: 17px; }
+  .card-cat { font-size: 8px; letter-spacing: 2.5px; }
+  .card-discount-badge { font-size: 8px; padding: 4px 8px; top: 14px; right: 14px; }
+
+  .empty-msg { padding: 60px 0; }
+  .empty-msg p { font-size: 22px; }
+
+  .cta-section { padding: 52px 4%; }
+  .cta-text h2 { font-size: clamp(20px, 6.5vw, 30px); margin-bottom: 10px; }
+  .btn-primary-gold { padding: 14px 36px; }
+}
+
+/* ── XXS — Very small phones (≤ 360px) ── */
+@media (max-width: 360px) {
+  .logo { font-size: 15px !important; letter-spacing: 0.5px !important; }
+  .menu-hero { height: 75vh; min-height: 420px; }
+  .hero-title { font-size: clamp(28px, 11vw, 44px); }
+  .hero-eyebrow { display: none; }
+
+  .sidebar { padding: 18px 4% 16px; }
+  .filter-list li button { padding: 5px 10px; font-size: 9px; }
+
+  .content-area { padding: 20px 4% 48px; }
+  .content-header .active-label { font-size: 20px; }
+
+  .menu-card { aspect-ratio: 5/4; }
+  .card-name { font-size: 18px; }
+  .card-body { padding: 18px 16px; }
+
+  .btn-primary-gold { padding: 13px 28px; font-size: 9px; letter-spacing: 2px; }
+}
+
+/* ── Touch device fixes ── */
+@media (hover: none) {
+  /* Luôn hiển thị thông tin card trên thiết bị cảm ứng */
+  .card-cat {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card-desc {
+    max-height: 64px;
+    opacity: 1;
+    margin-bottom: 10px;
+  }
+
+  .card-img img {
+    filter: brightness(0.7) saturate(0.6);
+  }
+
+  /* Tắt background-attachment: fixed trên iOS để tránh flicker */
+  .menu-hero { background-attachment: scroll; }
 }

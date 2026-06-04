@@ -197,8 +197,11 @@ body {
   .btn-all,
   .btn-outline {
     width: 100%;
-    padding: 18px 0;
+    padding: 15px 18px;
     box-sizing: border-box;
+    font-size: 10px;
+    letter-spacing: 1px;
+    white-space: nowrap;
   }
 }
 /* Định dạng chung cho các Section */
@@ -1724,4 +1727,341 @@ nav {
   .lb-prev { left: 8px; }
   .lb-next { right: 8px; }
   .lightbox-img-area { height: 260px; }
+}
+/* ═══════════════════════════════════════════════════════════
+   COMPREHENSIVE RESPONSIVE SYSTEM — ALL DEVICES
+   Breakpoints:
+     xl  : > 1440px (large desktop)
+     lg  : 1025px – 1440px (desktop)
+     md  : 769px  – 1024px (tablet landscape / small laptop)
+     sm  : 481px  – 768px  (tablet portrait)
+     xs  : ≤ 480px         (mobile)
+     xxs : ≤ 360px         (small mobile)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── GLOBAL HELPERS ────────────────────────────────────────── */
+img, video { max-width: 100%; height: auto; }
+
+/* ═══════════════════════════════════════════════════════════
+   XL — Large desktop (> 1440px)
+   ═══════════════════════════════════════════════════════════ */
+@media (min-width: 1441px) {
+  section { padding: 120px 12%; }
+  .features-grid { grid-template-columns: repeat(4, 1fr); gap: 50px; }
+  .menu-grid { grid-template-columns: repeat(3, 1fr); }
+  .about-container { max-width: 1400px; gap: 80px; }
+  .masonry-grid { max-width: 1400px; }
+  .timeline-track { max-width: 1300px; }
+  .tl-detail-panel { max-width: 1300px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MD — Tablet landscape / small laptop (769px – 1024px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  /* Nav */
+  nav { padding: 0 4%; }
+  .nav-links { gap: 18px; }
+  .nav-links a { font-size: 12px; letter-spacing: 1px; }
+  .logo { font-size: 20px; }
+
+  /* Hero */
+  .hero-content h1 { font-size: clamp(2.8rem, 6vw, 4.5rem); letter-spacing: 6px; }
+  .hero-content p { font-size: 16px; }
+
+  /* Sections */
+  section { padding: 80px 6%; }
+
+  /* Features */
+  .features-grid { grid-template-columns: repeat(2, 1fr); gap: 30px; }
+
+  /* Menu */
+  .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .menu-card { height: 440px; }
+
+  /* About */
+  .about { padding: 80px 6%; }
+  .about-container { gap: 40px; }
+  .about-title { font-size: 30px; }
+
+  /* Gallery */
+  .gallery-section { padding: 80px 6%; }
+
+  /* Timeline */
+  .timeline-section { padding: 80px 6%; }
+  .tl-step { min-width: 150px; }
+
+  /* CTA */
+  .cta { padding: 60px 6%; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SM — Tablet portrait (481px – 768px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* ── Nav: hamburger ── */
+  nav {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 0 5% !important;
+    height: 70px !important;
+    position: absolute !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(8px);
+  }
+  .logo { font-size: 18px; letter-spacing: 1.5px; }
+  .menu-toggle { display: block !important; }
+  .nav-links {
+    position: fixed !important;
+    top: 0 !important;
+    right: -100% !important;
+    width: 75% !important;
+    height: 100vh !important;
+    background: rgba(8, 8, 8, 0.99) !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 28px !important;
+    transition: right 0.4s cubic-bezier(0.23, 1, 0.32, 1) !important;
+    z-index: 1000 !important;
+    box-shadow: -8px 0 30px rgba(0,0,0,0.6) !important;
+    border-left: 1px solid rgba(197, 160, 89, 0.1) !important;
+    flex-wrap: nowrap !important;
+    padding-top: 80px !important;
+  }
+  .nav-links.active { right: 0 !important; }
+  .nav-links a { font-size: 16px !important; letter-spacing: 2px !important; }
+
+  /* ── Hero ── */
+  .hero-content h1 {
+    font-size: clamp(2.2rem, 9vw, 3.5rem);
+    letter-spacing: 4px;
+    line-height: 1.1;
+  }
+  .hero-content p { font-size: 14px; margin-bottom: 30px; }
+  .hero-content { padding-bottom: 60px; }
+  .btn-group { flex-direction: column; align-items: center; gap: 14px; margin-top: 20px; }
+  .btn-all, .btn-outline {
+    width: 220px;
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    white-space: nowrap;
+  }
+
+  /* ── Sections ── */
+  section { padding: 70px 5%; }
+  h2 { font-size: 26px; margin-bottom: 35px; }
+  .section-subtitle { font-size: 11px; margin-top: -25px; margin-bottom: 40px; }
+
+  /* ── Features ── */
+  .features-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .feature-item .icon { width: 60px; height: 60px; line-height: 60px; font-size: 28px; }
+  .feature-item h3 { font-size: 14px; }
+
+  /* ── Menu cards ── */
+  .menu-grid { grid-template-columns: 1fr; gap: 20px; max-width: 420px; margin-left: auto; margin-right: auto; }
+  .menu-card { height: 460px; }
+
+  /* ── About ── */
+  .about { padding: 70px 5%; }
+  .about-container { flex-direction: column; gap: 30px; text-align: center; }
+  .about-content { align-items: center; text-align: center; }
+  .about-title::after { margin: 10px auto; }
+  .about-image img { box-shadow: 8px 8px 0 rgba(197,160,89,0.15); }
+  .about-title { font-size: 28px; }
+  .about-text { font-size: 14px; }
+
+  /* ── Gallery ── */
+  .gallery-section { padding: 70px 5%; }
+  .masonry-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    gap: 6px;
+  }
+  .masonry-item:nth-child(1) { grid-column: 1 / 3; grid-row: auto; height: 200px; }
+  .masonry-item:nth-child(2) { grid-column: auto; grid-row: auto; height: 180px; }
+  .masonry-item:nth-child(3) { grid-column: auto; grid-row: auto; height: 180px; }
+  .masonry-item:nth-child(4) { grid-column: auto; grid-row: auto; height: 180px; }
+  .masonry-item:nth-child(5) { grid-column: 1 / 3; grid-row: auto; height: 180px; }
+
+  /* ── Lightbox ── */
+  .lightbox-inner { width: 95%; }
+  .lightbox-img-area { height: 300px; }
+  .lb-prev { left: 5px; }
+  .lb-next { right: 5px; }
+  .lightbox-close { top: -10px; right: -10px; }
+
+  /* ── Timeline ── */
+  .timeline-section { padding: 70px 5%; }
+  .timeline-track { overflow-x: auto; padding-bottom: 20px; }
+  .tl-step { min-width: 130px; padding: 0 8px; }
+  .tl-title { font-size: 13px; }
+  .tl-desc { font-size: 10px; max-width: 120px; }
+  .tl-detail-panel {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px 20px;
+  }
+  .dp-time-block { margin-left: 0; text-align: left; }
+  .dp-icon { width: 50px; height: 50px; font-size: 18px; }
+  .dp-text h4 { font-size: 16px; }
+  .dp-text p { font-size: 12px; }
+
+  /* ── CTA ── */
+  .cta { padding: 60px 5%; background-attachment: scroll; }
+  .cta h2 { font-size: 24px; }
+  .cta p { font-size: 14px; margin-bottom: 22px !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   XS — Mobile (≤ 480px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* ── Nav ── */
+  nav { height: 64px !important; padding: 0 4% !important; }
+  .logo { font-size: 16px !important; letter-spacing: 1px !important; }
+  .menu-toggle span { font-size: 28px; }
+  .nav-links { width: 85% !important; gap: 22px !important; }
+  .nav-links a { font-size: 15px !important; }
+  .lang-switcher-nav { gap: 8px; }
+  .btn-lang { padding: 6px 12px; font-size: 11px; }
+
+  /* ── Hero ── */
+  .home-hero { height: 100svh; }
+  .hero-content h1 {
+    font-size: clamp(1.9rem, 10vw, 2.8rem);
+    letter-spacing: 3px;
+    line-height: 1.15;
+    padding: 0 10px;
+  }
+  .hero-content p { font-size: 13px; padding: 0 10px; }
+  .hero-content { padding-bottom: 50px; padding-left: 5%; padding-right: 5%; }
+  .btn-all, .btn-outline {
+    width: 100%;
+    max-width: 280px;
+    padding: 15px 18px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+  }
+
+  /* ── Sections ── */
+  section { padding: 60px 5%; }
+  h2 { font-size: 22px; margin-bottom: 28px; }
+  h2::after { width: 40px; margin: 10px auto; }
+  .section-subtitle { font-size: 10px; margin-top: -20px; margin-bottom: 35px; letter-spacing: 2px; }
+
+  /* ── Features ── */
+  .features-grid { grid-template-columns: 1fr 1fr; gap: 18px; }
+  .feature-item { padding: 0 4px; }
+  .feature-item .icon { width: 52px; height: 52px; line-height: 52px; font-size: 24px; margin-bottom: 14px; }
+  .feature-item h3 { font-size: 13px; margin-bottom: 6px; }
+  .feature-item p { font-size: 11px; }
+
+  /* ── Menu section ── */
+  .menu-grid { grid-template-columns: 1fr; max-width: 100%; }
+  .menu-card { height: 440px; }
+  .card-front img { height: 200px !important; }
+  .back-name { font-size: 18px; }
+  .back-desc { font-size: 11.5px; }
+  .view-more { padding: 13px 30px; font-size: 12px; }
+
+  /* ── About ── */
+  .about { padding: 60px 5%; }
+  .about-container { gap: 24px; }
+  .about-title { font-size: 24px; }
+  .about-text { font-size: 13px; }
+
+  /* ── Gallery ── */
+  .gallery-section { padding: 60px 5%; }
+  .masonry-grid {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .masonry-item:nth-child(1),
+  .masonry-item:nth-child(2),
+  .masonry-item:nth-child(3),
+  .masonry-item:nth-child(4),
+  .masonry-item:nth-child(5) {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+    height: 200px !important;
+  }
+  .gallery-hint { font-size: 9px; letter-spacing: 2px; }
+
+  /* ── Lightbox ── */
+  .lightbox-inner { width: 98%; }
+  .lightbox-img-area { height: 240px; }
+  .lightbox-caption { padding: 16px 18px 20px; }
+  .lightbox-caption h3 { font-size: 16px; }
+  .lightbox-caption p { font-size: 11.5px; }
+  .lb-nav { width: 36px; height: 36px; font-size: 20px; }
+  .lb-prev { left: 4px; }
+  .lb-next { right: 4px; }
+  .lightbox-close { width: 32px; height: 32px; font-size: 16px; top: -8px; right: -8px; }
+
+  /* ── Timeline ── */
+  .timeline-section { padding: 60px 5%; }
+  .timeline-track { gap: 0; }
+  .tl-step { min-width: 110px; padding: 0 6px; }
+  .tl-icon-wrap { width: 46px; height: 46px; margin-bottom: 16px; }
+  .tl-num { font-size: 15px; }
+  .tl-title { font-size: 12px; }
+  .tl-desc { font-size: 9.5px; max-width: 100px; }
+  .tl-label { font-size: 8px; letter-spacing: 2px; }
+  .tl-detail-panel { padding: 18px 16px; gap: 14px; }
+  .dp-text h4 { font-size: 15px; }
+  .dp-text p { font-size: 11.5px; }
+  .dp-time-val { font-size: 26px; }
+
+  /* ── CTA ── */
+  .cta { padding: 55px 5%; }
+  .cta h2 { font-size: 20px !important; }
+  .cta p { font-size: 13px !important; }
+  .btn-gold { padding: 14px 30px; font-size: 12px; }
+
+  /* ── Modal ── */
+  .modal-content { width: 96%; padding: 28px 16px; }
+  .modal-title { font-size: 22px; letter-spacing: 2px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   XXS — Very small mobile (≤ 360px)
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 360px) {
+  .logo { font-size: 14px !important; letter-spacing: 0.5px !important; }
+  .hero-content h1 { font-size: 1.7rem; letter-spacing: 2px; }
+  .features-grid { grid-template-columns: 1fr; gap: 20px; }
+  .feature-item { max-width: 280px; margin: 0 auto; }
+  .menu-card { height: 420px; }
+  .tl-step { min-width: 95px; }
+  .tl-title { font-size: 11px; }
+  .tl-desc { font-size: 9px; max-width: 85px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TOUCH / HOVER FIXES
+   ═══════════════════════════════════════════════════════════ */
+/* Trên thiết bị cảm ứng: photo-label luôn hiển thị */
+@media (hover: none) {
+  .photo-label { opacity: 1; transform: translateY(0); }
+  .gallery-zoom-icon { opacity: 0.6; transform: scale(0.8); }
+  .masonry-item img { filter: brightness(0.82) saturate(0.85); }
+  .card-front-hint p { color: #6a5a42 !important; }
+  /* CTA background-attachment: scroll để tránh iOS flicker */
+  .cta { background-attachment: scroll; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   PRINT
+   ═══════════════════════════════════════════════════════════ */
+@media print {
+  nav, .menu-toggle, .hero-video, .lightbox, .cta { display: none !important; }
+  .home-hero { height: auto; background: #000; }
+  section { padding: 30px 5%; }
+  .features-grid, .menu-grid { grid-template-columns: repeat(2, 1fr); }
 }

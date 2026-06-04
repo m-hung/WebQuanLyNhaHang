@@ -15,6 +15,12 @@ export default function Checkout({setPage, invoice, onPaymentSuccess}) {
     }) + " - " + now.toLocaleDateString("vi-VN"));
   });
 
+  const currentUserName =
+    sessionStorage.getItem("fullName") ||
+    sessionStorage.getItem("username") ||
+    invoice?.cashierName ||
+    "Thu ngân";
+
   const isFormValid = customerName.trim() !== "" && customerPhone.trim() !== "";
 
   // TỰ ĐỘNG CHUẨN HÓA DỮ LIỆU MÓN ĂN
@@ -59,7 +65,7 @@ export default function Checkout({setPage, invoice, onPaymentSuccess}) {
           <p className="text-gray-500">
             Hóa đơn nhập bởi:{" "}
             <span className="font-medium text-gray-700">
-              {invoice?.cashierName || "Thu ngân"}
+              {currentUserName}
             </span>
           </p>
         </div>
