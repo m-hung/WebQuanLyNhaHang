@@ -17,7 +17,11 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `created_at`, `full_name`, `password`, `email`, `role`, `status`, `username`)
 VALUES
-    (1, NOW(), 'Admin', '$2a$12$JY3yC3yigNqX72HeFFWVgeK2APgmPxMq8vNJO9axzeIxl9AkzM69O', 'celestehouse92@gmail.com', 'ADMIN', 'ACTIVE', 'admin')
+    (1, NOW(), 'Admin', '$2a$12$JY3yC3yigNqX72HeFFWVgeK2APgmPxMq8vNJO9axzeIxl9AkzM69O', 'celestehouse92@gmail.com', 'ADMIN', 'ACTIVE', 'admin'),
+    (2, NOW(), 'Nguyễn Khánh Hưng', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'MANAGER', 'ACTIVE', 'KhanhHung'),
+    (3, NOW(), 'Thái Trần Minh Hưng', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'CASHIER', 'ACTIVE', 'MinhHung'),
+    (4, NOW(), 'Nguyễn Tiến Hưng', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'CASHIER', 'ACTIVE', 'TienHung'),
+    (5, NOW(), 'Nguyễn Gia Huy', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'CASHIER', 'ACTIVE', 'GiaHuy')
 ON DUPLICATE KEY UPDATE
     full_name = VALUES(full_name),
     password = VALUES(password),

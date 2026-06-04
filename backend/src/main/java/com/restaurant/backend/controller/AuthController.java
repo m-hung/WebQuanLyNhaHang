@@ -54,13 +54,15 @@ public class AuthController {
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         if (email == null || email.isBlank()) {
-            return ResponseEntity.badRequest().body("Vui lòng cung cấp địa chỉ email");
+            return ResponseEntity.badRequest().body("Vui lòng cung cấp địa chỉ Email!");
         }
 
-        // Tìm user theo email
+        // Tìm user dựa trên Email
         User user = userRepository.findByEmail(email).orElse(null);
+
+        // Nếu nhập sai Email hoặc Email không tồn tại trong CSDL
         if (user == null) {
-            return ResponseEntity.ok(Map.of("message", "Nếu email tồn tại, bạn sẽ nhận được hướng dẫn đặt lại mật khẩu."));
+            return ResponseEntity.badRequest().body("Email không hợp lệ!");
         }
 
         String token = UUID.randomUUID().toString();
@@ -72,16 +74,15 @@ public class AuthController {
         prt.setExpiryDate(expiry);
         passwordResetTokenRepository.save(prt);
 
-        // Tạo link để khách click vào
         String resetLink = "http://localhost:5173/reset-password?token=" + token;
 
         try {
-            emailService.sendPasswordResetEmail(email, resetLink);
+            emailService.sendPasswordResetEmail(email, resetLink, user.getFullName());
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Lỗi khi gửi email: " + e.getMessage());
         }
 
-        return ResponseEntity.ok(Map.of("message", "Đã gửi link khôi phục vào email của bạn."));
+        return ResponseEntity.ok(Map.of("message", "Đã gửi link khôi phục mật khẩu. Vui lòng kiểm tra hộp thư!"));
     }
 
     @PostMapping("/reset-password")

@@ -33,13 +33,13 @@ export default function LoginPage() {
     const handleForgotSubmit = async (e) => {
         e.preventDefault();
         setForgotMessage("");
+        setError(""); // Xóa lỗi cũ nếu có
         setForgotLoading(true);
         try {
-            const usernameToSend = forgotEmail || username;
-            await forgotPassword(usernameToSend);
-            setForgotMessage("Đã gửi yêu cầu. Hãy kiểm tra email.");
+            const res = await forgotPassword(forgotEmail);
+            setForgotMessage(res.message || "Đã gửi yêu cầu. Hãy kiểm tra email.");
         } catch (err) {
-            setForgotMessage(err.message || "Quên mật khẩu thất bại");
+            setError(err.message || "Email không tồn tại trong hệ thống!");
         } finally {
             setForgotLoading(false);
         }
@@ -48,12 +48,22 @@ export default function LoginPage() {
     return (
         <div className="min-h-screen bg-gray-100 flex items-center justify-center">
             <div className="bg-white rounded-2xl shadow-lg w-full max-w-md p-8">
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">Đăng nhập</h1>
-                <p className="text-gray-500 text-sm mb-6">Hệ thống quản lý nhà hàng</p>
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                    {forgotMode ? "Khôi phục mật khẩu" : "Đăng nhập"}
+                </h1>
+                <p className="text-gray-500 text-sm mb-6">Hệ thống quản lý CELESTÉ HOUSE</p>
 
+                {/* THÔNG BÁO LỖI CHUNG (Dùng cho cả sai pass và sai email) */}
                 {error && (
                     <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm mb-4">
                         {error}
+                    </div>
+                )}
+
+                {/* THÔNG BÁO THÀNH CÔNG KHI QUÊN MẬT KHẨU */}
+                {forgotMessage && (
+                    <div className="bg-green-50 text-green-700 px-4 py-3 rounded-lg text-sm mb-4 text-center">
+                        {forgotMessage}
                     </div>
                 )}
 
@@ -103,12 +113,16 @@ export default function LoginPage() {
                 {/* FORM QUÊN MẬT KHẨU */}
                 {forgotMode && (
                     <form onSubmit={handleForgotSubmit} className="space-y-4">
+                        <div className="bg-blue-50 p-3 rounded-lg mb-4 text-sm text-blue-800">
+                            Tính năng gửi link khôi phục tự động qua email chỉ dành cho tài khoản Quản trị (Admin).<br/><br/>
+                            <b>Lưu ý:</b> Nhân viên vui lòng liên hệ trực tiếp Admin để được cấp lại mật khẩu.
+                        </div>
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">
                                 Địa chỉ Email đã đăng ký
                             </label>
                             <input
-                                type="email" // Bật type email để trình duyệt tự kiểm tra định dạng @
+                                type="email"
                                 value={forgotEmail}
                                 onChange={(e) => setForgotEmail(e.target.value)}
                                 autoComplete="off"
@@ -133,6 +147,7 @@ export default function LoginPage() {
                 <div className="mt-4 text-center">
                     {!forgotMode ? (
                         <button
+                            type="button"
                             onClick={() => { setForgotMode(true); setForgotEmail(""); setForgotMessage(""); setError(""); }}
                             className="text-sm text-blue-600 hover:underline"
                         >
@@ -140,6 +155,7 @@ export default function LoginPage() {
                         </button>
                     ) : (
                         <button
+                            type="button"
                             onClick={() => { setForgotMode(false); setForgotMessage(""); setError(""); }}
                             className="text-sm text-gray-600 hover:underline"
                         >
@@ -147,14 +163,6 @@ export default function LoginPage() {
                         </button>
                     )}
                 </div>
-
-                {/* THÔNG BÁO THÀNH CÔNG KHI QUÊN MẬT KHẨU */}
-                {forgotMessage && (
-                    <div className="bg-green-50 text-green-700 px-4 py-3 rounded-lg text-sm mt-4 text-center">
-                        {forgotMessage}
-                    </div>
-                )}
-
             </div>
         </div>
     );
