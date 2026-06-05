@@ -297,9 +297,8 @@
           const catName     = food.category ? getName(food.category) : '';
  
           const card = document.createElement('div');
-          card.className = 'menu-card show-animation';
+          card.className = 'menu-card';
           card.dataset.category = food.category ? food.category.categoryId : '';
-          card.style.animationDelay = `${Math.min(i * 0.05, 0.4)}s`;
  
           const imgHTML = food.imageUrl
             ? `<img src="${food.imageUrl}" alt="${displayName}" onerror="this.parentElement.innerHTML='<div class=card-no-img>&#127869;</div>'">`
@@ -342,5 +341,53 @@
     });
   </script>
  
+
+  <!-- ── Scroll Reveal: IntersectionObserver cho menu cards ── -->
+  <script>
+    (function () {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const card = entry.target;
+            observer.unobserve(card);
+
+            // Tính stagger theo vị trí cột trong grid
+            const siblings = Array.from(card.parentElement.children);
+            const idx = siblings.indexOf(card);
+            const cols = window.innerWidth <= 560 ? 1 : window.innerWidth <= 900 ? 2 : 3;
+            const colDelay = (idx % cols) * 0.1;
+            card.style.transitionDelay = colDelay + 's';
+
+            // Double rAF: đảm bảo browser đã paint trạng thái opacity:0 trước khi animate
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                card.classList.add('in-view');
+              });
+            });
+          });
+        },
+        { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
+      );
+
+      function observeCards() {
+        document.querySelectorAll('.menu-card:not(.in-view)').forEach((card) => {
+          observer.observe(card);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        const grid = document.getElementById('main-menu-grid');
+        if (grid) {
+          new MutationObserver(() => {
+            // Đợi DOM render xong rồi mới observe
+            requestAnimationFrame(observeCards);
+          }).observe(grid, { childList: true });
+        }
+        observeCards();
+      });
+    })();
+  </script>
+
 </body>
 </html>

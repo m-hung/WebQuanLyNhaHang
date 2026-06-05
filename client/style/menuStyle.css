@@ -14,12 +14,16 @@
 }
  
 * { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { overflow-x: hidden; max-width: 100%; }
  
 body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-body);
   overflow-x: hidden;
+  max-width: 100%;
+  position: relative;
 }
  
 
@@ -161,6 +165,8 @@ body {
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
   background: var(--bg);
+  max-width: 100%;
+  overflow-x: hidden;
 }
  
 /* ───────────── SIDEBAR ───────────── */
@@ -174,6 +180,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 48px;
+  min-width: 0;
 }
  
 .sidebar::-webkit-scrollbar { width: 3px; }
@@ -270,6 +277,8 @@ body {
 /* ───────────── CONTENT AREA ───────────── */
 .content-area {
   padding: 60px 8% 100px 48px;
+  min-width: 0;
+  overflow-x: hidden;
 }
  
 .content-header {
@@ -299,7 +308,7 @@ body {
 /* ───────────── GRID ───────────── */
 .menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 2px;
 }
  
@@ -312,13 +321,22 @@ body {
   display: block;
 }
  
-.menu-card.show-animation {
-  animation: fadeUp 0.5s ease both;
+/* ── Scroll reveal ── */
+.menu-card {
+  opacity: 0;
+  transform: translateY(40px) scale(0.97);
+  transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
 }
- 
+.menu-card.in-view {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.menu-card.show-animation { animation: none; }
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
  
 .card-img {
@@ -623,7 +641,7 @@ nav {
     border-color: var(--gold);
   }
 
-  .content-area { padding: 40px 5% 80px; }
+  .content-area { padding: 40px 5% 80px; min-width: 0; }
 
   /* Hero */
   .hero-title { font-size: clamp(44px, 8vw, 80px); }
@@ -661,7 +679,7 @@ nav {
   .sidebar { padding: 28px 5% 24px; gap: 20px; }
   .sidebar > div { min-width: 160px; }
 
-  .content-area { padding: 32px 5% 64px; }
+  .content-area { padding: 32px 5% 64px; min-width: 0; }
   .content-header { margin-bottom: 32px; padding-bottom: 18px; }
   .content-header .active-label { font-size: 26px; }
   .content-header .result-count { font-size: 9px; }
@@ -704,8 +722,8 @@ nav {
   .content-header .active-label { font-size: 24px; }
 
   /* 1 column on small phones */
-  .menu-grid { grid-template-columns: 1fr; gap: 2px; }
-  .menu-card { aspect-ratio: 4/3; }
+  .menu-grid { grid-template-columns: 1fr; gap: 2px; width: 100%; }
+  .menu-card { aspect-ratio: 4/3; width: 100%; }
 
   .card-name { font-size: 22px; }
   .card-price { font-size: 18px; }
@@ -732,7 +750,7 @@ nav {
   .filter-list { gap: 5px; }
   .filter-list li button { padding: 6px 12px; font-size: 9px; letter-spacing: 1.5px; }
 
-  .content-area { padding: 24px 4% 56px; }
+  .content-area { padding: 24px 4% 56px; min-width: 0; }
   .content-header { margin-bottom: 24px; padding-bottom: 14px; }
   .content-header .active-label { font-size: 22px; }
   .content-header .result-count { font-size: 8px; letter-spacing: 2px; }
@@ -774,22 +792,47 @@ nav {
 
 /* ── Touch device fixes ── */
 @media (hover: none) {
-  /* Luôn hiển thị thông tin card trên thiết bị cảm ứng */
-  .card-cat {
-    opacity: 1;
-    transform: translateY(0);
+  .menu-card {
+    aspect-ratio: unset !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
-
-  .card-desc {
-    max-height: 64px;
-    opacity: 1;
-    margin-bottom: 10px;
+  .card-img {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 220px !important;
+    flex-shrink: 0 !important;
+    overflow: hidden !important;
   }
-
   .card-img img {
-    filter: brightness(0.7) saturate(0.6);
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    filter: brightness(0.75) saturate(0.65) !important;
   }
-
-  /* Tắt background-attachment: fixed trên iOS để tránh flicker */
+  .card-overlay { display: none !important; }
+  .card-body {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    padding: 18px 20px 22px !important;
+    background: #161616 !important;
+    z-index: auto !important;
+  }
+  .card-cat {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+  .card-desc {
+    max-height: none !important;
+    height: auto !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    margin-bottom: 10px !important;
+  }
   .menu-hero { background-attachment: scroll; }
 }

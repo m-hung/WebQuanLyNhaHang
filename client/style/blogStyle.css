@@ -3,6 +3,13 @@
    Responsive: Desktop → Tablet → Mobile → XS
    ═══════════════════════════════════════════════════ */
 
+/* ── Global overflow fix ── */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+
+
 /* ── 1. Blog Hero Banner ── */
 .blog-hero {
     height: 80vh;
@@ -51,14 +58,16 @@
 .blog-section {
     padding: 100px 10%;
     background-color: var(--dark-bg);
+    overflow-x: hidden;
 }
 
 .blog-container {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
     gap: 40px;
     max-width: 1200px;
     margin: 0 auto;
+    width: 100%;
 }
 
 /* ── 3. Blog Post Card ── */
@@ -69,6 +78,9 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    width: 100%;
 }
 
 .blog-post:hover {
@@ -123,6 +135,8 @@
     color: var(--gold);
     margin-bottom: 14px;
     line-height: 1.4;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .blog-info p {
@@ -135,6 +149,8 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     flex: 1;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .read-more {
