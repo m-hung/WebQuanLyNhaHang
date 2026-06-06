@@ -213,10 +213,6 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
           box-shadow: 0 32px 64px -16px rgba(30,20,10,0.35);
           animation: ckSlideUp .3s cubic-bezier(.16,1,.3,1) both;
         }
- 
-        @media print {
-          .print\\:hidden { display: none !important; }
-        }
       `}</style>
  
       <div className="ck-root p-6 md:p-10 print:hidden">
@@ -569,6 +565,75 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
           </div>
         </div>
       )}
+        {/* In modal ── */}
+        {showInvoice && selectedOrder && (
+            <div className="print-area" style={{ display: "none" }}>
+                <div style={{ textAlign: "center", padding: "28px 28px 20px", borderBottom: "1px dashed #CCC5BA" }}>
+                    <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#C49A6C", fontWeight: 700, margin: "0 0 6px" }}>✦ Nhà hàng ✦</p>
+                    <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, fontWeight: 600, color: "#1A130E", margin: "0 0 4px" }}>CELESTÉ HOUSE</h2>
+                    <p style={{ fontSize: 12, color: "#A39688", margin: "0 0 2px" }}>Lê Văn Việt, Quận 9, TP. Hồ Chí Minh</p>
+                    <p style={{ fontSize: 12, color: "#A39688", margin: 0 }}>Hotline: +84 123 456 789</p>
+                    <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 16, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", margin: "16px 0 6px", color: "#2A1F15" }}>Hóa đơn thanh toán</h3>
+                    <p style={{ fontSize: 12, color: "#7A6A5A", margin: "0 0 2px" }}>Mã HĐ: HD-{selectedOrder.id}</p>
+                    <p style={{ fontSize: 12, color: "#7A6A5A", margin: 0 }}>{currentTime}</p>
+                </div>
+
+                <div style={{ padding: "20px 28px" }}>
+                    <div style={{ fontSize: 13, borderBottom: "1px dashed #CCC5BA", paddingBottom: 14, marginBottom: 16, display: "flex", flexDirection: "column", gap: 6 }}>
+                        {[
+                            ["Khách hàng", customerName],
+                            ["Số điện thoại", customerPhone],
+                            ["Thanh toán", paymentMethod === "Cash" ? "Tiền mặt" : "Chuyển khoản (VNPAY)"],
+                        ].map(([label, val]) => (
+                            <div key={label} style={{ display: "flex", justifyContent: "space-between" }}>
+                                <span style={{ color: "#A39688" }}>{label}</span>
+                                <span style={{ fontWeight: 500, color: "#2A1F15" }}>{val}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A39688", margin: "0 0 10px" }}>Danh sách món</p>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                        <thead>
+                        <tr style={{ borderBottom: "1px solid #2A1F15" }}>
+                            {["#", "Món ăn", "SL", "Đơn giá", "T. tiền"].map((h, i) => (
+                                <th key={h} style={{ padding: "6px 4px", textAlign: i === 0 ? "center" : i < 2 ? "left" : i === 2 ? "center" : "right", fontWeight: 700, fontSize: 12 }}>{h}</th>
+                            ))}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {rawItems.map((item, idx) => {
+                            const itemName = item.menuItem?.nameVi || item.menuItem?.name || item.nameVi || item.name || "Tên món";
+                            const itemNameEn = item.menuItem?.nameEn || item.menuItem?.englishName || item.nameEn || item.englishName || "";
+                            const basePrice = item.menuItem?.price ?? item.price ?? 0;
+                            const discount = item.menuItem?.discount ?? item.discount ?? 0;
+                            const effectivePrice = Math.max(0, basePrice - discount);
+                            const itemQty = item.quantity || item.qty || 1;
+                            const itemTotal = item.subtotal ?? effectivePrice * itemQty;
+                            return (
+                                <tr key={idx} style={{ borderBottom: "1px dashed #DDD5C8" }}>
+                                    <td style={{ padding: "10px 4px", textAlign: "center", color: "#A39688" }}>{idx + 1}</td>
+                                    <td style={{ padding: "10px 4px" }}>
+                                        <p style={{ fontWeight: 500, margin: 0, color: "#1A130E" }}>{itemName}</p>
+                                        {itemNameEn && <p style={{ fontSize: 11, color: "#A39688", margin: 0 }}>{itemNameEn}</p>}
+                                    </td>
+                                    <td style={{ padding: "10px 4px", textAlign: "center" }}>{itemQty}</td>
+                                    <td style={{ padding: "10px 4px", textAlign: "right", color: "#7A6A5A", whiteSpace: "nowrap" }}>{formatCurrency(effectivePrice)}</td>
+                                    <td style={{ padding: "10px 4px", textAlign: "right", fontWeight: 700, whiteSpace: "nowrap" }}>{formatCurrency(itemTotal)}</td>
+                                </tr>
+                            );
+                        })}
+                        </tbody>
+                    </table>
+
+                    <div style={{ borderTop: "1px solid #2A1F15", marginTop: 12, paddingTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontWeight: 700, fontSize: 14 }}>Tổng cộng</span>
+                        <span style={{ fontFamily: "'DM Sans', sans-serif", fontWeight: 700, fontSize: 22, color: "#A07842" }}>{formatCurrency(invoice?.totalPrice || 0)}</span>
+                    </div>
+                    <p style={{ textAlign: "center", fontSize: 12, color: "#A39688", fontStyle: "italic", marginTop: 20 }}>Cảm ơn quý khách và hẹn gặp lại! ✦</p>
+                </div>
+            </div>
+        )}
     </>
   );
 }
