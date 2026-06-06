@@ -20,6 +20,7 @@
         width: 100%;
         border: none !important;
         box-shadow: none !important;
+        display: block !important;
     }
 
     .print\:hidden {

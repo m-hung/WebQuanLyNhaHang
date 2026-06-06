@@ -141,13 +141,7 @@ export default function InvoiceHistory() {
                     box-shadow: 0 20px 40px -12px rgba(84, 61, 39, 0.14);
                 }
                 .modal-scroll::-webkit-scrollbar { width: 4px; }
-                .modal-scroll::-webkit-scrollbar-thumb { background: rgba(196,154,108,0.2); border-radius: 4px; }
-                @media print {
-                    .print-hidden { display: none !important; }
-                    .print-area { box-shadow: none !important; border: none !important; }
-                    body > *:not(.print-area) { display: none !important; }
-                    .print-area { display: block !important; position: fixed; inset: 0; }
-                }
+                .modal-scroll::-webkit-scrollbar-thumb { background: rgba(196,154,108,0.2); border-radius: 4px; }            
             `}</style>
  
             {/* ── PAGE WRAPPER — màu kem đồng bộ với Foods & Dashboard ── */}
@@ -317,7 +311,7 @@ export default function InvoiceHistory() {
             {/* ── MODAL ── */}
             {showModal && selectedOrder && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4 print-hidden">
-                    <div className="animate-modal-scale print-area bg-white border border-[#EFEBE4] rounded-[32px] w-full max-w-md shadow-2xl shadow-black/10 flex flex-col max-h-[90vh] overflow-hidden">
+                    <div className="animate-modal-scale bg-white border border-[#EFEBE4] rounded-[32px] w-full max-w-md shadow-2xl shadow-black/10 flex flex-col max-h-[90vh] overflow-hidden">
  
                         {/* Modal Header */}
                         <div className="relative px-7 pt-7 pb-5 border-b border-[#F3EDE7] text-center bg-[#FAF8F5]">
@@ -422,6 +416,84 @@ export default function InvoiceHistory() {
                                 Đóng
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {/* ── In modal ── */}
+            {showModal && selectedOrder && (
+                <div className="print-area" style={{ display: "none" }}>
+                    <div style={{ textAlign: "center", padding: "28px 28px 20px", borderBottom: "1px dashed #CCC5BA" }}>
+                        <p style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#C49A6C", fontWeight: 700, margin: "0 0 6px" }}>✦ Nhà hàng ✦</p>
+                        <h2 style={{ fontFamily: "serif", fontSize: 22, fontWeight: 600, color: "#1A130E", margin: "0 0 4px" }}>CELESTÉ HOUSE</h2>
+                        <p style={{ fontSize: 12, color: "#A39688", margin: "0 0 2px" }}>Lê Văn Việt · Quận 9 · TP. Hồ Chí Minh</p>
+                        <p style={{ fontSize: 12, color: "#A39688", margin: 0 }}>Hotline: +84 123 456 789</p>
+                        <h3 style={{ fontSize: 14, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.12em", margin: "16px 0 6px", color: "#2A1F15" }}>Hóa đơn thanh toán</h3>
+                        <p style={{ fontSize: 12, color: "#7A6A5A", margin: "0 0 2px" }}>Mã HĐ: HD-{selectedOrder.orderId}</p>
+                        <p style={{ fontSize: 12, color: "#7A6A5A", margin: 0 }}>{formatDateTime(selectedPayment?.paymentTime || selectedOrder.orderDate)}</p>
+                    </div>
+
+                    <div style={{ padding: "16px 28px", borderBottom: "1px dashed #CCC5BA", display: "flex", flexDirection: "column", gap: 6, fontSize: 13 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#A39688" }}>Mã hóa đơn</span>
+                            <span style={{ fontWeight: 600, color: "#C49A6C" }}>HD-{selectedOrder.orderId}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span style={{ color: "#A39688" }}>Bàn</span>
+                            <span style={{ fontWeight: 600, color: "#2A1F15" }}>{selectedOrder.table ? `Bàn ${selectedOrder.table.tableNumber}` : "Mang đi"}</span>
+                        </div>
+                        {selectedPayment && (
+                            <>
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <span style={{ color: "#A39688" }}>Khách hàng</span>
+                                    <span style={{ fontWeight: 600, color: "#2A1F15" }}>{selectedPayment.customerName}</span>
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <span style={{ color: "#A39688" }}>SĐT</span>
+                                    <span style={{ fontWeight: 600, color: "#2A1F15" }}>{selectedPayment.phone}</span>
+                                </div>
+                                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                    <span style={{ color: "#A39688" }}>Thanh toán</span>
+                                    <span style={{ fontWeight: 600, color: "#2A1F15" }}>{selectedPayment.paymentMethod === "Cash" ? "Tiền mặt" : "VNPay"}</span>
+                                </div>
+                            </>
+                        )}
+                    </div>
+
+                    <div style={{ padding: "16px 28px" }}>
+                        <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#A39688", margin: "0 0 10px" }}>Danh sách món ăn</p>
+                        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                            <thead>
+                            <tr style={{ borderBottom: "1px solid #2A1F15" }}>
+                                {["#", "Món ăn", "SL", "Đơn giá", "T. tiền"].map((h, i) => (
+                                    <th key={h} style={{ padding: "6px 4px", textAlign: i === 0 ? "center" : i < 2 ? "left" : i === 2 ? "center" : "right", fontWeight: 700, fontSize: 12 }}>{h}</th>
+                                ))}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {selectedOrder.orderItems?.map((item, idx) => {
+                                const nameVi = item.menuItem?.nameVi || item.menuItem?.name || "Tên món";
+                                const nameEn = item.menuItem?.nameEn || item.menuItem?.englishName || "";
+                                const subtotal = item.subtotal || (item.menuItem?.price * item.quantity);
+                                return (
+                                    <tr key={idx} style={{ borderBottom: "1px dashed #DDD5C8" }}>
+                                        <td style={{ padding: "10px 4px", textAlign: "center", color: "#A39688" }}>{idx + 1}</td>
+                                        <td style={{ padding: "10px 4px" }}>
+                                            <p style={{ fontWeight: 500, margin: 0, color: "#1A130E" }}>{nameVi}</p>
+                                            {nameEn && <p style={{ fontSize: 11, color: "#A39688", margin: 0 }}>{nameEn}</p>}
+                                        </td>
+                                        <td style={{ padding: "10px 4px", textAlign: "center" }}>{item.quantity}</td>
+                                        <td style={{ padding: "10px 4px", textAlign: "right", color: "#7A6A5A", whiteSpace: "nowrap" }}>{formatCurrency(item.menuItem?.price)}</td>
+                                        <td style={{ padding: "10px 4px", textAlign: "right", fontWeight: 700, whiteSpace: "nowrap" }}>{formatCurrency(subtotal)}</td>
+                                    </tr>
+                                );
+                            })}
+                            </tbody>
+                        </table>
+                        <div style={{ borderTop: "1px solid #2A1F15", marginTop: 12, paddingTop: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span style={{ fontWeight: 700, fontSize: 14 }}>Tổng cộng</span>
+                            <span style={{ fontWeight: 700, fontSize: 22, color: "#A07842" }}>{formatCurrency(selectedOrder?.totalAmount)}</span>
+                        </div>
+                        <p style={{ textAlign: "center", fontSize: 12, color: "#A39688", fontStyle: "italic", marginTop: 20 }}>Cảm ơn quý khách · Hẹn gặp lại ✦</p>
                     </div>
                 </div>
             )}
