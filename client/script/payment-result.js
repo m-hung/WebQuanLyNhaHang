@@ -196,7 +196,7 @@ function sendConfirmationEmail(params) {
         console.warn('[EmailJS] Không có email khách hàng, bỏ qua.');
         return;
     }
-    emailjs.send('service_70nli69', 'template_ef816li', params)
+    emailjs.send('service_opu2zvh', 'template_jau8v18', params)
         .then(() => console.log('[EmailJS] Đã gửi email xác nhận cho khách.'))
         .catch(err => console.error('[EmailJS] Lỗi gửi email:', err));
 }

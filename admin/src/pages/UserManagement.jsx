@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, X, Users, Shield, UserCheck, UserX, Crown, ChevronRight } from "lucide-react";
+import { Plus, Edit, Trash2, X, Users, Shield, UserCheck, UserX, Crown, ChevronRight, ChevronDown } from "lucide-react";
  
 // ─── STYLE INJECTION ────────────────────────────────────────────────────────
 const styles = `
@@ -27,7 +27,7 @@ const styles = `
   .um-page {
     background: var(--cream);
     min-height: 100vh;
-    padding: 2rem 2.5rem;
+    padding: clamp(1rem, 3vw, 2rem) clamp(1rem, 3vw, 2.5rem);
   }
  
   /* ── HEADER ── */
@@ -35,6 +35,8 @@ const styles = `
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid var(--cream-border);
@@ -54,7 +56,7 @@ const styles = `
   .um-eyebrow::before { content: '✦'; font-size: 0.5rem; }
   .um-title {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 2.8rem;
+    font-size: clamp(2rem, 5vw, 2.8rem);
     font-weight: 400;
     color: var(--dark);
     line-height: 1;
@@ -88,11 +90,18 @@ const styles = `
  
   /* ── STATS STRIP ── */
   .um-stats {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1px;
     background: var(--cream-border);
     margin-bottom: 2rem;
     border: 1px solid var(--cream-border);
+  }
+  @media(min-width: 640px) {
+    .um-stats { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media(min-width: 900px) {
+    .um-stats { grid-template-columns: repeat(5, 1fr); }
   }
   .um-stat {
     flex: 1;
@@ -112,11 +121,12 @@ const styles = `
     color: var(--gold);
   }
   .um-stat-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.8rem;
-    font-weight: 500;
+    font-family: 'Jost', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 300;
     color: var(--dark);
     line-height: 1;
+    letter-spacing: 0.04em;
   }
   .um-stat-label {
     font-size: 0.7rem;
@@ -131,8 +141,10 @@ const styles = `
     background: white;
     border: 1px solid var(--cream-border);
     overflow: hidden;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .um-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  .um-table { width: 100%; min-width: 560px; border-collapse: collapse; font-size: 0.85rem; }
   .um-table thead { background: var(--cream-dark); }
   .um-table thead th {
     padding: 1rem 1.25rem;
@@ -347,18 +359,64 @@ const styles = `
     width: 100%;
     border: 1px solid var(--cream-border);
     background: var(--cream);
-    padding: 0.65rem 0.875rem;
+    padding: 0.65rem 2.2rem 0.65rem 0.875rem;
     font-family: 'Jost', sans-serif;
     font-size: 0.85rem;
     color: var(--dark);
     outline: none;
     transition: border-color 0.2s, background 0.2s;
     appearance: none;
+    -webkit-appearance: none;
+  }
+  .um-select-wrap {
+    position: relative;
+    display: block;
+  }
+  .um-select-wrap .um-select {
+    width: 100%;
+  }
+  .um-select-arrow {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
   }
   .um-input:focus, .um-select:focus { border-color: var(--gold); background: white; }
   .um-input:disabled, .um-select:disabled { opacity: 0.6; cursor: not-allowed; background: #F5F0E8; }
   .um-input::placeholder { color: var(--cream-border); }
   .um-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+ 
+  /* ── RESPONSIVE ── */
+  @media(max-width: 540px) {
+    .um-field-row { grid-template-columns: 1fr; }
+    .um-modal { max-height: 95vh; }
+    .um-confirm { padding: 1.5rem 1.25rem; }
+    .um-confirm-btns { flex-direction: column; align-items: stretch; }
+    .um-confirm-cancel, .um-confirm-ok { text-align: center; padding: 0.7rem; }
+    .um-modal-foot { flex-direction: column-reverse; }
+    .um-modal-foot button { width: 100%; text-align: center; justify-content: center; }
+    .um-reset-panel { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .um-reset-btn { width: 100%; text-align: center; }
+  }
+ 
+  @media(max-width: 640px) {
+    .um-overlay { align-items: flex-end; padding: 0; }
+    .um-modal {
+      border-radius: 0;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      max-height: 95vh;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+  }
  
   /* ── RESET PANEL ── */
   .um-reset-panel {
@@ -676,8 +734,15 @@ export default function UserManagement() {
                     <div className="um-stat">
                         <div className="um-stat-icon"><Shield size={16} /></div>
                         <div>
-                            <div className="um-stat-num">{visibleUsers.filter(u => u.role === "ADMIN" || u.role === "MANAGER").length}</div>
-                            <div className="um-stat-label">Quản trị viên</div>
+                            <div className="um-stat-num">{visibleUsers.filter(u => u.role === "MANAGER").length}</div>
+                            <div className="um-stat-label">Quản lý</div>
+                        </div>
+                    </div>
+                    <div className="um-stat">
+                        <div className="um-stat-icon" style={{ background: "#EEF2EE", color: "#4A6B50" }}><UserCheck size={16} /></div>
+                        <div>
+                            <div className="um-stat-num">{visibleUsers.filter(u => u.role === "CASHIER").length}</div>
+                            <div className="um-stat-label">Thu ngân</div>
                         </div>
                     </div>
                 </div>
@@ -714,7 +779,7 @@ export default function UserManagement() {
                                     </td>
                                     <td>
                                         <span style={{ fontSize: "0.82rem", color: "var(--muted)", fontFamily: "monospace", letterSpacing: "0.04em" }}>
-                                            @{user.username}
+                                            {user.username}
                                         </span>
                                     </td>
                                     <td className="center">
@@ -869,6 +934,7 @@ export default function UserManagement() {
                                 <div className="um-field-row">
                                     <div className="um-field">
                                         <label>Phân quyền</label>
+                                        <div className="um-select-wrap">
                                         <select className="um-select" value={formData.role}
                                             onChange={e => setFormData({ ...formData, role: e.target.value })}
                                             disabled={currentUserRole !== "ADMIN" || editingUser?.role === "ADMIN"}>
@@ -877,9 +943,12 @@ export default function UserManagement() {
                                             <option value="MANAGER">MANAGER</option>
                                             <option value="CASHIER">CASHIER</option>
                                         </select>
+                                        <span className="um-select-arrow"><ChevronDown size={14} /></span>
+                                        </div>
                                     </div>
                                     <div className="um-field">
                                         <label>Trạng thái</label>
+                                        <div className="um-select-wrap">
                                         <select className="um-select" value={formData.status}
                                             onChange={e => setFormData({ ...formData, status: e.target.value })}
                                             disabled={currentUserRole !== "ADMIN" || editingUser?.role === "ADMIN"}>
@@ -887,6 +956,8 @@ export default function UserManagement() {
                                             <option value="ACTIVE">Hoạt động</option>
                                             <option value="INACTIVE">Khóa</option>
                                         </select>
+                                        <span className="um-select-arrow"><ChevronDown size={14} /></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

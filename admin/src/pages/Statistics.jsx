@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
   ChevronLeft, ChevronRight, TrendingUp, Sparkles,
@@ -20,7 +21,7 @@ const css = `
 .st *{box-sizing:border-box;margin:0;padding:0;}
  
 /* PAGE */
-.st-pg{background:var(--c);min-height:100vh;padding:2.5rem 3rem;}
+.st-pg{background:var(--c);min-height:100vh;padding:clamp(1.25rem,4vw,2.5rem) clamp(1rem,4vw,3rem);}
  
 /* ── HEADER ── */
 .st-hd{margin-bottom:3rem;}
@@ -28,11 +29,12 @@ const css = `
 .st-ey{font-size:.62rem;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
   color:var(--g);margin-bottom:.4rem;display:flex;align-items:center;gap:.4rem;}
 .st-ey::before{content:'✦';font-size:.45rem;}
-.st-ti{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:400;
+.st-ti{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3rem);font-weight:400;
   color:var(--dk);line-height:1;letter-spacing:-.02em;}
 .st-ti span{font-style:italic;color:var(--g);}
 .st-dt{font-size:.72rem;color:var(--mu);letter-spacing:.06em;
-  background:var(--wh);border:1px solid var(--cbr);padding:.4rem 1rem;border-radius:99px;}
+  background:var(--wh);border:1px solid var(--cbr);padding:.4rem 1rem;border-radius:99px;
+  white-space:nowrap;}
  
 /* ── RIBBON ── */
 .st-ribbon{
@@ -65,10 +67,10 @@ const css = `
 .st-kpi-lbl{font-size:.62rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
   color:var(--mu);margin-bottom:.9rem;display:flex;align-items:center;gap:.4rem;}
 .st-kpi-dot{width:6px;height:6px;border-radius:50%;background:var(--g);flex-shrink:0;}
-.st-kpi-val{font-family:'Cormorant Garamond',serif;font-size:2.6rem;font-weight:500;
-  color:var(--dk);line-height:1;letter-spacing:-.02em;}
-.st-kpi-unit{font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:400;
-  color:var(--mu);margin-left:.3rem;}
+.st-kpi-val{font-family:'DM Sans',sans-serif;font-size:2rem;font-weight:300;
+  color:var(--dk);line-height:1;letter-spacing:.01em;}
+.st-kpi-unit{font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:400;
+  color:var(--mu);margin-left:.35rem;letter-spacing:.04em;}
 .st-kpi-bar{height:3px;background:var(--cb);border-radius:99px;margin-top:1.2rem;overflow:hidden;}
 .st-kpi-fill{height:100%;background:linear-gradient(90deg,var(--gp),var(--g));
   border-radius:99px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1);}
@@ -107,7 +109,7 @@ const css = `
 .st-tt{background:var(--dk);border-radius:10px;padding:.65rem 1rem;
   box-shadow:0 4px 20px rgba(0,0,0,.25);}
 .st-tt-d{font-size:.65rem;letter-spacing:.1em;color:var(--mu);margin-bottom:.2rem;}
-.st-tt-v{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gl);}
+.st-tt-v{font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:300;color:var(--gl);letter-spacing:.02em;}
  
 /* ── DISHES CARD ── */
 .st-dishes-card{
@@ -117,6 +119,19 @@ const css = `
   transition:opacity .6s ease .25s,transform .6s ease .25s;
 }
 .st-dishes-card.vis{opacity:1;transform:translateY(0);}
+
+@media(max-width:600px){
+  .st-hd-row{flex-direction:column;align-items:flex-start;gap:.75rem;}
+  .st-kpi-val{font-size:1.6rem;}
+  .st-ribbon{gap:1rem;}
+  .st-ch-hd{flex-direction:column;align-items:flex-start;gap:.75rem;}
+  .st-dishes-list{max-height:none;}
+  .st-di{padding:.75rem 1rem;}
+}
+
+@media(max-width:400px){
+  .st-ribbon{grid-template-columns:1fr;}
+}
  
 .st-dc-hd{padding:1.5rem 1.5rem 1.25rem;
   background:linear-gradient(135deg,var(--gp) 0%,var(--wh) 60%);
@@ -163,8 +178,8 @@ const css = `
   width:0;transition:width .9s cubic-bezier(.4,0,.2,1);}
  
 .st-di-right{text-align:right;flex-shrink:0;}
-.st-di-qty{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:500;
-  color:var(--dk);line-height:1;}
+.st-di-qty{font-family:'DM Sans',sans-serif;font-size:1.25rem;font-weight:300;
+  color:var(--dk);line-height:1;letter-spacing:.02em;}
 .st-di-qlb{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);}
 .st-di-rev{font-size:.68rem;color:var(--ok);margin-top:.2rem;font-weight:500;}
  
@@ -360,7 +375,7 @@ export default function Statistics({ invoices = [] }) {
                 <CartesianGrid strokeDasharray="2 5" vertical={false} stroke="#EDE4D3"/>
                 <XAxis dataKey="name" axisLine={false} tickLine={false}
                   tick={{fill:"#8A7B6C",fontSize:11,fontFamily:"DM Sans"}} dy={8}/>
-                <YAxis width={80} axisLine={false} tickLine={false}
+                <YAxis width={60} axisLine={false} tickLine={false}
                   tick={{fill:"#8A7B6C",fontSize:11,fontFamily:"DM Sans"}}
                   domain={[0,"dataMax + 20000"]}
                   tickFormatter={v=>v===0?"0":new Intl.NumberFormat("vi-VN").format(v)}/>
@@ -417,4 +432,3 @@ export default function Statistics({ invoices = [] }) {
     </div>
   );
 }
- 
