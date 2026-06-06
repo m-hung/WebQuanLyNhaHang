@@ -213,6 +213,20 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
           box-shadow: 0 32px 64px -16px rgba(30,20,10,0.35);
           animation: ckSlideUp .3s cubic-bezier(.16,1,.3,1) both;
         }
+ 
+ 
+        @media (max-width: 640px) {
+          .ck-modal-overlay { align-items: flex-end; padding: 0; }
+          .ck-invoice-modal {
+            border-radius: 20px 20px 0 0;
+            max-height: 95vh;
+            max-width: 100%;
+          }
+          .ck-pay-card { min-width: 0; }
+        }
+        @media print {
+          .print\\:hidden { display: none !important; }
+        }
       `}</style>
  
       <div className="ck-root p-6 md:p-10 print:hidden">
@@ -225,7 +239,7 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
                 <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.18em", textTransform: "uppercase", color: "#C49A6C", marginBottom: 6 }}>
                   ✦ Thanh toán
                 </p>
-                <h1 className="ck-serif" style={{ fontSize: 32, fontWeight: 500, color: "#1A130E", lineHeight: 1.15, margin: 0 }}>
+                <h1 className="ck-serif" style={{ fontSize: "clamp(22px, 5vw, 32px)", fontWeight: 500, color: "#1A130E", lineHeight: 1.15, margin: 0 }}>
                   Hóa đơn #{invoice?.id || "N/A"}
                 </h1>
               </div>
@@ -237,7 +251,7 @@ export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
           </div>
  
           {/* ── LAYOUT 2 CỘT ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: 24, alignItems: "start" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gap: 24, alignItems: "start" }}>
  
             {/* CỘT TRÁI */}
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>

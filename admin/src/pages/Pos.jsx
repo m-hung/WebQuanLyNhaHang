@@ -93,6 +93,83 @@ const GLOBAL_STYLE = `
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(196,154,108,0.4), transparent);
   }
+ 
+  .pos-btn-mobile-label { display: none; }
+  .pos-btn-desktop-label { display: inline; }
+  @media (max-width: 768px) {
+    .pos-btn-mobile-label { display: inline; }
+    .pos-btn-desktop-label { display: none; }
+  }
+ 
+  /* ── RESPONSIVE ──────────────────────────────────────────────────── */
+  .pos-cart-panel {
+    width: 360px;
+    flex-shrink: 0;
+    background: #FFFDF9;
+    border-left: 1px solid rgba(196,154,108,0.18);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 24px rgba(90,62,40,0.06);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+  }
+  .pos-left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 20px 16px 20px 20px;
+  }
+  .pos-cart-fab {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 90;
+    background: linear-gradient(135deg, #C49A6C, #A07848);
+    border: none;
+    border-radius: 50px;
+    padding: 12px 20px;
+    color: #1A130E;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(196,154,108,0.45);
+    align-items: center;
+    gap: 8px;
+    animation: pulse-gold 2.5s infinite;
+  }
+  .pos-cart-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,19,14,0.5);
+    z-index: 89;
+    backdrop-filter: blur(2px);
+  }
+  @media (max-width: 768px) {
+    .pos-cart-fab { display: flex; }
+    .pos-cart-panel {
+      position: fixed;
+      right: 0; top: 0;
+      height: 100dvh;
+      width: min(360px, 100vw);
+      z-index: 90;
+      transform: translateX(100%);
+      border-left: none;
+      box-shadow: -8px 0 40px rgba(26,19,14,0.25);
+    }
+    .pos-cart-panel.open { transform: translateX(0); }
+    .pos-cart-overlay.open { display: block; }
+    .pos-left-panel { padding: 14px 12px 100px 12px; }
+  }
+  @media (max-width: 480px) {
+    .pos-cart-panel { width: 100vw; }
+  }
 `;
  
 /* ─── Toast component ──────────────────────────────────────────────── */
@@ -327,6 +404,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [loading, setLoading] = useState(true);
+  const [cartOpen, setCartOpen] = useState(false);
  
   const getEffectivePrice = (item) => Math.max(0, (item.price || 0) - (item.discount || 0));
  
@@ -507,13 +585,13 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
       <div style={{
         background: "linear-gradient(135deg, #1A130E 0%, #2C1E14 100%)",
         borderBottom: "1px solid rgba(196,154,108,0.2)",
-        padding: "0 28px",
+        padding: "0 clamp(12px, 3vw, 28px)",
         height: 60,
         display: "flex", alignItems: "center", justifyContent: "space-between",
         flexShrink: 0,
         position: "sticky",
         top: 0,
-        zIndex: 100,
+        zIndex: 10,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <button
@@ -568,7 +646,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
       <div style={{ display: "flex", flex: 1, alignItems: "flex-start", gap: 0 }}>
  
         {/* ═══ LEFT PANEL — Menu ═══════════════════════════════════ */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, padding: "20px 16px 20px 20px" }}>
+        <div className="pos-left-panel pos-scrollbar">
  
           {/* Category pills */}
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
@@ -651,19 +729,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
         </div>
  
         {/* ═══ RIGHT PANEL — Cart & Checkout ═══════════════════════ */}
-        <div style={{
-          width: 360,
-          flexShrink: 0,
-          background: "#FFFDF9",
-          borderLeft: "1px solid rgba(196,154,108,0.18)",
-          display: "flex",
-          flexDirection: "column",
-          boxShadow: "-4px 0 24px rgba(90,62,40,0.06)",
-          position: "sticky",
-          top: 0,
-          height: "100vh",
-          overflowY: "auto",
-        }}>
+        <div className={`pos-cart-panel pos-scrollbar${cartOpen ? " open" : ""}`}>
           {/* Panel header */}
           <div style={{ padding: "18px 20px 14px", borderBottom: "1px solid rgba(196,154,108,0.12)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -673,15 +739,30 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
                   Hóa đơn
                 </h2>
               </div>
-              {cart.length > 0 && (
-                <span style={{
-                  background: "linear-gradient(135deg,#C49A6C,#A07848)",
-                  color: "#fff", fontSize: 11, fontWeight: 700,
-                  padding: "2px 10px", borderRadius: 20
-                }}>
-                  {cart.reduce((s, i) => s + i.qty, 0)} món
-                </span>
-              )}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                {cart.length > 0 && (
+                  <span style={{
+                    background: "linear-gradient(135deg,#C49A6C,#A07848)",
+                    color: "#fff", fontSize: 11, fontWeight: 700,
+                    padding: "2px 10px", borderRadius: 20
+                  }}>
+                    {cart.reduce((s, i) => s + i.qty, 0)} món
+                  </span>
+                )}
+                {/* Close button — only visible on mobile */}
+                <button
+                  onClick={() => setCartOpen(false)}
+                  style={{
+                    background: "rgba(196,154,108,0.1)", border: "1px solid rgba(196,154,108,0.2)",
+                    borderRadius: 8, width: 30, height: 30, cursor: "pointer",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "#A08870"
+                  }}
+                  className="pos-cart-close-btn"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+              </div>
             </div>
  
             {/* Table & Cashier selectors */}
@@ -848,24 +929,45 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
               </button>
  
               <button
-                onClick={() => setPage("main_dashboard")}
+                onClick={() => {
+                  if (window.innerWidth <= 768) {
+                    setCartOpen(false);
+                  } else {
+                    setPage("main_dashboard");
+                  }
+                }}
                 style={{
                   flex: 1,
                   background: "rgba(196,154,108,0.08)",
                   border: "1.5px solid rgba(196,154,108,0.2)",
                   borderRadius: 12, padding: "13px 0",
                   color: "#7A5430", fontSize: 13, fontWeight: 700,
-                  cursor: "pointer", transition: "all 0.2s"
+                  cursor: "pointer", transition: "all 0.2s",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(196,154,108,0.15)"}
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(196,154,108,0.08)"}
               >
-                Thoát
+                <span className="pos-btn-desktop-label">Thoát</span>
+                <span className="pos-btn-mobile-label">Đóng</span>
               </button>
             </div>
           </div>
         </div>
       </div>
+ 
+      {/* ── Mobile Cart FAB ── */}
+      {!cartOpen && (
+        <button className="pos-cart-fab" onClick={() => setCartOpen(true)}>
+          <ShoppingBag size={16} />
+          {cart.length > 0
+            ? `Giỏ hàng · ${cart.reduce((s, i) => s + i.qty, 0)} món`
+            : 'Giỏ hàng'}
+        </button>
+      )}
+ 
+      {/* ── Mobile Cart Overlay ── */}
+      <div className={`pos-cart-overlay${cartOpen ? ' open' : ''}`} onClick={() => setCartOpen(false)} />
     </div>
   );
 }
