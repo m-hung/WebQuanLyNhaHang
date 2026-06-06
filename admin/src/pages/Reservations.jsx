@@ -345,38 +345,206 @@ const injectStyles = () => `
   }
   .search-wrap .res-input { padding-left: 38px; }
  
-  /* ── RESPONSIVE ─────────────────────────────────────────────────────── */
-
-  /* Ẩn cột Liên hệ & Số khách trên mobile */
-  @media (max-width: 640px) {
-    .res-table th:nth-child(2),
-    .res-table td:nth-child(2),
-    .res-table th:nth-child(3),
-    .res-table td:nth-child(3),
-    .res-table th:nth-child(5),
-    .res-table td:nth-child(5) { display: none; }
-
-    .res-table th,
-    .res-table td { padding: 10px 10px; font-size: 11.5px; }
-
-    .res-modal { border-radius: 24px 24px 0 0; max-height: 95vh; margin-top: auto; }
-    .res-modal-header { padding: 18px 18px 14px; }
-    .res-modal-body { padding: 16px 18px; }
-    .res-modal-footer { padding: 12px 18px 20px; flex-direction: column-reverse; }
-    .res-modal-footer button { width: 100%; justify-content: center; }
-
-    .confirm-modal { border-radius: 20px; padding: 24px 18px; }
+  /* ── GUEST COUNT CARD SELECTOR ──────────────────────────────────────── */
+  .guest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .guest-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px 8px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(196,154,108,0.2);
+    background: #FEFCF9;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: 'DM Sans', sans-serif;
+    min-height: 64px;
+  }
+  .guest-card:hover {
+    border-color: rgba(196,154,108,0.5);
+    background: rgba(196,154,108,0.06);
+  }
+  .guest-card.selected {
+    border-color: #C49A6C;
+    background: linear-gradient(135deg, rgba(196,154,108,0.14), rgba(196,154,108,0.06));
+    box-shadow: 0 2px 10px rgba(196,154,108,0.2);
+  }
+  .guest-card.selected .guest-num {
+    color: #7A4A10;
+  }
+  .guest-card.error-border {
+    border-color: rgba(220,80,60,0.4);
+  }
+  .guest-num {
+    font-size: 17px;
+    font-weight: 700;
+    color: #4A3220;
+    line-height: 1;
+  }
+  .guest-label {
+    font-size: 10px;
+    color: #9A8068;
+    font-weight: 500;
+    letter-spacing: 0.03em;
   }
 
-  /* Ẩn cột Liên hệ trên tablet nhỏ */
-  @media (max-width: 768px) {
-    .res-table th:nth-child(3),
-    .res-table td:nth-child(3) { display: none; }
+  /* ── TABLE CARD SELECTOR ─────────────────────────────────────────────── */
+  .table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  .table-grid::-webkit-scrollbar { width: 3px; }
+  .table-grid::-webkit-scrollbar-thumb { background: rgba(196,154,108,0.25); border-radius: 4px; }
+  .table-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 10px 6px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(196,154,108,0.2);
+    background: #FEFCF9;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: 'DM Sans', sans-serif;
+    min-height: 68px;
+    text-align: center;
+  }
+  .table-card:hover {
+    border-color: rgba(196,154,108,0.5);
+    background: rgba(196,154,108,0.06);
+    transform: translateY(-1px);
+  }
+  .table-card.selected {
+    border-color: #C49A6C;
+    background: linear-gradient(135deg, rgba(196,154,108,0.14), rgba(196,154,108,0.06));
+    box-shadow: 0 3px 12px rgba(196,154,108,0.25);
+  }
+  .table-card.selected .table-num-label {
+    color: #7A4A10;
+  }
+  .table-card.error-border {
+    border-color: rgba(220,80,60,0.4);
+  }
+  .table-num-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4A3220;
+    line-height: 1.1;
+  }
+  .table-cap-label {
+    font-size: 10px;
+    color: #9A8068;
+    font-weight: 500;
+  }
+  .table-empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 24px 0;
+    color: #B5A080;
+    font-size: 12.5px;
+  }
+
+  .res-input[type="date"] {
+    min-width: 0;
+    width: 100%;
+  }
+ 
+  /* ── MOBILE RESERVATION CARDS ────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .res-table-desktop { display: none; }
+    .res-mobile-list { display: flex; flex-direction: column; gap: 0; }
+  }
+  @media (min-width: 641px) {
+    .res-table-desktop { display: block; }
+    .res-mobile-list { display: none; }
+  }
+
+  .res-mobile-card {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(196,154,108,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: rowReveal 0.3s ease both;
+  }
+  .res-mobile-card:last-child { border-bottom: none; }
+  .res-mobile-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .res-mobile-card-name {
+    font-weight: 600;
+    color: #2C1C0E;
+    font-size: 13.5px;
+  }
+  .res-mobile-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    color: #7A6048;
+  }
+  .res-mobile-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  /* ── RESPONSIVE ─────────────────────────────────────────────────────── */
+
+  @media (max-width: 640px) {
+    .res-modal {
+      border-radius: 20px 20px 0 0;
+      max-height: 96vh;
+      margin-top: auto;
+      width: 100%;
+      max-width: 100%;
+    }
+    .res-modal-header { padding: 16px 16px 13px; }
+    .res-modal-body { padding: 14px 16px; gap: 13px; }
+    .res-modal-footer { padding: 10px 16px 20px; flex-direction: column-reverse; gap: 8px; }
+    .res-modal-footer button { width: 100%; justify-content: center; }
+
+    .guest-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .guest-card { padding: 10px 4px; min-height: 56px; }
+    .guest-num { font-size: 15px; }
+
+    .table-grid { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 6px; max-height: 170px; }
+    .table-card { min-height: 60px; padding: 8px 4px; }
+
+    .confirm-modal { border-radius: 20px; padding: 24px 16px; max-width: calc(100vw - 32px); }
   }
 
   /* Overlay căn bottom trên mobile */
   @media (max-width: 640px) {
     .res-modal-overlay { align-items: flex-end; padding: 0; }
+  }
+
+  .res-input, .res-select {
+    max-width: 100%;
+    min-width: 0;
+  }
+ 
+  /* Tablet: 2 cột modal form */
+  @media (min-width: 641px) and (max-width: 900px) {
+    .res-modal { max-width: 95vw; }
+    .table-grid { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); }
   }
 `;
  
@@ -465,7 +633,16 @@ export default function Reservations() {
         const response = await fetch("http://localhost:8080/api/tables");
         const data = await response.json();
         if (!formData.guestCount) { setTables(data.filter((t) => t.status === "Available")); return; }
-        const filteredTables = data.filter((t) => t.status === "Available" && t.capacity >= parseInt(formData.guestCount));
+        const guestNum = parseInt(formData.guestCount);
+        let filteredTables;
+        if (guestNum === 2) {
+          filteredTables = data.filter((t) => t.status === "Available" && t.capacity === 2);
+        } else if (guestNum === 4) {
+          filteredTables = data.filter((t) => t.status === "Available" && t.capacity === 4);
+        } else {
+          // 6+ người: hiển thị bàn sức chứa 10
+          filteredTables = data.filter((t) => t.status === "Available" && t.capacity === 10);
+        }
         setTables(filteredTables);
         const selectedTableStillValid = filteredTables.some((t) => t.tableId === parseInt(formData.tableId));
         if (!selectedTableStillValid) setFormData((prev) => ({ ...prev, tableId: "" }));
@@ -498,7 +675,7 @@ export default function Reservations() {
       const payload = {
         customerName: formData.customerName, phone: formData.phone, email: formData.email,
         reservationTime: `${formData.bookDate}T${formData.bookTime}:00`,
-        guestCount: parseInt(formData.guestCount),
+        guestCount: parseInt(formData.guestCount) || 1,
         table: { tableId: parseInt(formData.tableId) },
         isPaid: false,
       };
@@ -515,6 +692,44 @@ export default function Reservations() {
     } catch (error) { console.error("Lỗi tạo reservation:", error); }
     finally { setSubmitting(false); }
   };
+ 
+  // ── AUTO-COMPLETE: tự động hoàn thành khi đến giờ hẹn ────────────────────
+  useEffect(() => {
+    const autoComplete = async () => {
+      const now = new Date();
+      const overdueActives = reservations.filter(r =>
+        r.status === "ACTIVE" &&
+        r.reservationTime &&
+        new Date(r.reservationTime) <= now
+      );
+      if (overdueActives.length === 0) return;
+ 
+      const results = await Promise.allSettled(
+        overdueActives.map(r =>
+          fetch(`http://localhost:8080/api/reservations/${r.reservationId}/complete`, { method: "PUT" })
+            .then(res => res.ok ? res.json() : null)
+        )
+      );
+ 
+      const completed = results
+        .filter(r => r.status === "fulfilled" && r.value)
+        .map(r => r.value);
+ 
+      if (completed.length > 0) {
+        setReservations(prev =>
+          prev.map(r => {
+            const updated = completed.find(c => c.reservationId === r.reservationId);
+            return updated ? updated : r;
+          })
+        );
+      }
+    };
+ 
+    // Chạy ngay khi data load xong, rồi mỗi 60 giây
+    autoComplete();
+    const timer = setInterval(autoComplete, 60000);
+    return () => clearInterval(timer);
+  }, [reservations.length]); // re-subscribe khi số lượng reservation thay đổi
  
   // ── CONFIRM ACTION ─────────────────────────────────────────────────────────
   const openConfirmModal = (id, type) => setConfirmModal({ open: true, id, type });
@@ -533,13 +748,6 @@ export default function Reservations() {
     finally { setConfirmModal({ open: false, id: null, type: null }); }
   };
  
-  const getMinTime = () => {
-    if (!formData.bookDate) return "";
-    const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
-    if (formData.bookDate !== today) return "";
-    const now = new Date();
-    return `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
-  };
  
   if (showCalendar) {
     return <CalendarView onBack={() => setShowCalendar(false)} reservations={reservations} />;
@@ -628,7 +836,9 @@ export default function Reservations() {
  
       {/* ── TABLE ──────────────────────────────────────────────────────────── */}
       <div className="res-card res-fade-in" style={{ animationDelay: "0.1s", overflow: "hidden" }}>
-        <div style={{ overflowX: "auto" }}>
+
+        {/* Desktop table */}
+        <div className="res-table-desktop" style={{ overflowX: "auto" }}>
           <table className="res-table">
             <thead>
               <tr>
@@ -665,7 +875,6 @@ export default function Reservations() {
                     className={`res-row-anim ${item.status === "CANCELLED" ? "row-cancelled" : item.status === "COMPLETED" ? "row-completed" : ""}`}
                     style={{ animationDelay: `${idx * 0.04}s` }}
                   >
-                    {/* Khách hàng */}
                     <td>
                       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
@@ -677,8 +886,6 @@ export default function Reservations() {
                         <span style={{ fontSize: 11, color: "#B5A080" }}>Đặt lúc {formatDateTime(item.createdAt)}</span>
                       </div>
                     </td>
- 
-                    {/* Liên hệ */}
                     <td>
                       <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                         <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12.5, color: "#4A3220" }}>
@@ -689,37 +896,27 @@ export default function Reservations() {
                         </span>
                       </div>
                     </td>
- 
-                    {/* Thời gian */}
                     <td style={{ textAlign: "center" }}>
-                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12.5, color: "#4A3220", fontWeight: 500 }}>
-                          <Clock size={12} style={{ color: "#C49A6C" }} />
-                          {formatDateTime(item.reservationTime)}
-                        </span>
-                      </div>
-                    </td>
- 
-                    {/* Bàn */}
-                    <td style={{ textAlign: "center" }}>
-                      <span className="table-badge">
-                        {item.table ? `Bàn ${item.table.tableNumber}` : "Chưa xếp"}
+                      <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 5, fontSize: 12.5, color: "#4A3220", fontWeight: 500 }}>
+                        <Clock size={12} style={{ color: "#C49A6C" }} />
+                        {formatDateTime(item.reservationTime)}
                       </span>
                     </td>
- 
-                    {/* Số khách */}
+                    <td style={{ textAlign: "center" }}>
+                      <span className="table-badge">{item.table ? `Bàn ${item.table.tableNumber}` : "Chưa xếp"}</span>
+                    </td>
                     <td style={{ textAlign: "center" }}>
                       <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontWeight: 600, fontSize: 13, color: "#5A3E20" }}>
                         <Users size={13} style={{ color: "#C49A6C" }} />{item.guestCount}
                       </span>
                     </td>
- 
-                    {/* Thao tác */}
                     <td style={{ textAlign: "center" }}>
                       {item.status === "CANCELLED" ? (
                         <button className="action-btn-restore" onClick={() => openConfirmModal(item.reservationId, "restore")}>Khôi phục</button>
                       ) : item.status === "COMPLETED" ? (
                         <span className="action-btn-done">Hoàn thành</span>
+                      ) : new Date(item.reservationTime) <= new Date() ? (
+                        <span className="action-btn-done" style={{ background: "rgba(196,154,108,0.08)", color: "#9A6B30", border: "1px solid rgba(196,154,108,0.2)" }}>Đang xử lý...</span>
                       ) : (
                         <button className="action-btn-cancel" onClick={() => openConfirmModal(item.reservationId, "cancel")}>Hủy đặt</button>
                       )}
@@ -729,6 +926,71 @@ export default function Reservations() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile card list */}
+        <div className="res-mobile-list">
+          {loading ? (
+            <div style={{ textAlign: "center", padding: "48px 0", color: "#B5A080", display: "flex", flexDirection: "column", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", border: "2.5px solid rgba(196,154,108,0.3)", borderTopColor: "#C49A6C", animation: "spin 0.9s linear infinite" }}></div>
+              <span style={{ fontSize: 13 }}>Đang tải dữ liệu...</span>
+            </div>
+          ) : currentReservations.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "48px 16px", color: "#B5A080" }}>
+              <UtensilsCrossed size={28} style={{ margin: "0 auto 10px", opacity: 0.3 }} />
+              <p style={{ fontSize: 13, fontWeight: 500 }}>Không tìm thấy lịch đặt bàn nào</p>
+            </div>
+          ) : (
+            currentReservations.map((item, idx) => (
+              <div
+                key={item.reservationId}
+                className="res-mobile-card"
+                style={{ animationDelay: `${idx * 0.04}s`, background: item.status === "CANCELLED" ? "rgba(220,60,60,0.02)" : item.status === "COMPLETED" ? "rgba(40,160,80,0.02)" : "transparent" }}
+              >
+                <div className="res-mobile-card-top">
+                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    <span className="res-mobile-card-name">{item.customerName}</span>
+                    <span style={{ fontSize: 11, color: "#B5A080" }}>Đặt lúc {formatDateTime(item.createdAt)}</span>
+                  </div>
+                  <div style={{ flexShrink: 0 }}>
+                    {item.status === "CANCELLED"  && <span className="badge badge-cancelled">Đã hủy</span>}
+                    {item.status === "COMPLETED"  && <span className="badge badge-completed">Hoàn thành</span>}
+                    {item.status === "ACTIVE"     && <span className="badge badge-active">Đang chờ</span>}
+                  </div>
+                </div>
+                <div className="res-mobile-card-meta">
+                  <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                    <Clock size={11} style={{ color: "#C49A6C" }} />
+                    {formatDateTime(item.reservationTime)}
+                  </span>
+                  <span style={{ color: "rgba(196,154,108,0.4)" }}>·</span>
+                  <span className="table-badge" style={{ fontSize: 10.5, padding: "2px 8px" }}>
+                    {item.table ? `Bàn ${item.table.tableNumber}` : "Chưa xếp"}
+                  </span>
+                  <span style={{ color: "rgba(196,154,108,0.4)" }}>·</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 3, fontWeight: 600, color: "#5A3E20" }}>
+                    <Users size={11} style={{ color: "#C49A6C" }} />{item.guestCount} người
+                  </span>
+                </div>
+                <div className="res-mobile-card-bottom">
+                  <span style={{ fontSize: 11.5, color: "#7A6048", display: "flex", alignItems: "center", gap: 4 }}>
+                    <Phone size={10} style={{ color: "#C49A6C" }} />{item.phone}
+                  </span>
+                  <div>
+                    {item.status === "CANCELLED" ? (
+                      <button className="action-btn-restore" onClick={() => openConfirmModal(item.reservationId, "restore")}>Khôi phục</button>
+                    ) : item.status === "COMPLETED" ? (
+                      null
+                    ) : new Date(item.reservationTime) <= new Date() ? (
+                      <span className="action-btn-done" style={{ background: "rgba(196,154,108,0.08)", color: "#9A6B30", border: "1px solid rgba(196,154,108,0.2)" }}>Đang xử lý...</span>
+                    ) : (
+                      <button className="action-btn-cancel" onClick={() => openConfirmModal(item.reservationId, "cancel")}>Hủy đặt</button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
         </div>
  
         {/* Pagination */}
@@ -801,7 +1063,7 @@ export default function Reservations() {
               </div>
  
               {/* Phone + Email */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 <div>
                   <label className="res-label">Số điện thoại <span style={{ color: "#C49A6C" }}>*</span></label>
                   <input
@@ -841,7 +1103,7 @@ export default function Reservations() {
               <div className="divider-gold"></div>
  
               {/* Ngày + Giờ */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 <div>
                   <label className="res-label">Ngày đặt <span style={{ color: "#C49A6C" }}>*</span></label>
                   <input
@@ -851,79 +1113,142 @@ export default function Reservations() {
                     value={formData.bookDate}
                     onChange={(e) => {
                       const selectedDate = e.target.value;
-                      let updatedTime = formData.bookTime;
                       const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+                      // reset giờ nếu ngày thay đổi để tránh chọn giờ quá khứ
+                      let updatedTime = formData.bookTime;
                       if (selectedDate === today && formData.bookTime) {
                         const now = new Date();
-                        const selectedDateTime = new Date(`${selectedDate}T${formData.bookTime}`);
-                        if (selectedDateTime.getTime() < now.getTime()) {
-                          updatedTime = "";
-                          setErrors(prev => ({ ...prev, bookTime: "Giờ đã chọn không hợp lệ!" }));
-                        }
+                        const nowMins = now.getHours() * 60 + now.getMinutes();
+                        const [h] = formData.bookTime.split(":").map(Number);
+                        if (h * 60 <= nowMins) updatedTime = "";
                       }
                       setFormData({ ...formData, bookDate: selectedDate, bookTime: updatedTime });
-                      setErrors(prev => ({ ...prev, bookDate: "" }));
-                      if (selectedDate !== today) setErrors(prev => ({ ...prev, bookTime: "" }));
+                      setErrors(prev => ({ ...prev, bookDate: "", bookTime: "" }));
                     }}
                   />
                   {errors.bookDate && <p className="res-error">{errors.bookDate}</p>}
                 </div>
                 <div>
                   <label className="res-label">Giờ đặt <span style={{ color: "#C49A6C" }}>*</span></label>
-                  <input
-                    className={`res-input ${errors.bookTime ? "error" : ""}`}
-                    type="time" min={getMinTime()}
-                    value={formData.bookTime}
-                    onChange={(e) => {
-                      const selectedTime = e.target.value;
-                      const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
-                      let error = "";
-                      if (formData.bookDate === today) {
-                        const now = new Date();
-                        const currentTime = `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")}`;
-                        if (selectedTime < currentTime) error = "Giờ không hợp lệ!";
-                      }
-                      setErrors(prev => ({ ...prev, bookTime: error }));
-                      setFormData({ ...formData, bookTime: selectedTime });
-                    }}
-                  />
+                  {(() => {
+                    const today = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0];
+                    const now = new Date();
+                    const nowMins = now.getHours() * 60 + now.getMinutes();
+                    const slots = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00"];
+                    const available = slots.filter(t => {
+                      if (!formData.bookDate || formData.bookDate !== today) return true;
+                      const [h, m] = t.split(":").map(Number);
+                      return h * 60 + m > nowMins;
+                    });
+                    return (
+                      <select
+                        className={`res-input res-select ${errors.bookTime ? "error" : ""}`}
+                        value={formData.bookTime}
+                        onChange={(e) => {
+                          setFormData({ ...formData, bookTime: e.target.value });
+                          setErrors(prev => ({ ...prev, bookTime: "" }));
+                        }}
+                      >
+                        <option value="">-- Chọn giờ --</option>
+                        {available.length === 0 ? (
+                          <option disabled>Không còn khung giờ hôm nay</option>
+                        ) : (
+                          available.map(t => <option key={t} value={t}>{t}</option>)
+                        )}
+                      </select>
+                    );
+                  })()}
                   {errors.bookTime && <p className="res-error">{errors.bookTime}</p>}
                 </div>
               </div>
  
-              {/* Số người + Bàn */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14 }}>
-                <div>
-                  <label className="res-label">Số người <span style={{ color: "#C49A6C" }}>*</span></label>
-                  <select
-                    className={`res-input res-select ${errors.guestCount ? "error" : ""}`}
-                    value={formData.guestCount}
-                    onChange={(e) => { setFormData({ ...formData, guestCount: e.target.value }); setErrors(prev => ({ ...prev, guestCount: "" })); }}
-                  >
-                    <option value="">Chọn số người</option>
-                    <option value="2">2 người</option>
-                    <option value="4">4 người</option>
-                    <option value="6">6+ người</option>
-                  </select>
-                  {errors.guestCount && <p className="res-error">{errors.guestCount}</p>}
+              {/* Số người */}
+              <div>
+                <label className="res-label">Số người <span style={{ color: "#C49A6C" }}>*</span></label>
+                <div className={`guest-grid${errors.guestCount ? " error-border" : ""}`}>
+                  {[
+                    { value: "2", label: "2 người" },
+                    { value: "4", label: "4 người" },
+                    { value: "6", label: "6+ người" },
+                  ].map((opt) => (
+                    <div
+                      key={opt.value}
+                      className={`guest-card${formData.guestCount === opt.value ? " selected" : ""}${errors.guestCount ? " error-border" : ""}`}
+                      onClick={() => {
+                        setFormData({ ...formData, guestCount: opt.value });
+                        setErrors(prev => ({ ...prev, guestCount: "" }));
+                      }}
+                    >
+                      <span className="guest-num">{opt.value === "6" ? "6+" : opt.value}</span>
+                      <span className="guest-label">người</span>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <label className="res-label">Chọn bàn <span style={{ color: "#C49A6C" }}>*</span></label>
-                  <select
-                    className={`res-input res-select ${errors.tableId ? "error" : ""}`}
-                    value={formData.tableId}
-                    onChange={(e) => { setFormData({ ...formData, tableId: e.target.value }); setErrors(prev => ({ ...prev, tableId: "" })); }}
-                  >
-                    <option value="">Chọn bàn trống</option>
-                    {tables.map((t) => (
-                      <option key={t.tableId} value={t.tableId}>Bàn {t.tableNumber} ({t.capacity} người)</option>
-                    ))}
-                  </select>
-                  {errors.tableId && <p className="res-error">{errors.tableId}</p>}
-                  {tables.length === 0 && formData.guestCount && (
-                    <p className="res-error">Không còn bàn phù hợp</p>
+                {errors.guestCount && <p className="res-error" style={{ marginTop: 6 }}>{errors.guestCount}</p>}
+              </div>
+
+              {/* Chọn bàn */}
+              <div>
+                <label className="res-label">
+                  Chọn bàn <span style={{ color: "#C49A6C" }}>*</span>
+                  {formData.guestCount && (
+                    <span style={{ fontWeight: 400, textTransform: "none", letterSpacing: 0, color: "#B5A080", marginLeft: 6, fontSize: 10.5 }}>
+                      — phù hợp {formData.guestCount}+ người
+                    </span>
                   )}
-                </div>
+                </label>
+                {!formData.guestCount ? (
+                  <div style={{
+                    padding: "18px 16px",
+                    borderRadius: 12,
+                    border: "1.5px dashed rgba(196,154,108,0.25)",
+                    background: "rgba(196,154,108,0.03)",
+                    textAlign: "center",
+                    color: "#B5A090",
+                    fontSize: 12.5,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 7,
+                  }}>
+                    <span style={{ fontSize: 16 }}>👆</span> Vui lòng chọn số người trước
+                  </div>
+                ) : tables.length === 0 ? (
+                  <div style={{
+                    padding: "18px 16px",
+                    borderRadius: 12,
+                    border: "1.5px dashed rgba(220,80,60,0.25)",
+                    background: "rgba(220,80,60,0.03)",
+                    textAlign: "center",
+                    color: "#C03030",
+                    fontSize: 12.5,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 7,
+                  }}>
+                    <span style={{ fontSize: 16 }}>😔</span> Không còn bàn phù hợp cho {formData.guestCount} người
+                  </div>
+                ) : (
+                  <>
+                    <div className={`table-grid`}>
+                      {tables.map((t) => (
+                        <div
+                          key={t.tableId}
+                          className={`table-card${formData.tableId === String(t.tableId) ? " selected" : ""}${errors.tableId ? " error-border" : ""}`}
+                          onClick={() => {
+                            setFormData({ ...formData, tableId: String(t.tableId) });
+                            setErrors(prev => ({ ...prev, tableId: "" }));
+                          }}
+                        >
+                          <span className="table-num-label">Bàn {t.tableNumber}</span>
+                          <span className="table-cap-label">{t.capacity} người</span>
+                        </div>
+                      ))}
+                    </div>
+                    {errors.tableId && <p className="res-error" style={{ marginTop: 6 }}>{errors.tableId}</p>}
+                  </>
+                )}
               </div>
             </div>
  

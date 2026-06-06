@@ -88,7 +88,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
           const events = getEventsForSpecificDate(item.date);
           const todayCell = isToday(item.date);
           return (
-            <div key={index} style={{
+            <div key={index} className="clv-month-cell" style={{
               borderRight: "1px solid #EDE7DD",
               borderBottom: "1px solid #EDE7DD",
               padding: "6px",
@@ -122,7 +122,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
               }}>{item.day}</span>
               <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 4, overflow: "hidden" }}>
                 {events.slice(0, 3).map((evt, idx) => (
-                  <div key={idx} style={{
+                  <div key={idx} className="clv-event-pill" style={{
                     background: "linear-gradient(90deg,#C49A6C,#A07842)",
                     color: "white",
                     fontSize: 10,
@@ -163,7 +163,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
           const events = getEventsForSpecificDate(dateObj);
           const todayCell = isToday(dateObj);
           return (
-            <div key={index} style={{
+            <div key={index} className="clv-week-cell" style={{
               borderRight: "1px solid #EDE7DD",
               borderBottom: "1px solid #EDE7DD",
               display: "flex",
@@ -185,7 +185,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
               </div>
               <div style={{ padding: "8px 6px", display: "flex", flexDirection: "column", gap: 5, flex: 1, overflowY: "auto" }}>
                 {events.map((evt, idx) => (
-                  <div key={idx} style={{
+                  <div key={idx} className="clv-week-event" style={{
                     background: "linear-gradient(90deg,#C49A6C,#A07842)",
                     color: "white",
                     fontSize: 11,
@@ -212,7 +212,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
   const renderDayView = () => {
     const events = getEventsForSpecificDate(currentDate);
     return (
-      <div style={{ flex: 1, padding: "28px 32px" }}>
+      <div style={{ flex: 1, padding: "28px 32px" }} className="clv-day-view">
         <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#C49A6C", marginBottom: 18 }}>
           ✦ Lịch trình trong ngày
         </p>
@@ -339,9 +339,25 @@ export default function CalendarView({ onBack, reservations = [] }) {
           transition: all .2s;
         }
         .clv-back-btn:hover { border-color: #C49A6C; color: #A07842; background: #FDF6EE; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 640px) {
+          .clv-root { padding: 16px 12px !important; }
+          .clv-toolbar { flex-direction: column; align-items: flex-start !important; gap: 10px !important; }
+          .clv-toolbar-title { font-size: 13px !important; }
+          .clv-month-cell { min-height: 56px !important; padding: 3px 2px !important; }
+          .clv-event-pill { font-size: 8px !important; padding: 1px 3px !important; border-radius: 4px !important; letter-spacing: 0 !important; }
+          .clv-day-label { font-size: 9px !important; padding: 7px 2px !important; letter-spacing: 0 !important; }
+          .clv-week-cell { min-height: 100px !important; }
+          .clv-week-event { font-size: 8px !important; padding: 3px 4px !important; }
+          .clv-footer { flex-direction: column; gap: 10px; align-items: flex-start !important; }
+          .clv-today-btn { font-size: 11px !important; padding: 0 10px !important; }
+          .clv-view-btn { padding: 5px 10px !important; font-size: 11px !important; }
+          .clv-day-view { padding: 16px 12px !important; }
+        }
       `}</style>
  
-      <div className="clv-root" style={{ padding: "28px 32px" }}>
+      <div className="clv-root" style={{ padding: "28px 32px", boxSizing: "border-box" }}>
  
         {/* ── HEADER ── */}
         <div className="clv-a1" style={{ marginBottom: 24 }}>
@@ -354,7 +370,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
         </div>
  
         {/* ── TOOLBAR ── */}
-        <div className="clv-a2" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
+        <div className="clv-a2 clv-toolbar" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12, marginBottom: 20 }}>
  
           {/* Điều hướng trái */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -364,7 +380,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
           </div>
  
           {/* Tiêu đề tháng/tuần/ngày */}
-          <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 18, fontWeight: 500, color: "#2A1F15", margin: 0, letterSpacing: "0.01em" }}>
+          <h2 className="clv-toolbar-title" style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 18, fontWeight: 500, color: "#2A1F15", margin: 0, letterSpacing: "0.01em" }}>
             {headerTitle}
           </h2>
  
@@ -397,7 +413,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
               background: "#FAF8F5",
             }}>
               {DAY_LABELS.map((d, i) => (
-                <div key={d} style={{
+                <div key={d} className="clv-day-label" style={{
                   padding: "12px 6px",
                   textAlign: "center",
                   fontSize: 11,
@@ -422,7 +438,7 @@ export default function CalendarView({ onBack, reservations = [] }) {
         </div>
  
         {/* ── FOOTER ── */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20 }}>
+        <div className="clv-footer" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 12, color: "#A39688" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
               <div style={{ width: 10, height: 10, borderRadius: 3, background: "linear-gradient(135deg,#C49A6C,#A07842)" }}></div>

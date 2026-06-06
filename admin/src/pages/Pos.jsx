@@ -94,6 +94,13 @@ const GLOBAL_STYLE = `
     background: linear-gradient(90deg, transparent, rgba(196,154,108,0.4), transparent);
   }
  
+  .pos-btn-mobile-label { display: none; }
+  .pos-btn-desktop-label { display: inline; }
+  @media (max-width: 768px) {
+    .pos-btn-mobile-label { display: inline; }
+    .pos-btn-desktop-label { display: none; }
+  }
+ 
   /* ── RESPONSIVE ──────────────────────────────────────────────────── */
   .pos-cart-panel {
     width: 360px;
@@ -121,7 +128,7 @@ const GLOBAL_STYLE = `
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 200;
+    z-index: 90;
     background: linear-gradient(135deg, #C49A6C, #A07848);
     border: none;
     border-radius: 50px;
@@ -141,7 +148,7 @@ const GLOBAL_STYLE = `
     position: fixed;
     inset: 0;
     background: rgba(26,19,14,0.5);
-    z-index: 199;
+    z-index: 89;
     backdrop-filter: blur(2px);
   }
   @media (max-width: 768px) {
@@ -151,7 +158,7 @@ const GLOBAL_STYLE = `
       right: 0; top: 0;
       height: 100dvh;
       width: min(360px, 100vw);
-      z-index: 200;
+      z-index: 90;
       transform: translateX(100%);
       border-left: none;
       box-shadow: -8px 0 40px rgba(26,19,14,0.25);
@@ -584,7 +591,7 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
         flexShrink: 0,
         position: "sticky",
         top: 0,
-        zIndex: 100,
+        zIndex: 10,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <button
@@ -922,19 +929,27 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
               </button>
  
               <button
-                onClick={() => setPage("main_dashboard")}
+                onClick={() => {
+                  if (window.innerWidth <= 768) {
+                    setCartOpen(false);
+                  } else {
+                    setPage("main_dashboard");
+                  }
+                }}
                 style={{
                   flex: 1,
                   background: "rgba(196,154,108,0.08)",
                   border: "1.5px solid rgba(196,154,108,0.2)",
                   borderRadius: 12, padding: "13px 0",
                   color: "#7A5430", fontSize: 13, fontWeight: 700,
-                  cursor: "pointer", transition: "all 0.2s"
+                  cursor: "pointer", transition: "all 0.2s",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 6
                 }}
                 onMouseEnter={e => e.currentTarget.style.background = "rgba(196,154,108,0.15)"}
                 onMouseLeave={e => e.currentTarget.style.background = "rgba(196,154,108,0.08)"}
               >
-                Thoát
+                <span className="pos-btn-desktop-label">Thoát</span>
+                <span className="pos-btn-mobile-label">Đóng</span>
               </button>
             </div>
           </div>
@@ -942,12 +957,14 @@ export default function Pos({ setPage, onSaveInvoice, editingInvoice, initialTab
       </div>
  
       {/* ── Mobile Cart FAB ── */}
-      <button className="pos-cart-fab" onClick={() => setCartOpen(true)}>
-        <ShoppingBag size={16} />
-        {cart.length > 0
-          ? `Giỏ hàng · ${cart.reduce((s, i) => s + i.qty, 0)} món`
-          : 'Giỏ hàng'}
-      </button>
+      {!cartOpen && (
+        <button className="pos-cart-fab" onClick={() => setCartOpen(true)}>
+          <ShoppingBag size={16} />
+          {cart.length > 0
+            ? `Giỏ hàng · ${cart.reduce((s, i) => s + i.qty, 0)} món`
+            : 'Giỏ hàng'}
+        </button>
+      )}
  
       {/* ── Mobile Cart Overlay ── */}
       <div className={`pos-cart-overlay${cartOpen ? ' open' : ''}`} onClick={() => setCartOpen(false)} />
