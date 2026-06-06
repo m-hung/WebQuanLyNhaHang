@@ -112,7 +112,6 @@
  
   <div class="masonry-grid">
  
-    <!-- Item 1: Phòng ăn chính (chiếm 2 cột, hàng 1) -->
     <div class="masonry-item reveal reveal-delay-1" data-idx="0">
       <img src="img/gallery/phong-an-chinh.jpg" alt="Phòng ăn chính Celesté House" />
       <div class="masonry-overlay">
@@ -121,7 +120,6 @@
       <div class="photo-label" data-i18n="page.gallery_label_dining">Phòng Ăn Chính</div>
     </div>
  
-    <!-- Item 2: Hầm rượu -->
     <div class="masonry-item reveal reveal-delay-2" data-idx="1">
       <img src="img/gallery/ham-ruou.jpg" alt="Hầm rượu Celesté House" />
       <div class="masonry-overlay">
@@ -130,7 +128,6 @@
       <div class="photo-label" data-i18n="page.gallery_label_wine">Hầm Rượu</div>
     </div>
  
-    <!-- Item 3: Wagyu (chiếm 2 hàng, cột 4) -->
     <div class="masonry-item reveal reveal-delay-3" data-idx="2">
       <img src="img/menu/wayguA5.jpg" alt="Wagyu Beef A5" />
       <div class="masonry-overlay">
@@ -139,7 +136,6 @@
       <div class="photo-label" data-i18n="page.gallery_label_wagyu">Wagyu A5</div>
     </div>
  
-    <!-- Item 4: Phòng riêng tư -->
     <div class="masonry-item reveal reveal-delay-4" data-idx="3">
       <img src="img/gallery/phong-rieng.jpg" alt="Phòng riêng tư" />
       <div class="masonry-overlay">
@@ -148,7 +144,6 @@
       <div class="photo-label" data-i18n="page.gallery_label_private">Phòng Riêng Tư</div>
     </div>
  
-    <!-- Item 5: Quầy Bar (chiếm 2 cột, hàng 2) -->
     <div class="masonry-item reveal reveal-delay-5" data-idx="4">
       <img src="img/gallery/quay-bar.jpg" alt="Quầy Bar Celesté House" />
       <div class="masonry-overlay">
@@ -162,7 +157,6 @@
   <p class="gallery-hint" data-i18n="page.gallery_hint">Nhấn vào ảnh để xem chi tiết</p>
 </section>
  
-<!-- Lightbox Overlay -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Xem ảnh">
   <div class="lightbox-inner">
     <button class="lightbox-close" id="lb-close" aria-label="Đóng lightbox">
@@ -191,15 +185,13 @@
   <h2 class="reveal" data-i18n="page.special_menu_title">Món Ăn Đặc Biệt</h2>
   <div class="menu-grid">
 
-    <!-- Card 1: Wagyu -->
     <div class="menu-card reveal reveal-delay-1" onclick="this.classList.toggle('is-flipped')">
       <div class="card-inner">
 
-        <!-- Mặt trước -->
         <div class="card-front">
           <img src="img/menu/wayguA5.jpg" alt="Wagyu Beef A5" />
           <div class="card-body">
-            <p class="back-tag" style="margin-bottom:6px;">Bò Hảo Hạng</p>
+            <p class="back-tag" style="margin-bottom:6px;" data-i18n="page.tag_wagyu_front">Bò Hảo Hạng</p>
             <h3>Wagyu Beef A5</h3>
             <p data-i18n="page.dish_wagyu_desc">
               Thịt bò thượng hạng từ Nhật Bản, nướng hoàn hảo với độ mềm tuyệt đối.
@@ -207,18 +199,17 @@
             <span class="price">2.500.000 ₫</span>
             <div class="card-front-hint">
               <span></span>
-              <p>Hover để xem chi tiết</p>
+              <p data-i18n="page.card_hover_hint">Hover để xem chi tiết</p>
               <span></span>
             </div>
           </div>
         </div>
 
-        <!-- Mặt sau -->
         <div class="card-back">
           <div>
             <p class="back-tag">Signature · Wagyu</p>
             <h3 class="back-name">Wagyu Beef A5</h3>
-            <p class="back-origin">Kobe, Nhật Bản</p>
+            <p class="back-origin" data-i18n="page.origin_wagyu">Kobe, Nhật Bản</p>
             <div class="back-divider-line"></div>
             <div class="back-stars">
               <div class="back-star"></div>
@@ -227,7 +218,7 @@
               <div class="back-star"></div>
               <div class="back-star"></div>
             </div>
-            <p class="back-desc">
+            <p class="back-desc" data-i18n="page.back_desc_wagyu">
               Thịt bò vân mỡ cẩm thạch chuẩn A5 từ vùng Kobe. Được nướng trên than
               binchotan, giữ nguyên độ mềm tan chảy trong miệng với vị ngọt tự nhiên
               tinh tế. Phục vụ cùng muối Himalaya và sốt ponzu.
@@ -235,24 +226,23 @@
           </div>
           <div class="back-footer">
             <div>
-              <p class="back-price-label">Giá</p>
+              <p class="back-price-label" data-i18n="page.back_price_label">Giá</p>
               <p class="back-price-value">2.500.000 ₫</p>
             </div>
-            <a href="src/booking.html" class="back-order-btn">Đặt Bàn</a>
+            <a href="src/booking.html" class="back-order-btn" data-i18n="page.btn_book_now">Đặt Bàn</a>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Card 2: Duck Confit -->
     <div class="menu-card reveal reveal-delay-2" onclick="this.classList.toggle('is-flipped')">
       <div class="card-inner">
 
         <div class="card-front">
           <img src="img/menu/DuckConfit.jpg" alt="Duck Confit" />
           <div class="card-body">
-            <p class="back-tag" style="margin-bottom:6px;">Kinh Điển Pháp</p>
+            <p class="back-tag" style="margin-bottom:6px;" data-i18n="page.tag_duck_front">Kinh Điển Pháp</p>
             <h3>Duck Confit</h3>
             <p data-i18n="page.dish_duck_desc">
               Vịt om kiểu Pháp truyền thống với da giòn rụm, thịt mềm tan trong miệng.
@@ -260,7 +250,7 @@
             <span class="price">850.000 ₫</span>
             <div class="card-front-hint">
               <span></span>
-              <p>Hover để xem chi tiết</p>
+              <p data-i18n="page.card_hover_hint">Hover để xem chi tiết</p>
               <span></span>
             </div>
           </div>
@@ -268,9 +258,9 @@
 
         <div class="card-back">
           <div>
-            <p class="back-tag">Pháp · Truyền Thống</p>
+            <p class="back-tag" data-i18n="page.tag_duck_back">Pháp · Truyền Thống</p>
             <h3 class="back-name">Duck Confit</h3>
-            <p class="back-origin">Gascogne, Pháp</p>
+            <p class="back-origin" data-i18n="page.origin_duck">Gascogne, Pháp</p>
             <div class="back-divider-line"></div>
             <div class="back-stars">
               <div class="back-star"></div>
@@ -279,7 +269,7 @@
               <div class="back-star"></div>
               <div class="back-star"></div>
             </div>
-            <p class="back-desc">
+            <p class="back-desc" data-i18n="page.back_desc_duck">
               Vịt ướp muối thảo mộc, om ngâm mỡ vịt suốt 8 giờ theo phương pháp Confit
               cổ điển. Da vàng giòn rụm, thịt đùi mềm tan. Ăn kèm khoai tây Sarladaise
               và sốt cherry đỏ.
@@ -287,24 +277,23 @@
           </div>
           <div class="back-footer">
             <div>
-              <p class="back-price-label">Giá</p>
+              <p class="back-price-label" data-i18n="page.back_price_label">Giá</p>
               <p class="back-price-value">850.000 ₫</p>
             </div>
-            <a href="src/booking.html" class="back-order-btn">Đặt Bàn</a>
+            <a href="src/booking.html" class="back-order-btn" data-i18n="page.btn_book_now">Đặt Bàn</a>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- Card 3: Lobster Thermidor -->
     <div class="menu-card reveal reveal-delay-3" onclick="this.classList.toggle('is-flipped')">
       <div class="card-inner">
 
         <div class="card-front">
           <img src="img/menu/LobsterThermidor.jpg" alt="Lobster Thermidor" />
           <div class="card-body">
-            <p class="back-tag" style="margin-bottom:6px;">Hải Sản Thượng Hạng</p>
+            <p class="back-tag" style="margin-bottom:6px;" data-i18n="page.tag_lobster_front">Hải Sản Thượng Hạng</p>
             <h3>Lobster Thermidor</h3>
             <p data-i18n="page.dish_lobster_desc">
               Tôm hùm nướng phô mai kiểu Pháp cổ điển, hương vị đậm đà sang trọng.
@@ -312,7 +301,7 @@
             <span class="price">1.890.000 ₫</span>
             <div class="card-front-hint">
               <span></span>
-              <p>Hover để xem chi tiết</p>
+              <p data-i18n="page.card_hover_hint">Hover để xem chi tiết</p>
               <span></span>
             </div>
           </div>
@@ -320,7 +309,7 @@
 
         <div class="card-back">
           <div>
-            <p class="back-tag">Pháp · Homard</p>
+            <p class="back-tag" data-i18n="page.tag_lobster_back">Pháp · Homard</p>
             <h3 class="back-name">Lobster Thermidor</h3>
             <p class="back-origin">Maine & Bretagne</p>
             <div class="back-divider-line"></div>
@@ -331,7 +320,7 @@
               <div class="back-star"></div>
               <div class="back-star"></div>
             </div>
-            <p class="back-desc">
+            <p class="back-desc" data-i18n="page.back_desc_lobster">
               Tôm hùm Maine tươi sống bổ đôi, nướng trong sốt kem cognac và mù tạt
               Dijon. Phủ phô mai Gruyère tan chảy vàng ươm — công thức kinh điển Paris
               từ thế kỷ XIX.
@@ -339,10 +328,10 @@
           </div>
           <div class="back-footer">
             <div>
-              <p class="back-price-label">Giá</p>
+              <p class="back-price-label" data-i18n="page.back_price_label">Giá</p>
               <p class="back-price-value">1.890.000 ₫</p>
             </div>
-            <a href="src/booking.html" class="back-order-btn">Đặt Bàn</a>
+            <a href="src/booking.html" class="back-order-btn" data-i18n="page.btn_book_now">Đặt Bàn</a>
           </div>
         </div>
 
@@ -356,9 +345,7 @@
   </a>
 </section>
  
-<!-- ===== SECTION: EXPERIENCE TIMELINE ===== -->
-
-    <section class="about">
+<section class="about">
       <div class="about-container">
         <div class="about-image reveal reveal-left">
           <img src="img/VeChungToi.jpg" alt="Không gian nhà hàng" />
@@ -430,23 +417,22 @@
  
   </div>
  
-  <!-- Detail Panel — cập nhật khi click/hover từng bước -->
   <div class="tl-detail-panel reveal" id="tl-detail">
     <div class="dp-icon" id="dp-icon">01</div>
     <div class="dp-text">
-      <h4 id="dp-title">Đặt Bàn Trước</h4>
-      <p id="dp-desc">Đặt bàn qua hotline hoặc website chính thức. Đội ngũ tư vấn xác nhận và ghi chú yêu cầu đặc biệt của quý khách — dị ứng thực phẩm, sở thích rượu vang, decor sinh nhật hay kỷ niệm.</p>
+      <h4 id="dp-title" data-i18n="page.dp_title_default">Đặt Bàn Trước</h4>
+      <p id="dp-desc" data-i18n="page.dp_desc_default">Đặt bàn qua hotline hoặc website chính thức. Đội ngũ tư vấn xác nhận và ghi chú yêu cầu đặc biệt của quý khách — dị ứng thực phẩm, sở thích rượu vang, decor sinh nhật hay kỷ niệm.</p>
     </div>
     <div class="dp-time-block">
       <div class="dp-time-val" id="dp-time">15'</div>
-      <div class="dp-time-label" id="dp-time-label">xác nhận</div>
+      <div class="dp-time-label" id="dp-time-label" data-i18n="page.dp_time_label_default">xác nhận</div>
     </div>
   </div>
 </section>
 
 
     <section class="cta">
-      <h2 class="reveal" style="color: #fff; border: none" data-i18n="page.cta_title">Đặt Bàn Ngay Hôm Nay</h2>
+      <h2 class="reveal" style="color: #fff; border: none" data-i18n="page.cta_title">Đặt Bàn Ngay Hôm Tây</h2>
       <p class="reveal reveal-delay-1" style="margin-bottom: 30px" data-i18n="page.cta_desc">
         Trải nghiệm bữa tối lãng mạn trong không gian sang trọng của CELESTÉ HOUSE
       </p>

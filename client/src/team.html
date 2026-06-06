@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đội Ngũ - Celesté House</title>
+    <title data-i18n="page.title">Đội Ngũ - Celesté House</title>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="../style/style.css">
@@ -38,7 +38,6 @@
 </head>
 <body>
 
-    <!-- ===== HERO (nav giữ nguyên cấu trúc gốc) ===== -->
     <header class="team-hero-new">
         <nav>
             <div class="logo">CELESTÉ HOUSE</div>
@@ -61,14 +60,13 @@
             </ul>
         </nav>
 
-        <!-- Split hero -->
         <div class="hero-split">
             <div class="hero-left">
                 <div class="hero-left-img"></div>
                 <div class="hero-big-number">01</div>
                 <div class="hero-left-content">
-                    <p class="hero-eyebrow">Celesté House · Since 2009</p>
-                    <h1 class="hero-h1">Những<br>bậc thầy<br><em data-i18n="page.hero_title_em">ẩm thực</em></h1>
+                    <p class="hero-eyebrow" data-i18n="page.hero_eyebrow">Celesté House · Since 2009</p>
+                    <h1 class="hero-h1" data-i18n="page.hero_title">Những<br>bậc thầy<br><em>ẩm thực</em></h1>
                     <p class="hero-tagline" data-i18n="page.hero_subtitle">Mỗi món ăn là một câu chuyện — được kể bởi những con người tận tâm đứng sau bếp và trên sàn phục vụ.</p>
                 </div>
             </div>
@@ -80,7 +78,7 @@
                     </div>
                     <div class="stat-row">
                         <div class="stat-num">2</div>
-                        <div class="stat-label">Đầu bếp Michelin</div>
+                        <div class="stat-label" data-i18n="page.stat_michelin_chefs">Đầu bếp Michelin</div>
                     </div>
                     <div class="stat-row">
                         <div class="stat-num">5.0</div>
@@ -99,77 +97,73 @@
         </div>
     </header>
 
-    <!-- ===== MARQUEE ===== -->
     <div class="marquee-strip">
         <div class="marquee-track">
-            <span class="mq-item">French Cuisine <span class="mq-dot">✦</span></span>
-            <span class="mq-item">Michelin Recommended 2024 <span class="mq-dot">✦</span></span>
-            <span class="mq-item">Italian Pastry <span class="mq-dot">✦</span></span>
-            <span class="mq-item">Fine Dining Experience <span class="mq-dot">✦</span></span>
-            <span class="mq-item">Award Winning Team <span class="mq-dot">✦</span></span>
-            <span class="mq-item">French Cuisine <span class="mq-dot">✦</span></span>
-            <span class="mq-item">Michelin Recommended 2024 <span class="mq-dot">✦</span></span>
-            <span class="mq-item">Italian Pastry <span class="mq-dot">✦</span></span>
-            <span class="mq-item">Fine Dining Experience <span class="mq-dot">✦</span></span>
-            <span class="mq-item">Award Winning Team <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.french">Ẩm Thực Pháp</span> <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.michelin">Được Đề Xuất Michelin 2024</span> <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.pastry">Bánh Ngọt Kiểu Ý</span> <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.fine_dining">Trải Nghiệm Ẩm Thực Cao Cấp</span> <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.award_team">Đội Ngũ Đạt Giải Thưởng</span> <span class="mq-dot">✦</span></span>
+            <!-- Lặp lại cụm để đảm bảo hiệu ứng chạy mượt -->
+            <span class="mq-item"><span data-i18n="page.french">Ẩm Thực Pháp</span> <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.michelin">Được Đề Xuất Michelin 2024</span> <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.pastry">Bánh Ngọt Kiểu Ý</span> <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.fine_dining">Trải Nghiệm Ẩm Thực Cao Cấp</span> <span class="mq-dot">✦</span></span>
+            <span class="mq-item"><span data-i18n="page.award_team">Đội Ngũ Đạt Giải Thưởng</span> <span class="mq-dot">✦</span></span>
         </div>
     </div>
 
-    <!-- ===== CHEFS ===== -->
     <section class="chefs-section">
         <div class="section-header-row reveal">
             <div class="sh-left">
-                <p class="sh-kicker">Culinary Masters</p>
+                <p class="sh-kicker" data-i18n="page.kicker_chefs">Culinary Masters</p>
                 <h2 class="sh-title" data-i18n="page.group_chef_title">Đầu Bếp <em>Của Chúng Tôi</em></h2>
             </div>
             <div class="sh-count">02</div>
         </div>
         <p class="sh-sub reveal" data-i18n="page.group_chef_subtitle">Đội ngũ đầu bếp chuyên nghiệp với nhiều năm kinh nghiệm tại các nhà hàng hàng đầu thế giới.</p>
 
-        <!-- Chef 1 -->
         <div class="chef-band reveal" id="cb1">
             <div class="cb-img">
-                <img src="../img/staff/daubep.jpg" alt="Chef Antoine Dubois">
+                <img src="../img/staff/daubep.jpg" alt="Antoine Dubois">
                 <div class="cb-overlay"></div>
             </div>
             <div class="cb-info">
                 <div class="cb-index">01</div>
-                <h3 class="cb-name">Chef Antoine Dubois</h3>
-                <p class="cb-role" data-i18n="page.chef1_role">Executive Chef</p>
+                <h3 class="cb-name">Antoine Dubois</h3>
+                <p class="cb-role" data-i18n="page.chef1_role">Bếp Trưởng Điều Hành</p>
                 <p class="cb-stars">★★★</p>
                 <p class="cb-desc" data-i18n="page.chef1_desc">30 năm kinh nghiệm tại các nhà hàng Michelin Star ở Pháp.</p>
                 <div class="cb-tags">
-                    <span data-i18n="page.tag_french">French Cuisine</span>
-                    <span data-i18n="page.tag_wagyu">Wagyu Master</span>
+                    <span data-i18n="page.tag_french">Ẩm Thực Pháp</span>
+                    <span data-i18n="page.tag_wagyu">Chuyên Gia Bò Wagyu</span>
                 </div>
             </div>
         </div>
 
-        <!-- Chef 2 -->
         <div class="chef-band chef-band-reverse reveal" id="cb2">
             <div class="cb-img">
-                <img src="../img/staff/daubep2.jpg" alt="Chef Maria Rossi">
+                <img src="../img/staff/daubep2.jpg" alt="Maria Rossi">
                 <div class="cb-overlay"></div>
             </div>
             <div class="cb-info">
                 <div class="cb-index">02</div>
-                <h3 class="cb-name">Chef Maria Rossi</h3>
-                <p class="cb-role" data-i18n="page.chef2_role">Pastry Chef</p>
+                <h3 class="cb-name">Maria Rossi</h3>
+                <p class="cb-role" data-i18n="page.chef2_role">Bếp Trưởng Bánh Ngọt</p>
                 <p class="cb-stars">★★★</p>
                 <p class="cb-desc" data-i18n="page.chef2_desc">Chuyên gia món tráng miệng kiểu Ý, mang đến những hương vị ngọt ngào tinh tế.</p>
                 <div class="cb-tags">
-                    <span data-i18n="page.tag_italian">Italian Desserts</span>
-                    <span data-i18n="page.tag_baking">Baking Master</span>
+                    <span data-i18n="page.tag_italian">Tráng Miệng Ý</span>
+                    <span data-i18n="page.tag_baking">Bậc Thầy Làm Bánh</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ===== STAFF ===== -->
     <section class="staff-section-new">
         <div class="staff-intro reveal">
             <div>
-                <p class="sh-kicker">Front of House</p>
+                <p class="sh-kicker" data-i18n="page.kicker_staff">Front of House</p>
                 <h2 class="sh-title" data-i18n="page.group_staff_title">Đội Ngũ <em>Phục Vụ</em></h2>
             </div>
             <p class="staff-intro-text" data-i18n="page.group_staff_subtitle">Chuyên nghiệp, tận tâm và luôn sẵn sàng mang đến trải nghiệm tuyệt vời nhất.</p>
@@ -182,7 +176,7 @@
                 </div>
                 <div class="sc-body">
                     <h4 class="sc-name">Jean Baptiste</h4>
-                    <p class="sc-role" data-i18n="page.staff1_role">Head Sommelier</p>
+                    <p class="sc-role" data-i18n="page.staff1_role">Chuyên Gia Thử Rượu</p>
                 </div>
                 <div class="sc-line"></div>
             </div>
@@ -193,7 +187,7 @@
                 </div>
                 <div class="sc-body">
                     <h4 class="sc-name">Sophie Chen</h4>
-                    <p class="sc-role" data-i18n="page.staff2_role">Restaurant Manager</p>
+                    <p class="sc-role" data-i18n="page.staff2_role">Quản Lý Nhà Hàng</p>
                 </div>
                 <div class="sc-line"></div>
             </div>
@@ -204,7 +198,7 @@
                 </div>
                 <div class="sc-body">
                     <h4 class="sc-name">Lucas Martin</h4>
-                    <p class="sc-role" data-i18n="page.staff3_role">Maître d'hôtel</p>
+                    <p class="sc-role" data-i18n="page.staff3_role">Trưởng Bộ Phận Đón Tiếp</p>
                 </div>
                 <div class="sc-line"></div>
             </div>
@@ -215,18 +209,17 @@
                 </div>
                 <div class="sc-body">
                     <h4 class="sc-name">Emma Nguyen</h4>
-                    <p class="sc-role" data-i18n="page.staff4_role">Service Manager</p>
+                    <p class="sc-role" data-i18n="page.staff4_role">Quản Lý Dịch Vụ</p>
                 </div>
                 <div class="sc-line"></div>
             </div>
         </div>
     </section>
 
-    <!-- ===== AWARDS ===== -->
     <section class="awards-section-new">
         <div class="section-header-row reveal">
             <div class="sh-left">
-                <p class="sh-kicker">Recognition</p>
+                <p class="sh-kicker" data-i18n="page.kicker_awards">Recognition</p>
                 <h2 class="sh-title" data-i18n="page.awards_title">Giải Thưởng <em>&amp; Thành Tựu</em></h2>
             </div>
             <div class="sh-count">03</div>
@@ -235,7 +228,7 @@
             <div class="award-cell reveal">
                 <span class="material-symbols-outlined award-ico">workspace_premium</span>
                 <span class="award-val">2024</span>
-                <span class="award-lbl" data-i18n="page.award_michelin">Michelin Recommended</span>
+                <span class="award-lbl" data-i18n="page.award_michelin">Được Michelin Đề Xuất</span>
             </div>
             <div class="award-cell reveal">
                 <span class="material-symbols-outlined award-ico">star</span>
@@ -250,11 +243,10 @@
         </div>
     </section>
 
-    <!-- ===== FOOTER CTA ===== -->
     <div class="footer-cta reveal">
         <div class="fc-left">
-            <h3 class="fc-title">Sẵn sàng trải nghiệm<br><em>Celesté House?</em></h3>
-            <p class="fc-sub">Đặt bàn ngay hôm nay — chỗ ngồi có hạn.</p>
+            <h3 class="fc-title" data-i18n="page.footer_cta_title">Sẵn sàng trải nghiệm<br><em>Celesté House?</em></h3>
+            <p class="fc-sub" data-i18n="page.footer_cta_sub">Đặt bàn ngay hôm nay — chỗ ngồi có hạn.</p>
         </div>
         <div class="fc-btns">
             <a href="./booking.html"><button class="btn-cta-main" data-i18n="page.btn_book_now">Đặt Bàn Ngay</button></a>
