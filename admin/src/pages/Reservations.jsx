@@ -345,9 +345,38 @@ const injectStyles = () => `
   }
   .search-wrap .res-input { padding-left: 38px; }
  
+  /* ── RESPONSIVE ─────────────────────────────────────────────────────── */
+
+  /* Ẩn cột Liên hệ & Số khách trên mobile */
+  @media (max-width: 640px) {
+    .res-table th:nth-child(2),
+    .res-table td:nth-child(2),
+    .res-table th:nth-child(3),
+    .res-table td:nth-child(3),
+    .res-table th:nth-child(5),
+    .res-table td:nth-child(5) { display: none; }
+
+    .res-table th,
+    .res-table td { padding: 10px 10px; font-size: 11.5px; }
+
+    .res-modal { border-radius: 24px 24px 0 0; max-height: 95vh; margin-top: auto; }
+    .res-modal-header { padding: 18px 18px 14px; }
+    .res-modal-body { padding: 16px 18px; }
+    .res-modal-footer { padding: 12px 18px 20px; flex-direction: column-reverse; }
+    .res-modal-footer button { width: 100%; justify-content: center; }
+
+    .confirm-modal { border-radius: 20px; padding: 24px 18px; }
+  }
+
+  /* Ẩn cột Liên hệ trên tablet nhỏ */
   @media (max-width: 768px) {
     .res-table th:nth-child(3),
     .res-table td:nth-child(3) { display: none; }
+  }
+
+  /* Overlay căn bottom trên mobile */
+  @media (max-width: 640px) {
+    .res-modal-overlay { align-items: flex-end; padding: 0; }
   }
 `;
  
@@ -522,7 +551,7 @@ export default function Reservations() {
   const totalCancelled = reservations.filter(r => r.status === "CANCELLED").length;
  
   return (
-    <div className="res-page" style={{ minHeight: "100vh", background: "linear-gradient(160deg, #FDFAF4 0%, #F5EDDF 100%)", padding: "28px 24px" }}>
+    <div className="res-page" style={{ minHeight: "100vh", background: "linear-gradient(160deg, #FDFAF4 0%, #F5EDDF 100%)", padding: "clamp(14px, 3vw, 28px) clamp(12px, 3vw, 24px)" }}>
       <style>{injectStyles()}</style>
  
       {/* ── HEADER ─────────────────────────────────────────────────────────── */}
@@ -535,14 +564,14 @@ export default function Reservations() {
                 CELESTÉ HOUSE
               </span>
             </div>
-            <h1 className="serif" style={{ fontSize: 30, fontWeight: 600, color: "#2C1C0E", margin: 0, lineHeight: 1.1 }}>
+            <h1 className="serif" style={{ fontSize: "clamp(22px, 5vw, 30px)", fontWeight: 600, color: "#2C1C0E", margin: 0, lineHeight: 1.1 }}>
               Lịch Đặt Bàn
             </h1>
             <p style={{ fontSize: 12.5, color: "#9A8068", marginTop: 5 }}>
               Quản lý và theo dõi toàn bộ lịch đặt bàn của nhà hàng
             </p>
           </div>
-          <div style={{ display: "flex", gap: 10 }}>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
             <button className="res-btn-outline" onClick={() => setShowCalendar(true)}>
               <Calendar size={15} /> Xem lịch
             </button>
@@ -562,7 +591,7 @@ export default function Reservations() {
  
       {/* ── FILTER BAR ─────────────────────────────────────────────────────── */}
       <div className="res-card res-fade-in" style={{ padding: "18px 20px", marginBottom: 20, animationDelay: "0.05s" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto auto", gap: 10, alignItems: "center" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 10, alignItems: "center" }}>
           <div className="search-wrap">
             <Search size={15} className="search-icon" />
             <input
@@ -579,7 +608,6 @@ export default function Reservations() {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              style={{ width: 160 }}
               title="Từ ngày"
             />
           </div>
@@ -589,7 +617,6 @@ export default function Reservations() {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              style={{ width: 160 }}
               title="Đến ngày"
             />
           </div>
@@ -706,7 +733,7 @@ export default function Reservations() {
  
         {/* Pagination */}
         {totalPages > 0 && (
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px", borderTop: "1px solid rgba(196,154,108,0.1)", background: "rgba(196,154,108,0.02)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderTop: "1px solid rgba(196,154,108,0.1)", background: "rgba(196,154,108,0.02)", flexWrap: "wrap", gap: 8 }}>
             <span style={{ fontSize: 12, color: "#9A8068" }}>
               Hiển thị <strong style={{ color: "#5A3E20" }}>{(currentPage - 1) * itemsPerPage + 1}</strong> – <strong style={{ color: "#5A3E20" }}>{Math.min(currentPage * itemsPerPage, filteredReservations.length)}</strong> / <strong style={{ color: "#5A3E20" }}>{filteredReservations.length}</strong> lịch đặt
             </span>
@@ -774,7 +801,7 @@ export default function Reservations() {
               </div>
  
               {/* Phone + Email */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14 }}>
                 <div>
                   <label className="res-label">Số điện thoại <span style={{ color: "#C49A6C" }}>*</span></label>
                   <input
@@ -814,7 +841,7 @@ export default function Reservations() {
               <div className="divider-gold"></div>
  
               {/* Ngày + Giờ */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14 }}>
                 <div>
                   <label className="res-label">Ngày đặt <span style={{ color: "#C49A6C" }}>*</span></label>
                   <input
@@ -865,7 +892,7 @@ export default function Reservations() {
               </div>
  
               {/* Số người + Bàn */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 14 }}>
                 <div>
                   <label className="res-label">Số người <span style={{ color: "#C49A6C" }}>*</span></label>
                   <select
@@ -932,7 +959,7 @@ export default function Reservations() {
                 ? "Bạn có chắc muốn hủy lịch đặt bàn này không?"
                 : "Bạn có chắc muốn khôi phục lịch đặt bàn này không?"}
             </p>
-            <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
+            <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
               <button className="res-btn-outline" onClick={() => setConfirmModal({ open: false, id: null, type: null })}>
                 Quay lại
               </button>

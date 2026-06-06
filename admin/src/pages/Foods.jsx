@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FolderPlus, Layers, Globe, Eye, Edit2, Trash2, Sparkles, X, Utensils, Tag, Image, EyeOff } from "lucide-react";
+import { FolderPlus, Layers, Globe, Eye, Edit2, Trash2, Sparkles, X, Utensils, Tag, Image, EyeOff, Search } from "lucide-react";
 
 const API_URL = "http://localhost:8080/api/menu-items";
 const CAT_URL = "http://localhost:8080/api/categories";
@@ -18,7 +18,18 @@ export default function Foods() {
   const [formData, setFormData] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [langTab, setLangTab] = useState("vi"); // "vi" | "en"
+  const [searchQuery, setSearchQuery] = useState("");
   const fileInputRef = useRef(null);
+
+  const filteredFoods = foods.filter((food) => {
+    const q = searchQuery.toLowerCase().trim();
+    if (!q) return true;
+    return (
+      (food.nameVi && food.nameVi.toLowerCase().includes(q)) ||
+      (food.nameEn && food.nameEn.toLowerCase().includes(q)) ||
+      (food.category && (food.category.nameVi || food.category.name || "").toLowerCase().includes(q))
+    );
+  });
 
   const fetchFoods = async () => {
     try {
@@ -169,7 +180,7 @@ export default function Foods() {
   };
 
   return (
-    <div className="p-8 bg-[#FAF8F5] min-h-screen text-[#332A21] font-sans antialiased flex-1">
+    <div className="p-4 sm:p-6 lg:p-8 bg-[#FAF8F5] min-h-screen text-[#332A21] font-sans antialiased flex-1">
       
       {/* TÍCH HỢP HIỆU ỨNG ĐỘNG CHO THẺ MÓN ĂN */}
       <style>{`
@@ -196,28 +207,54 @@ export default function Foods() {
       `}</style>
 
       {/* --- PHẦN 1: BANNER TIÊU ĐỀ SANG TRỌNG --- */}
-      <div className="mb-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 pb-6 border-b border-[#EFEBE4]">
-        <div>
-          <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[#C49A6C] flex items-center gap-1.5">
-            <Sparkles size={12} className="text-[#C49A6C]" /> Tinh hoa ẩm thực thượng hạng
-          </span>
-          {/* font-medium kết hợp với tracking-wide chống thô chữ tiếng Việt */}
-          <h1 className="text-3xl font-medium text-[#1A130E] tracking-wide mt-1.5">Quản lý món ăn</h1>
+      <div className="mb-8 pb-6 border-b border-[#EFEBE4]">
+        {/* Row 1: Title + Button */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
+          <div>
+            <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[#C49A6C] flex items-center gap-1.5">
+              <Sparkles size={12} className="text-[#C49A6C]" /> Tinh hoa ẩm thực thượng hạng
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-medium text-[#1A130E] tracking-wide mt-1.5">Quản lý món ăn</h1>
+          </div>
+          <button
+            onClick={handleOpenModal}
+            className="w-full sm:w-auto bg-gradient-to-r from-[#1A130E] to-[#332A21] hover:from-[#332A21] hover:to-[#4A3E33] text-white px-5 py-3 rounded-2xl transition-all duration-300 flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider shadow-md shadow-black/10 active:scale-95"
+          >
+            <FolderPlus size={16} />
+            <span>Thêm món ăn mới</span>
+          </button>
         </div>
 
-        <button
-          onClick={handleOpenModal}
-          className="bg-gradient-to-r from-[#1A130E] to-[#332A21] hover:from-[#332A21] hover:to-[#4A3E33] text-white px-5 py-3 rounded-2xl transition-all duration-300 flex items-center gap-2 text-xs font-bold uppercase tracking-wider shadow-md shadow-black/10 active:scale-95"
-        >
-          <FolderPlus size={16} />
-          <span>Thêm món ăn mới</span>
-        </button>
+        {/* Row 2: Search bar */}
+        <div className="relative">
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A39688] pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Tìm kiếm theo tên món, danh mục..."
+            className="w-full bg-white border border-[#EFEBE4] rounded-2xl pl-11 pr-10 py-3 text-sm text-[#1A130E] font-medium placeholder-[#B5A89A] outline-none focus:border-[#E07A5F] focus:ring-4 focus:ring-[#E07A5F]/5 transition-all"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery("")}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-[#A39688] hover:text-[#1A130E] transition-colors"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+        {searchQuery && (
+          <p className="mt-2 text-xs text-[#A39688] font-medium">
+            Tìm thấy <span className="text-[#E07A5F] font-bold">{filteredFoods.length}</span> / {foods.length} món ăn
+          </p>
+        )}
       </div>
 
       {/* --- PHẦN 2: THIẾT KẾ CÁC MÓN ĂN DẠNG CARD KHỐI 3D SANG TRỌNG --- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        {foods.length > 0 ? (
-          foods.map((food, index) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-8">
+        {filteredFoods.length > 0 ? (
+          filteredFoods.map((food, index) => (
             <div
               key={food.itemId}
               style={{ animationDelay: `${index * 40}ms` }}
@@ -318,21 +355,23 @@ export default function Foods() {
             </div>
           ))
         ) : (
-          <div className="col-span-full text-center py-20 bg-white border border-dashed border-[#ECE7E0] rounded-[32px] text-[#A39688] text-sm font-light">
-            Không có dữ liệu thực đơn món ăn nào được tìm thấy.
+          <div className="col-span-full text-center py-16 sm:py-20 bg-white border border-dashed border-[#ECE7E0] rounded-[32px] text-[#A39688] text-sm font-light">
+            {searchQuery
+              ? `Không tìm thấy món ăn nào khớp với "${searchQuery}"`
+              : "Không có dữ liệu thực đơn món ăn nào được tìm thấy."}
           </div>
         )}
       </div>
 
       {/* --- PHẦN 3: MODAL LỚN FORM THÊM/SỬA SANG TRỌNG HOÀNG GIA --- */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-fade-in">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 animate-fade-in">
           <div className="absolute inset-0 bg-[#1A130E]/40 backdrop-blur-md" onClick={() => setIsModalOpen(false)}></div>
           
-          <div className="relative bg-white rounded-[40px] shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[90vh] border border-[#ECE7E0] animate-modal-scale">
+          <div className="relative bg-white rounded-[28px] sm:rounded-[40px] shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] border border-[#ECE7E0] animate-modal-scale">
             
             {/* Header Modal */}
-            <div className="flex justify-between items-center p-6 border-b border-[#EFEBE4] bg-white">
+            <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EFEBE4] bg-white">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#E07A5F]" />
                 <h2 className="text-xl font-medium text-[#1A130E] tracking-wide uppercase">
@@ -348,9 +387,9 @@ export default function Foods() {
             </div>
 
             {/* Thân Form cuộn */}
-            <div className="p-8 bg-[#FAF8F5]/60 grid grid-cols-1 lg:grid-cols-3 gap-8 overflow-y-auto custom-scrollbar">
+            <div className="p-4 sm:p-8 bg-[#FAF8F5]/60 grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8 overflow-y-auto custom-scrollbar">
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs space-y-5 relative overflow-hidden">
+                <div className="bg-white p-4 sm:p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs space-y-5 relative overflow-hidden">
                   
                   {/* Thanh Đa ngôn ngữ */}
                   <div className="flex bg-[#FAF8F5] p-1 rounded-2xl border border-[#EFEBE4] mb-4">
@@ -464,14 +503,14 @@ export default function Foods() {
                   </div>
                 </div>
 
-                <button onClick={handleSave} className="w-full lg:w-auto bg-gradient-to-r from-[#1A130E] to-[#332A21] text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:opacity-95 shadow-md active:scale-95 transition-all">
+                <button onClick={handleSave} className="w-full bg-gradient-to-r from-[#1A130E] to-[#332A21] text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:opacity-95 shadow-md active:scale-95 transition-all">
                   {editingId ? "Cập nhật thực đơn" : "Đưa vào danh sách món ăn"}
                 </button>
               </div>
 
               {/* Cột phải thông tin giá & hình ảnh */}
               <div className="lg:col-span-1 space-y-6">
-                <div className="bg-white p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs">
+                <div className="bg-white p-4 sm:p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs">
                   <h3 className="text-xs font-bold text-[#A39688] mb-4 uppercase tracking-widest border-b border-[#EFEBE4] pb-2">Định giá tài chính</h3>
                   <div className="space-y-4">
                     <div>
@@ -497,7 +536,7 @@ export default function Foods() {
                   </div>
                 </div>
 
-                <div className="bg-white p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs relative overflow-hidden">
+                <div className="bg-white p-4 sm:p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs relative overflow-hidden">
                   <h3 className="text-xs font-bold text-[#A39688] mb-4 uppercase tracking-widest border-b border-[#EFEBE4] pb-2">Tư liệu hình ảnh</h3>
                   <div 
                     className="border-2 border-dashed border-[#EFEBE4] hover:border-[#C49A6C] rounded-2xl p-6 text-center bg-[#FAF8F5] hover:bg-white cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[140px]" 
