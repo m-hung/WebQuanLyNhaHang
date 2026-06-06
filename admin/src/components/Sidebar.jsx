@@ -72,13 +72,13 @@ export default function Sidebar({ setPage, currentPage }) {
 
             {/* Lớp nền mờ khi mở Sidebar trên Mobile */}
             {isOpen && (
-                <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 md:hidden" onClick={() => setIsOpen(false)}></div>
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-[99] md:hidden" onClick={() => setIsOpen(false)}></div>
             )}
 
             {/* Nội dung Sidebar Premium Đậm Đà Hơn */}
             <aside
                 className={`
-                    fixed md:static inset-y-0 left-0 z-50
+                    fixed md:static inset-y-0 left-0 z-[100]
                     w-68 bg-gradient-to-b from-[#160E0A] to-[#1F1510] text-[#B5A89A] transform transition-all duration-300 ease-in-out
                     ${isOpen ? "translate-x-0" : "-translate-x-full"} 
                     md:translate-x-0 md:flex md:flex-col min-h-screen border-r border-[#2C211A] shadow-2xl
