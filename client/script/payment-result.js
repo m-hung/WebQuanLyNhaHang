@@ -132,11 +132,91 @@ function renderSuccess({ txnRef, transactionNo, amountFormatted, bankCode, payDa
         const homeText = currentLang === 'en' ? 'Back to Homepage' : 'Về Trang Chủ';
         const printText = currentLang === 'en' ? 'Print Confirmation' : 'In phiếu xác nhận';
 
+        window.printConfirmation = function() {
+            const printWin = window.open('', '_blank', 'width=650,height=900');
+            printWin.document.write(`
+                <!DOCTYPE html><html><head>
+                <meta charset="UTF-8">
+                <title>Phiếu Xác Nhận Đặt Bàn</title>
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+                <style>
+                    * { margin:0; padding:0; box-sizing:border-box; }
+                    body { background:#f5f0eb; font-family:'Montserrat',sans-serif; padding:40px 20px; }
+                    .card { background:white; max-width:560px; margin:0 auto; }
+                    .header { background:#1a1a1a; text-align:center; padding:36px 30px 28px; }
+                    .header h1 { font-family:'Playfair Display',serif; color:white; font-size:28px; letter-spacing:6px; font-weight:400; margin-bottom:6px; }
+                    .header p { color:#c5a880; font-size:11px; letter-spacing:3px; }
+                    .greeting { text-align:center; padding:32px 40px 20px; }
+                    .greeting .label { font-size:11px; letter-spacing:3px; color:#999; text-transform:uppercase; margin-bottom:10px; }
+                    .greeting .name { font-family:'Playfair Display',serif; font-style:italic; font-size:26px; color:#1a1a1a; margin-bottom:16px; }
+                    .greeting .msg { font-size:13px; color:#666; line-height:1.7; }
+                    .greeting .msg span { color:#c5a880; font-weight:600; }
+                    .divider { height:1px; background:linear-gradient(to right,transparent,#c5a880,transparent); margin:0 40px; }
+                    .info-block { padding:28px 40px; }
+                    .info-row { display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #f0ebe4; }
+                    .info-row:last-child { border-bottom:none; }
+                    .info-label { font-size:11px; letter-spacing:2px; color:#999; text-transform:uppercase; }
+                    .info-value { font-size:14px; font-weight:600; color:#1a1a1a; text-align:right; }
+                    .info-value.gold { color:#c5a880; font-size:16px; font-family:'Playfair Display',serif; }
+                    .deposit-block { background:#faf7f3; margin:0 30px 28px; padding:20px 24px; }
+                    .deposit-title { font-size:10px; letter-spacing:3px; color:#999; text-transform:uppercase; margin-bottom:12px; }
+                    .deposit-row { display:flex; justify-content:space-between; align-items:center; }
+                    .deposit-amount { font-family:'Playfair Display',serif; font-size:22px; color:#c5a880; }
+                    .deposit-note { font-size:10px; color:#aaa; margin-top:8px; line-height:1.6; font-style:italic; }
+                    .footer { background:#1a1a1a; text-align:center; padding:24px; }
+                    .footer p { color:#888; font-size:11px; letter-spacing:1px; line-height:1.8; }
+                    @media print { body { padding:0; background:white; } }
+                </style>
+                </head><body>
+                <div class="card">
+                    <div class="header">
+                        <h1>CELESTÉ HOUSE</h1>
+                        <p>LÊ VĂN VIỆT · QUẬN 9</p>
+                    </div>
+                    <div class="greeting">
+                        <p class="label">Kính gửi quý khách</p>
+                        <p class="name">${name}</p>
+                        <p class="msg">Lịch đặt bàn của Quý khách đã được ghi nhận thành công<br>trên hệ thống của <span>Celesté House</span>.</p>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="info-block">
+                        <div class="info-row">
+                            <span class="info-label">Vị trí bàn đặt trước</span>
+                            <span class="info-value gold">${table}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Số lượng khách</span>
+                            <span class="info-value">${localStorage.getItem('bk_guests') || '—'} Người</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Lịch hẹn</span>
+                            <span class="info-value">${localStorage.getItem('bk_datetime') || '—'}</span>
+                        </div>
+                    </div>
+                    <div class="deposit-block">
+                        <p class="deposit-title">Khoản tạm ứng (Deposit)</p>
+                        <div class="deposit-row">
+                            <span class="deposit-amount">${amountFormatted}</span>
+                            <span style="font-size:11px;color:#aaa;letter-spacing:1px">ĐÃ THANH TOÁN</span>
+                        </div>
+                        <p class="deposit-note">* Khoản đặt cọc sẽ được hoàn trả đầy đủ nếu quý khách báo hủy trước 3 giờ tại thời gian đặt.</p>
+                    </div>
+                    <div class="footer">
+                        <p>Cảm ơn Quý khách đã lựa chọn Celesté House<br>Chúng tôi rất mong được phục vụ Quý khách!</p>
+                    </div>
+                </div>
+                </body></html>
+            `);
+            printWin.document.close();
+            printWin.focus();
+            setTimeout(() => { printWin.print(); printWin.close(); }, 800);
+        };
+
         actionsEl.innerHTML = `
             <button class="btn-payment-confirm" onclick="finishBooking()">
                 ${homeText}
             </button>
-            <button class="btn-back" onclick="window.print()">
+            <button class="btn-back" onclick="printConfirmation()">
                 ⎙ ${printText}
             </button>
         `;
