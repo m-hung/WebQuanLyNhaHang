@@ -1,20 +1,20 @@
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://celestehouse.me";
 
 export const apiFetch = async (path, options = {}) => {
-    const token = sessionStorage.getItem("token");
-    const res = await fetch(`${BASE_URL}${path}`, {
-        ...options,
-        headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            ...options.headers,
-        },
-    });
+  const token = sessionStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options.headers,
+    },
+  });
 
-    if (res.status === 401) {
-        sessionStorage.clear();
-        window.location.href = "/login";
-    }
+  if (res.status === 401) {
+    sessionStorage.clear();
+    window.location.href = "/login";
+  }
 
-    return res;
+  return res;
 };
