@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   Calendar,
@@ -841,9 +842,17 @@ export default function Reservations() {
   }
  
   // ── STATS ──────────────────────────────────────────────────────────────────
-  const totalActive = reservations.filter((r) => r.status === "ACTIVE").length;
+  const now = new Date();
+  const totalActive = reservations.filter(
+    (r) =>
+      (r.status === "ACTIVE" || r.status === "PENDING") &&
+      new Date(r.reservationTime) > now,
+  ).length;
   const totalCompleted = reservations.filter(
-    (r) => r.status === "COMPLETED" || r.status === "PENDING",
+    (r) =>
+      r.status === "COMPLETED" ||
+      ((r.status === "ACTIVE" || r.status === "PENDING") &&
+        new Date(r.reservationTime) <= now),
   ).length;
   const totalCancelled = reservations.filter(
     (r) => r.status === "CANCELLED",
