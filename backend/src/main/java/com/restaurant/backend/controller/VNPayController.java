@@ -80,7 +80,7 @@ public class VNPayController {
         }
 
         // Redirect về Frontend kết quả
-        StringBuilder redirectUrl = new StringBuilder("http://127.0.0.1:5500/client/src/payment-result.html?");
+        StringBuilder redirectUrl = new StringBuilder("https://celestehouse.me/src/payment-result.html?");
         params.forEach((k, v) -> {
             try {
                 redirectUrl.append(URLEncoder.encode(k, StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(v, StandardCharsets.UTF_8)).append("&");
