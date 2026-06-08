@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Users,
   Clock,
@@ -9,7 +9,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-
+ 
 export default function DashBoard({
   invoices = [],
   onEditInvoice,
@@ -23,7 +23,37 @@ export default function DashBoard({
   const [activeInvoice, setActiveInvoice] = useState(null);
   const [activeTable, setActiveTable] = useState(null);
   const [activeReservation, setActiveReservation] = useState(null);
-
+ 
+  const autoCompleteWithData = async (data) => {
+    const now = new Date();
+    const overdueActives = data.filter(
+      (r) =>
+        (r.status === "ACTIVE" || r.status === "PENDING") &&
+        r.reservationTime &&
+        new Date(r.reservationTime) <= now,
+    );
+    if (overdueActives.length === 0) return data;
+ 
+    const results = await Promise.allSettled(
+      overdueActives.map((r) =>
+        fetch(`/api/reservations/${r.reservationId}/complete`, {
+          method: "PUT",
+        }).then((res) => (res.ok ? res.json() : null)),
+      ),
+    );
+ 
+    const completed = results
+      .filter((r) => r.status === "fulfilled" && r.value)
+      .map((r) => r.value);
+ 
+    if (completed.length === 0) return data;
+ 
+    return data.map((r) => {
+      const updated = completed.find((c) => c.reservationId === r.reservationId);
+      return updated ? updated : r;
+    });
+  };
+ 
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -31,10 +61,9 @@ export default function DashBoard({
         fetch("/api/tables"),
         fetch("/api/reservations"),
       ]);
-
+ 
       const parseSafely = async (res) => {
         if (!res.ok) {
-          // try to parse error body for debugging
           let text = "";
           try {
             text = await res.text();
@@ -44,23 +73,22 @@ export default function DashBoard({
           throw new Error(`${res.status} ${res.statusText} ${text}`);
         }
         const data = await res.json();
-        // Normalize common wrappers (data, content, items)
         if (Array.isArray(data)) return data;
         if (Array.isArray(data.data)) return data.data;
         if (Array.isArray(data.content)) return data.content;
         if (Array.isArray(data.items)) return data.items;
-        // If it's an object keyed by ids, return values
         if (data && typeof data === "object") return Object.values(data);
         return [];
       };
-
+ 
       const [tablesData, reservationsData] = await Promise.all([
         parseSafely(tablesRes),
         parseSafely(reservationsRes),
       ]);
-
+ 
       setTables(tablesData || []);
-      setReservations(reservationsData || []);
+      const updatedReservations = await autoCompleteWithData(reservationsData || []);
+      setReservations(updatedReservations);
     } catch (err) {
       console.error("Lỗi khi tải dữ liệu bàn/reservations:", err);
       setTables([]);
@@ -69,68 +97,28 @@ export default function DashBoard({
       setLoading(false);
     }
   };
-
+ 
   useEffect(() => {
     fetchData();
   }, []);
-
-  // ── AUTO-COMPLETE: tự động chuyển ACTIVE → COMPLETED khi đến giờ hẹn ───
-  const reservationsRef = useRef(reservations);
-  useEffect(() => {
-    reservationsRef.current = reservations;
-  }, [reservations]);
-
-  useEffect(() => {
-    const autoComplete = async () => {
-      const now = new Date();
-      const overdueActives = reservationsRef.current.filter(
-        (r) =>
-          r.status === "ACTIVE" &&
-          r.reservationTime &&
-          new Date(r.reservationTime) <= now,
-      );
-      if (overdueActives.length === 0) return;
-
-      const results = await Promise.allSettled(
-        overdueActives.map((r) =>
-          fetch(`/api/reservations/${r.reservationId}/complete`, {
-            method: "PUT",
-          }).then((res) => (res.ok ? res.json() : null)),
-        ),
-      );
-
-      const completed = results
-        .filter((r) => r.status === "fulfilled" && r.value)
-        .map((r) => r.value);
-
-      if (completed.length > 0) {
-        setReservations((prev) =>
-          prev.map((r) => {
-            const updated = completed.find(
-              (c) => c.reservationId === r.reservationId,
-            );
-            return updated ? updated : r;
-          }),
-        );
-      }
-    };
-
-    autoComplete();
-    const timer = setInterval(autoComplete, 30000);
-    return () => clearInterval(timer);
-  }, []);
-
+ 
+ 
+ 
   const invoiceByTableId = invoices.reduce((map, invoice) => {
     if (invoice.tableId) map[invoice.tableId] = invoice;
     return map;
   }, {});
-
+ 
   const reservationsByTableId = useMemo(() => {
+    const now = new Date();
     return reservations.reduce((map, reservation) => {
       if (
         reservation.status === "CANCELLED" ||
         reservation.status === "COMPLETED"
       )
+        return map;
+      // Bỏ qua reservation đã qua giờ (dù DB chưa cập nhật)
+      if (reservation.reservationTime && new Date(reservation.reservationTime) <= now)
         return map;
       const tableId = reservation.table?.tableId;
       if (!tableId) return map;
@@ -139,7 +127,7 @@ export default function DashBoard({
       return map;
     }, {});
   }, [reservations]);
-
+ 
   const getUpcomingReservation = (table) => {
     const now = new Date();
     const tableReservations = reservationsByTableId[table.tableId] || [];
@@ -154,7 +142,7 @@ export default function DashBoard({
       })
       .sort((a, b) => a.reservationDate - b.reservationDate)[0];
   };
-
+ 
   const getTodayReservationCount = (table) => {
     const today = new Date();
     const tableReservations = reservationsByTableId[table.tableId] || [];
@@ -169,60 +157,60 @@ export default function DashBoard({
       );
     }).length;
   };
-
+ 
   const handleCardClick = (table) => {
     const invoice = invoiceByTableId[table.tableId];
     const upcomingReservation = getUpcomingReservation(table);
     // avoid shadowing with the `isAvailable` used in render
     const canCreateNew =
       table.status === "Available" && !invoice && !upcomingReservation;
-
+ 
     if (canCreateNew) {
       onCreateNew(table.tableNumber);
       return;
     }
-
+ 
     setActiveTable(table);
     setActiveReservation(upcomingReservation || null);
-
+ 
     if (invoice) {
       setActiveInvoice(invoice);
       setModalOpen(true);
       return;
     }
-
+ 
     if (upcomingReservation) {
       setActiveInvoice(null);
       setModalOpen(true);
       return;
     }
-
+ 
     setActiveInvoice({ tableId: table.tableId, tableName: table.tableNumber });
     setModalOpen(true);
   };
-
+ 
   const closeModal = () => {
     setModalOpen(false);
     setActiveInvoice(null);
     setActiveTable(null);
     setActiveReservation(null);
   };
-
+ 
   const handleWelcomeGuest = async () => {
     if (!activeReservation) return;
-
+ 
     // Lưu ý: Đổi `activeReservation.id` thành đúng tên trường ID của bạn (ví dụ: reservationId) nếu cần
     const resId = activeReservation.id || activeReservation.reservationId;
-
+ 
     try {
       // Gọi API complete reservation
       await fetch(`/api/reservations/${resId}/complete`, {
         method: "PUT",
       });
-
+ 
       // Sau khi khách vào, bạn có thể tự động gọi hàm tạo hóa đơn mới cho bàn đó
       onCreateNew(activeTable.tableNumber);
-
+ 
       // Tải lại dữ liệu và đóng modal
       fetchData();
       closeModal();
@@ -230,18 +218,18 @@ export default function DashBoard({
       console.error("Lỗi khi đón khách:", err);
     }
   };
-
+ 
   const handleCancelReservation = async () => {
     if (!activeReservation) return;
-
+ 
     const resId = activeReservation.id || activeReservation.reservationId;
-
+ 
     try {
       // Gọi API cancel reservation
       await fetch(`/api/reservations/${resId}/cancel`, {
         method: "PUT",
       });
-
+ 
       // Tải lại dữ liệu và đóng modal
       fetchData();
       closeModal();
@@ -249,7 +237,7 @@ export default function DashBoard({
       console.error("Lỗi khi hủy đặt hẹn:", err);
     }
   };
-
+ 
   return (
     <div className="p-4 sm:p-6 lg:p-8 bg-[#FAF8F5] min-h-screen text-[#332A21] font-sans antialiased flex-1">
       <style>{`
@@ -284,7 +272,7 @@ export default function DashBoard({
           box-shadow: 0 24px 48px -12px rgba(84, 61, 39, 0.08);
         }
       `}</style>
-
+ 
       {/* --- PHẦN 1: BANNER TIÊU ĐỀ --- */}
       <div className="mb-6 sm:mb-10 flex flex-col gap-4 sm:gap-6 pb-4 sm:pb-6 border-b border-[#EFEBE4]">
         <div>
@@ -296,7 +284,7 @@ export default function DashBoard({
             Sơ đồ dịch vụ trực quan
           </h1>
         </div>
-
+ 
         {/* Legend chỉ số — cuộn ngang trên mobile nhỏ */}
         <div className="flex items-center gap-3 sm:gap-5 text-xs font-medium bg-white px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl border border-[#ECE7E0] bistro-shadow overflow-x-auto whitespace-nowrap w-fit max-w-full">
           <div className="flex items-center gap-2 flex-shrink-0">
@@ -313,7 +301,7 @@ export default function DashBoard({
           </div>
         </div>
       </div>
-
+ 
       {/* --- PHẦN 2: LƯỚI CARD BÀN --- */}
       {loading ? (
         <div className="text-center py-24 flex flex-col items-center justify-center gap-2">
@@ -333,7 +321,7 @@ export default function DashBoard({
                 !invoice &&
                 table.status === "Available" &&
                 !!upcomingReservation;
-
+ 
               let cardBg = "bg-white border-[#EFEBE4]";
               let stateText = "Sẵn sàng đón khách";
               let stateBadge = "bg-[#F4FBF7] text-[#059669] border-[#D1FAE5]";
@@ -342,7 +330,7 @@ export default function DashBoard({
               );
               let centerCircleBg = "bg-[#F4FBF7] border-[#A7F3D0]";
               let glowClass = "glow-circle-green";
-
+ 
               if (invoice) {
                 cardBg =
                   "bg-gradient-to-br from-[#FFF8F6] to-white border-[#FADCD5]";
@@ -360,7 +348,7 @@ export default function DashBoard({
                 centerCircleBg = "bg-[#E6FDF9] border-[#99F6E4]";
                 glowClass = "glow-circle-cyan";
               }
-
+ 
               const minutesLeft = upcomingReservation
                 ? Math.max(
                     0,
@@ -371,7 +359,7 @@ export default function DashBoard({
                     ),
                   )
                 : null;
-
+ 
               return (
                 <div
                   key={table.tableId}
@@ -397,7 +385,7 @@ export default function DashBoard({
                         <span>Sức chứa {table.capacity || 4} chỗ</span>
                       </p>
                     </div>
-
+ 
                     <div className="pt-1 sm:pt-2">
                       {invoice ? (
                         <p className="text-base sm:text-lg font-extrabold text-[#E07A5F] tracking-tight truncate">
@@ -420,7 +408,7 @@ export default function DashBoard({
                       )}
                     </div>
                   </div>
-
+ 
                   {/* Icon tròn — thu nhỏ trên mobile */}
                   <div
                     className={`relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-[#FAF8F5] to-white border border-[#ECE7E0] shadow-sm flex-shrink-0 transition-all duration-300 ${glowClass}`}
@@ -430,7 +418,7 @@ export default function DashBoard({
                     >
                       {iconVisual}
                     </div>
-
+ 
                     {todayReservationCount > 0 && (
                       <span className="absolute -top-1.5 -right-1.5 bg-[#1A130E] text-white text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow">
                         {todayReservationCount}
@@ -447,7 +435,7 @@ export default function DashBoard({
           )}
         </div>
       )}
-
+ 
       {/* --- PHẦN 3: MODAL THAO TÁC --- */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
@@ -455,30 +443,30 @@ export default function DashBoard({
             className="fixed inset-0 bg-[#1A130E]/40 backdrop-blur-md"
             onClick={closeModal}
           ></div>
-
+ 
           {/* Trên mobile: bottom sheet. Trên sm+: modal giữa màn hình */}
           <div className="relative bg-white rounded-t-[32px] sm:rounded-[40px] w-full sm:max-w-sm p-6 sm:p-8 shadow-2xl border border-[#ECE7E0] text-center overflow-hidden">
             {/* Drag handle chỉ hiện trên mobile */}
             <div className="w-10 h-1 bg-[#EFEBE4] rounded-full mx-auto mb-4 sm:hidden"></div>
-
+ 
             <button
               onClick={closeModal}
               className="absolute top-4 right-4 sm:top-5 sm:right-5 text-[#B5A89A] hover:text-[#1A130E] p-1.5 rounded-xl hover:bg-slate-50 transition-colors"
             >
               <X size={18} />
             </button>
-
+ 
             <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#FAF8F5] border border-[#EFEBE4] rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 text-[#C49A6C]">
               <Wine size={20} />
             </div>
-
+ 
             <h3 className="text-xl sm:text-2xl font-bold text-[#1A130E] tracking-tight">
               Bàn số {activeTable?.tableNumber || activeInvoice?.tableName}
             </h3>
             <p className="text-xs text-[#8C7E6E] mb-5 sm:mb-6 mt-1 font-medium">
               Chọn lệnh phục vụ thực khách tiếp theo
             </p>
-
+ 
             {activeReservation && !activeInvoice ? (
               <div className="space-y-3 sm:space-y-4">
                 <div className="rounded-2xl bg-[#E6FDF9] border border-[#99F6E4] p-4 text-left">
@@ -539,7 +527,7 @@ export default function DashBoard({
                 </button>
               </div>
             )}
-
+ 
             <button
               className="mt-5 sm:mt-6 text-[10px] text-[#B5A89A] hover:text-[#1A130E] block w-full text-center tracking-widest font-black uppercase transition-colors"
               onClick={closeModal}

@@ -15,7 +15,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import CalendarView from "./CalendarView";
-
+ 
 // ─── STYLE INJECTION ────────────────────────────────────────────────────────
 const injectStyles = () => `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -407,7 +407,7 @@ const injectStyles = () => `
     font-weight: 500;
     letter-spacing: 0.03em;
   }
-
+ 
   /* ── TABLE CARD SELECTOR ─────────────────────────────────────────────── */
   .table-grid {
     display: grid;
@@ -469,7 +469,7 @@ const injectStyles = () => `
     color: #B5A080;
     font-size: 12.5px;
   }
-
+ 
   .res-input[type="date"] {
     min-width: 0;
     width: 100%;
@@ -484,7 +484,7 @@ const injectStyles = () => `
     .res-table-desktop { display: block; }
     .res-mobile-list { display: none; }
   }
-
+ 
   .res-mobile-card {
     padding: 14px 16px;
     border-bottom: 1px solid rgba(196,154,108,0.1);
@@ -519,9 +519,9 @@ const injectStyles = () => `
     justify-content: space-between;
     gap: 8px;
   }
-
+ 
   /* ── RESPONSIVE ─────────────────────────────────────────────────────── */
-
+ 
   @media (max-width: 640px) {
     .res-modal {
       border-radius: 20px 20px 0 0;
@@ -534,22 +534,22 @@ const injectStyles = () => `
     .res-modal-body { padding: 14px 16px; gap: 13px; }
     .res-modal-footer { padding: 10px 16px 20px; flex-direction: column-reverse; gap: 8px; }
     .res-modal-footer button { width: 100%; justify-content: center; }
-
+ 
     .guest-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
     .guest-card { padding: 10px 4px; min-height: 56px; }
     .guest-num { font-size: 15px; }
-
+ 
     .table-grid { grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 6px; max-height: 170px; }
     .table-card { min-height: 60px; padding: 8px 4px; }
-
+ 
     .confirm-modal { border-radius: 20px; padding: 24px 16px; max-width: calc(100vw - 32px); }
   }
-
+ 
   /* Overlay căn bottom trên mobile */
   @media (max-width: 640px) {
     .res-modal-overlay { align-items: flex-end; padding: 0; }
   }
-
+ 
   .res-input, .res-select {
     max-width: 100%;
     min-width: 0;
@@ -561,7 +561,7 @@ const injectStyles = () => `
     .table-grid { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); }
   }
 `;
-
+ 
 export default function Reservations() {
   const [showCalendar, setShowCalendar] = useState(false);
   const [reservations, setReservations] = useState([]);
@@ -574,7 +574,7 @@ export default function Reservations() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [showAddModal, setShowAddModal] = useState(false);
-
+ 
   const initialForm = {
     customerName: "",
     phone: "",
@@ -584,35 +584,36 @@ export default function Reservations() {
     guestCount: "",
     tableId: "",
   };
-
+ 
   const [formData, setFormData] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const isComposing = useRef(false);
-
+ 
   const [confirmModal, setConfirmModal] = useState({
     open: false,
     id: null,
     type: null,
   });
-
+ 
   // ── FETCH ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     fetchReservations().catch(console.error);
   }, []);
-
+ 
   const fetchReservations = async () => {
     try {
       setLoading(true);
       const response = await fetch("/api/reservations");
       const data = await response.json();
-      setReservations(data);
+      const updatedData = await autoCompleteWithData(data);
+      setReservations(updatedData);
     } catch (error) {
       console.error("Lỗi lấy reservations:", error);
     } finally {
       setLoading(false);
     }
   };
-
+ 
   // ── FILTER + SEARCH ────────────────────────────────────────────────────────
   const filteredReservations = useMemo(() => {
     return reservations
@@ -640,17 +641,17 @@ export default function Reservations() {
       })
       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   }, [reservations, searchTerm, startDate, endDate]);
-
+ 
   const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
   const currentReservations = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
     return filteredReservations.slice(start, start + itemsPerPage);
   }, [filteredReservations, currentPage]);
-
+ 
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, startDate, endDate]);
-
+ 
   const formatDateTime = (dateString) => {
     if (!dateString) return "—";
     return new Intl.DateTimeFormat("vi-VN", {
@@ -661,19 +662,19 @@ export default function Reservations() {
       year: "numeric",
     }).format(new Date(dateString));
   };
-
+ 
   const handleReset = () => {
     setSearchTerm("");
     setStartDate("");
     setEndDate("");
   };
-
+ 
   const handleOpenAddModal = () => {
     setFormData(initialForm);
     setErrors({});
     setShowAddModal(true);
   };
-
+ 
   useEffect(() => {
     const fetchAvailableTables = async () => {
       try {
@@ -711,7 +712,7 @@ export default function Reservations() {
     };
     if (showAddModal) fetchAvailableTables().catch(console.error);
   }, [formData.guestCount, formData.tableId, showAddModal]);
-
+ 
   // ── SUBMIT ─────────────────────────────────────────────────────────────────
   const handleSubmitReservation = async () => {
     const newErrors = {};
@@ -739,7 +740,7 @@ export default function Reservations() {
       setErrors(newErrors);
       return;
     }
-
+ 
     try {
       setErrors({});
       setSubmitting(true);
@@ -774,58 +775,42 @@ export default function Reservations() {
       setSubmitting(false);
     }
   };
-
+ 
   // ── AUTO-COMPLETE: tự động hoàn thành khi đến giờ hẹn ────────────────────
-  const reservationsRef = useRef(reservations);
-  useEffect(() => {
-    reservationsRef.current = reservations;
-  }, [reservations]);
-
-  useEffect(() => {
-    const autoComplete = async () => {
-      const now = new Date();
-      const overdueActives = reservationsRef.current.filter(
-        (r) =>
-          r.status === "ACTIVE" &&
-          r.reservationTime &&
-          new Date(r.reservationTime) <= now,
-      );
-      if (overdueActives.length === 0) return;
-
-      const results = await Promise.allSettled(
-        overdueActives.map((r) =>
-          fetch(`/api/reservations/${r.reservationId}/complete`, {
-            method: "PUT",
-          }).then((res) => (res.ok ? res.json() : null)),
-        ),
-      );
-
-      const completed = results
-        .filter((r) => r.status === "fulfilled" && r.value)
-        .map((r) => r.value);
-
-      if (completed.length > 0) {
-        setReservations((prev) =>
-          prev.map((r) => {
-            const updated = completed.find(
-              (c) => c.reservationId === r.reservationId,
-            );
-            return updated ? updated : r;
-          }),
-        );
-      }
-    };
-
-    // Chạy ngay khi component mount, rồi mỗi 30 giây
-    autoComplete();
-    const timer = setInterval(autoComplete, 30000);
-    return () => clearInterval(timer);
-  }, []); // chỉ mount 1 lần, dùng ref để đọc data mới nhất
-
+  const autoCompleteWithData = async (data) => {
+    const now = new Date();
+    const overdueActives = data.filter(
+      (r) =>
+        (r.status === "ACTIVE" || r.status === "PENDING") &&
+        r.reservationTime &&
+        new Date(r.reservationTime) <= now,
+    );
+    if (overdueActives.length === 0) return data;
+ 
+    const results = await Promise.allSettled(
+      overdueActives.map((r) =>
+        fetch(`/api/reservations/${r.reservationId}/complete`, {
+          method: "PUT",
+        }).then((res) => (res.ok ? res.json() : null)),
+      ),
+    );
+ 
+    const completed = results
+      .filter((r) => r.status === "fulfilled" && r.value)
+      .map((r) => r.value);
+ 
+    if (completed.length === 0) return data;
+ 
+    return data.map((r) => {
+      const updated = completed.find((c) => c.reservationId === r.reservationId);
+      return updated ? updated : r;
+    });
+  };
+ 
   // ── CONFIRM ACTION ─────────────────────────────────────────────────────────
   const openConfirmModal = (id, type) =>
     setConfirmModal({ open: true, id, type });
-
+ 
   const handleConfirmAction = async () => {
     const { id, type } = confirmModal;
     try {
@@ -845,7 +830,7 @@ export default function Reservations() {
       setConfirmModal({ open: false, id: null, type: null });
     }
   };
-
+ 
   if (showCalendar) {
     return (
       <CalendarView
@@ -854,7 +839,7 @@ export default function Reservations() {
       />
     );
   }
-
+ 
   // ── STATS ──────────────────────────────────────────────────────────────────
   const totalActive = reservations.filter((r) => r.status === "ACTIVE").length;
   const totalCompleted = reservations.filter(
@@ -863,7 +848,7 @@ export default function Reservations() {
   const totalCancelled = reservations.filter(
     (r) => r.status === "CANCELLED",
   ).length;
-
+ 
   return (
     <div
       className="res-page"
@@ -874,7 +859,7 @@ export default function Reservations() {
       }}
     >
       <style>{injectStyles()}</style>
-
+ 
       {/* ── HEADER ─────────────────────────────────────────────────────────── */}
       <div className="res-fade-in" style={{ marginBottom: 28 }}>
         <div
@@ -940,7 +925,7 @@ export default function Reservations() {
             </button>
           </div>
         </div>
-
+ 
         {/* Stats chips */}
         <div
           style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}
@@ -997,7 +982,7 @@ export default function Reservations() {
           </span>
         </div>
       </div>
-
+ 
       {/* ── FILTER BAR ─────────────────────────────────────────────────────── */}
       <div
         className="res-card res-fade-in"
@@ -1048,7 +1033,7 @@ export default function Reservations() {
           </button>
         </div>
       </div>
-
+ 
       {/* ── TABLE ──────────────────────────────────────────────────────────── */}
       <div
         className="res-card res-fade-in"
@@ -1261,16 +1246,7 @@ export default function Reservations() {
                       ) : item.status === "COMPLETED" ? (
                         <span className="action-btn-done">Hoàn thành</span>
                       ) : new Date(item.reservationTime) <= new Date() ? (
-                        <span
-                          className="action-btn-done"
-                          style={{
-                            background: "rgba(196,154,108,0.08)",
-                            color: "#9A6B30",
-                            border: "1px solid rgba(196,154,108,0.2)",
-                          }}
-                        >
-                          Đang xử lý...
-                        </span>
+                        <span className="action-btn-done">Hoàn thành</span>
                       ) : (
                         <button
                           className="action-btn-cancel"
@@ -1288,7 +1264,7 @@ export default function Reservations() {
             </tbody>
           </table>
         </div>
-
+ 
         {/* Mobile card list */}
         <div className="res-mobile-list">
           {loading ? (
@@ -1423,16 +1399,7 @@ export default function Reservations() {
                     ) : item.status === "COMPLETED" ? null : new Date(
                         item.reservationTime,
                       ) <= new Date() ? (
-                      <span
-                        className="action-btn-done"
-                        style={{
-                          background: "rgba(196,154,108,0.08)",
-                          color: "#9A6B30",
-                          border: "1px solid rgba(196,154,108,0.2)",
-                        }}
-                      >
-                        Đang xử lý...
-                      </span>
+                      <span className="action-btn-done">Hoàn thành</span>
                     ) : (
                       <button
                         className="action-btn-cancel"
@@ -1449,7 +1416,7 @@ export default function Reservations() {
             ))
           )}
         </div>
-
+ 
         {/* Pagination */}
         {totalPages > 0 && (
           <div
@@ -1514,7 +1481,7 @@ export default function Reservations() {
           </div>
         )}
       </div>
-
+ 
       {/* ── ADD MODAL ──────────────────────────────────────────────────────── */}
       {showAddModal && (
         <div className="res-modal-overlay">
@@ -1556,7 +1523,7 @@ export default function Reservations() {
                 <X size={15} />
               </button>
             </div>
-
+ 
             <div className="res-modal-body">
               {/* Tên khách */}
               <div>
@@ -1606,7 +1573,7 @@ export default function Reservations() {
                   <p className="res-error">{errors.customerName}</p>
                 )}
               </div>
-
+ 
               {/* Phone + Email */}
               <div
                 style={{
@@ -1669,9 +1636,9 @@ export default function Reservations() {
                   {errors.email && <p className="res-error">{errors.email}</p>}
                 </div>
               </div>
-
+ 
               <div className="divider-gold"></div>
-
+ 
               {/* Ngày + Giờ */}
               <div
                 style={{
@@ -1789,7 +1756,7 @@ export default function Reservations() {
                   )}
                 </div>
               </div>
-
+ 
               {/* Số người */}
               <div>
                 <label className="res-label">
@@ -1824,7 +1791,7 @@ export default function Reservations() {
                   </p>
                 )}
               </div>
-
+ 
               {/* Chọn bàn */}
               <div>
                 <label className="res-label">
@@ -1915,7 +1882,7 @@ export default function Reservations() {
                 )}
               </div>
             </div>
-
+ 
             <div className="res-modal-footer">
               <button
                 className="res-btn-outline"
@@ -1939,7 +1906,7 @@ export default function Reservations() {
           </div>
         </div>
       )}
-
+ 
       {/* ── CONFIRM MODAL ──────────────────────────────────────────────────── */}
       {confirmModal.open && (
         <div className="res-modal-overlay">
