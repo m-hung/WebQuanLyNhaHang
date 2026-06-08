@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, X, Users, Shield, UserCheck, UserX, Crown, ChevronRight, ChevronDown } from "lucide-react";
- 
+import {
+  Plus,
+  Edit,
+  Trash2,
+  X,
+  Users,
+  Shield,
+  UserCheck,
+  UserX,
+  Crown,
+  ChevronRight,
+  ChevronDown,
+} from "lucide-react";
+
 // ─── STYLE INJECTION ────────────────────────────────────────────────────────
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap');
@@ -533,473 +545,767 @@ const styles = `
   .um-confirm-ok.warn   { background: var(--gold); }
   .um-confirm-ok:hover  { opacity: 0.85; }
 `;
- 
+
 // ─── HELPERS ────────────────────────────────────────────────────────────────
 function getInitials(name) {
-    if (!name) return "?";
-    return name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  if (!name) return "?";
+  return name
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 }
 function roleLabel(role) {
-    return { ADMIN: "Admin", MANAGER: "Manager", CASHIER: "Cashier", STAFF: "Staff" }[role] || role;
+  return (
+    { ADMIN: "Admin", MANAGER: "Manager", CASHIER: "Cashier", STAFF: "Staff" }[
+      role
+    ] || role
+  );
 }
 function roleClass(role) {
-    return { ADMIN: "admin", MANAGER: "manager" }[role] || "other";
+  return { ADMIN: "admin", MANAGER: "manager" }[role] || "other";
 }
- 
+
 // ─── COMPONENT ──────────────────────────────────────────────────────────────
 export default function UserManagement() {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [showModal, setShowModal] = useState(false);
-    const [editingUser, setEditingUser] = useState(null);
-    const [formData, setFormData] = useState({
-        username: "", password: "", confirmPassword: "", oldPassword: "",
-        fullName: "", role: "", status: "ACTIVE"
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    confirmPassword: "",
+    oldPassword: "",
+    fullName: "",
+    role: "",
+    status: "ACTIVE",
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+  });
+
+  const currentUserRole = sessionStorage.getItem("role") || "STAFF";
+  const currentUsername = sessionStorage.getItem("username") || "";
+  const token = sessionStorage.getItem("token");
+
+  // ── BACKEND (unchanged) ──────────────────────────────────────────────────
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch("/api/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setUsers(data);
+    } catch (err) {
+      console.error("Lỗi lấy users:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleOpenAdd = () => {
+    setMessage({ type: "", text: "" });
+    setEditingUser(null);
+    setFormData({
+      username: "",
+      password: "",
+      confirmPassword: "",
+      oldPassword: "",
+      fullName: "",
+      role: "",
+      status: "",
     });
-    const [submitting, setSubmitting] = useState(false);
-    const [message, setMessage] = useState({ type: "", text: "" });
-    const [confirmDialog, setConfirmDialog] = useState({
-        isOpen: false, title: "", message: "", onConfirm: null
+    setShowModal(true);
+  };
+
+  const handleOpenEdit = (user) => {
+    setMessage({ type: "", text: "" });
+    setEditingUser(user);
+    setFormData({
+      username: user.username,
+      password: "",
+      oldPassword: "",
+      fullName: user.fullName || "",
+      role: user.role,
+      status: user.status,
     });
- 
-    const currentUserRole = sessionStorage.getItem("role") || "STAFF";
-    const currentUsername = sessionStorage.getItem("username") || "";
-    const token = sessionStorage.getItem("token");
- 
-    // ── BACKEND (unchanged) ──────────────────────────────────────────────────
-    const fetchUsers = async () => {
-        try {
-            setLoading(true);
-            const res = await fetch("http://localhost:8080/api/users", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            const data = await res.json();
-            setUsers(data);
-        } catch (err) { console.error("Lỗi lấy users:", err); }
-        finally { setLoading(false); }
-    };
- 
-    useEffect(() => { fetchUsers(); }, []);
- 
-    const handleOpenAdd = () => {
-        setMessage({ type: "", text: "" });
-        setEditingUser(null);
-        setFormData({ username: "", password: "", confirmPassword: "", oldPassword: "", fullName: "", role: "", status: "" });
-        setShowModal(true);
-    };
- 
-    const handleOpenEdit = (user) => {
-        setMessage({ type: "", text: "" });
-        setEditingUser(user);
-        setFormData({ username: user.username, password: "", oldPassword: "", fullName: user.fullName || "", role: user.role, status: user.status });
-        setShowModal(true);
-    };
- 
-    const handleSubmit = async () => {
-        if (!formData.username || (!editingUser && !formData.password) || !formData.fullName) {
-            setMessage({ type: "error", text: "Vui lòng nhập đầy đủ thông tin!" }); return;
-        }
-        if (!editingUser && formData.password !== formData.confirmPassword) {
-            setMessage({ type: "error", text: "Mật khẩu xác nhận không khớp!" }); return;
-        }
-        if (!formData.role) { setMessage({ type: "error", text: "Vui lòng chọn phân quyền!" }); return; }
-        if (!formData.status) { setMessage({ type: "error", text: "Vui lòng chọn trạng thái!" }); return; }
- 
-        setSubmitting(true);
-        try {
-            const url = editingUser
-                ? `http://localhost:8080/api/users/${editingUser.userId}`
-                : "http://localhost:8080/api/users";
-            const method = editingUser ? "PUT" : "POST";
-            const body = { ...formData };
-            if (editingUser && !formData.password) delete body.password;
- 
-            const res = await fetch(url, {
-                method,
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify(body)
-            });
- 
-            if (res.ok) {
-                fetchUsers();
-                setMessage({ type: "success", text: editingUser ? "Cập nhật tài khoản thành công!" : "Thêm tài khoản thành công!" });
-                setTimeout(() => setShowModal(false), 1000);
-            } else {
-                const errorMsg = await res.text();
-                setMessage({ type: "error", text: errorMsg || "Lưu thất bại!" });
-            }
-        } catch (err) { console.error("Lỗi:", err); }
-        finally { setSubmitting(false); }
-    };
- 
-    const handleDelete = (userId) => {
-        setConfirmDialog({
-            isOpen: true, title: "Xác nhận xóa?",
-            message: "Bạn có chắc chắn muốn xóa tài khoản này không?",
-            onConfirm: async () => {
-                try {
-                    await fetch(`http://localhost:8080/api/users/${userId}`, {
-                        method: "DELETE", headers: { Authorization: `Bearer ${token}` }
-                    });
-                    fetchUsers();
-                } catch (err) { console.error("Lỗi xóa:", err); }
-            }
+    setShowModal(true);
+  };
+
+  const handleSubmit = async () => {
+    if (
+      !formData.username ||
+      (!editingUser && !formData.password) ||
+      !formData.fullName
+    ) {
+      setMessage({ type: "error", text: "Vui lòng nhập đầy đủ thông tin!" });
+      return;
+    }
+    if (!editingUser && formData.password !== formData.confirmPassword) {
+      setMessage({ type: "error", text: "Mật khẩu xác nhận không khớp!" });
+      return;
+    }
+    if (!formData.role) {
+      setMessage({ type: "error", text: "Vui lòng chọn phân quyền!" });
+      return;
+    }
+    if (!formData.status) {
+      setMessage({ type: "error", text: "Vui lòng chọn trạng thái!" });
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const url = editingUser
+        ? `/api/users/${editingUser.userId}`
+        : "/api/users";
+      const method = editingUser ? "PUT" : "POST";
+      const body = { ...formData };
+      if (editingUser && !formData.password) delete body.password;
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        fetchUsers();
+        setMessage({
+          type: "success",
+          text: editingUser
+            ? "Cập nhật tài khoản thành công!"
+            : "Thêm tài khoản thành công!",
         });
-    };
- 
-    const handleToggleStatus = async (user) => {
-        if (user.role === "ADMIN") return;
-        const newStatus = user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
-        setConfirmDialog({
-            isOpen: true,
-            title: newStatus === "INACTIVE" ? "Khóa tài khoản?" : "Mở khóa tài khoản?",
-            message: newStatus === "INACTIVE"
-                ? `Bạn có chắc muốn khóa tài khoản "${user.username}" không?`
-                : `Bạn có chắc muốn mở khóa tài khoản "${user.username}" không?`,
-            onConfirm: async () => {
-                try {
-                    await fetch(`http://localhost:8080/api/users/${user.userId}`, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                        body: JSON.stringify({ ...user, password: undefined, status: newStatus })
-                    });
-                    fetchUsers();
-                    setMessage({ type: "success", text: newStatus === "INACTIVE" ? "Đã khóa tài khoản thành công!" : "Đã mở khóa tài khoản thành công!" });
-                } catch (err) {
-                    console.error("Lỗi:", err);
-                    setMessage({ type: "error", text: "Có lỗi xảy ra khi cập nhật trạng thái!" });
-                }
-            }
-        });
-    };
-    // ── END BACKEND ──────────────────────────────────────────────────────────
- 
-    // computed stats
-    const visibleUsers = currentUserRole === "ADMIN" ? users
-        : currentUserRole === "MANAGER" ? users.filter(u => u.role !== "ADMIN")
-        : users.filter(u => u.username === currentUsername);
- 
-    const sortedUsers = [...visibleUsers].sort((a, b) => {
-        if (a.username === currentUsername) return -1;
-        if (b.username === currentUsername) return 1;
-        return 0;
+        setTimeout(() => setShowModal(false), 1000);
+      } else {
+        const errorMsg = await res.text();
+        setMessage({ type: "error", text: errorMsg || "Lưu thất bại!" });
+      }
+    } catch (err) {
+      console.error("Lỗi:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = (userId) => {
+    setConfirmDialog({
+      isOpen: true,
+      title: "Xác nhận xóa?",
+      message: "Bạn có chắc chắn muốn xóa tài khoản này không?",
+      onConfirm: async () => {
+        try {
+          await fetch(`/api/users/${userId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          fetchUsers();
+        } catch (err) {
+          console.error("Lỗi xóa:", err);
+        }
+      },
     });
- 
-    const totalActive = visibleUsers.filter(u => u.status === "ACTIVE").length;
-    const totalInactive = visibleUsers.filter(u => u.status === "INACTIVE").length;
- 
-    // ── RENDER ──────────────────────────────────────────────────────────────
-    return (
-        <div className="um-root">
-            <style>{styles}</style>
-            <div className="um-page">
- 
-                {/* HEADER */}
-                <div className="um-header">
-                    <div className="um-header-left">
-                        <span className="um-eyebrow">Hệ thống quản lý · Celeste House</span>
-                        <h1 className="um-title">Quản lý tài khoản</h1>
-                        <p className="um-subtitle">Phân quyền và điều hành nhân sự hệ thống</p>
-                    </div>
-                    {currentUserRole === "ADMIN" && (
-                        <button className="um-add-btn" onClick={handleOpenAdd}>
-                            <Plus size={14} /> Thêm tài khoản
-                        </button>
-                    )}
-                </div>
- 
-                {/* STATS */}
-                <div className="um-stats">
-                    <div className="um-stat">
-                        <div className="um-stat-icon"><Users size={16} /></div>
-                        <div>
-                            <div className="um-stat-num">{visibleUsers.length}</div>
-                            <div className="um-stat-label">Tổng tài khoản</div>
-                        </div>
-                    </div>
-                    <div className="um-stat">
-                        <div className="um-stat-icon" style={{ background: "#ECFAF2", color: "#4A7C59" }}><UserCheck size={16} /></div>
-                        <div>
-                            <div className="um-stat-num">{totalActive}</div>
-                            <div className="um-stat-label">Đang hoạt động</div>
-                        </div>
-                    </div>
-                    <div className="um-stat">
-                        <div className="um-stat-icon" style={{ background: "#F5ECEC", color: "#8B3A3A" }}><UserX size={16} /></div>
-                        <div>
-                            <div className="um-stat-num">{totalInactive}</div>
-                            <div className="um-stat-label">Đã khóa</div>
-                        </div>
-                    </div>
-                    <div className="um-stat">
-                        <div className="um-stat-icon"><Shield size={16} /></div>
-                        <div>
-                            <div className="um-stat-num">{visibleUsers.filter(u => u.role === "MANAGER").length}</div>
-                            <div className="um-stat-label">Quản lý</div>
-                        </div>
-                    </div>
-                    <div className="um-stat">
-                        <div className="um-stat-icon" style={{ background: "#EEF2EE", color: "#4A6B50" }}><UserCheck size={16} /></div>
-                        <div>
-                            <div className="um-stat-num">{visibleUsers.filter(u => u.role === "CASHIER").length}</div>
-                            <div className="um-stat-label">Thu ngân</div>
-                        </div>
-                    </div>
-                </div>
- 
-                {/* TABLE */}
-                <div className="um-table-wrap">
-                    <table className="um-table">
-                        <thead>
-                            <tr>
-                                <th>Nhân viên</th>
-                                <th>Username</th>
-                                <th className="center">Phân quyền</th>
-                                <th className="center">Trạng thái</th>
-                                <th className="center">Ngày tạo</th>
-                                <th className="center">Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr><td colSpan="6"><div className="um-empty"><span className="um-empty-icon">✦</span>Đang tải dữ liệu...</div></td></tr>
-                            ) : sortedUsers.length === 0 ? (
-                                <tr><td colSpan="6"><div className="um-empty"><span className="um-empty-icon">✦</span>Không có dữ liệu</div></td></tr>
-                            ) : sortedUsers.map(user => (
-                                <tr key={user.userId} className={user.status === "INACTIVE" ? "inactive" : ""}>
-                                    <td>
-                                        <div className="um-avatar-cell">
-                                            <div className={`um-avatar ${user.role === "ADMIN" ? "admin" : ""}`}>
-                                                {user.role === "ADMIN" ? <Crown size={14} /> : getInitials(user.fullName)}
-                                            </div>
-                                            <div>
-                                                <div className="um-fullname">{user.fullName || "—"}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span style={{ fontSize: "0.82rem", color: "var(--muted)", fontFamily: "monospace", letterSpacing: "0.04em" }}>
-                                            {user.username}
-                                        </span>
-                                    </td>
-                                    <td className="center">
-                                        <span className={`um-role ${roleClass(user.role)}`}>
-                                            {roleLabel(user.role)}
-                                        </span>
-                                    </td>
-                                    <td className="center">
-                                        {user.role === "ADMIN" ? (
-                                            <span className="um-status-btn active" style={{ cursor: "default" }}>
-                                                <span className="um-status-dot" />
-                                                Hoạt động
-                                            </span>
-                                        ) : (
-                                            <button
-                                                className={`um-status-btn ${user.status === "ACTIVE" ? "active" : "inactive"}`}
-                                                onClick={() => handleToggleStatus(user)}
-                                                disabled={currentUserRole !== "ADMIN"}
-                                            >
-                                                <span className="um-status-dot" />
-                                                {user.status === "ACTIVE" ? "Hoạt động" : "Đã khóa"}
-                                            </button>
-                                        )}
-                                    </td>
-                                    <td className="center">
-                                        <span className="um-date">
-                                            {user.createdAt ? new Date(user.createdAt).toLocaleDateString("vi-VN") : "—"}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div className="um-actions">
-                                            {(currentUserRole === "ADMIN" || user.username === currentUsername) && (
-                                                <button className="um-action-btn edit" onClick={() => handleOpenEdit(user)} title="Chỉnh sửa">
-                                                    <Edit size={14} />
-                                                </button>
-                                            )}
-                                            {currentUserRole === "ADMIN" && user.role !== "ADMIN" && (
-                                                <button className="um-action-btn del" onClick={() => handleDelete(user.userId)} title="Xóa">
-                                                    <Trash2 size={14} />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
- 
-                {/* ── MODAL ── */}
-                {showModal && (
-                    <div className="um-overlay">
-                        <div className="um-modal">
-                            <div className="um-modal-head">
-                                <div>
-                                    <div className="um-modal-title-eyebrow">✦ Celeste House · Hệ thống</div>
-                                    <div className="um-modal-title">
-                                        {editingUser ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
-                                    </div>
-                                </div>
-                                <button className="um-modal-close" onClick={() => setShowModal(false)}><X size={16} /></button>
-                            </div>
- 
-                            <div className="um-modal-body">
-                                {message.text && (
-                                    <div className={`um-alert ${message.type}`}>{message.text}</div>
-                                )}
- 
-                                {/* Họ tên */}
-                                <div className="um-field">
-                                    <label>Họ và tên <span>*</span></label>
-                                    <input type="text" className="um-input" value={formData.fullName}
-                                        onChange={e => setFormData({ ...formData, fullName: e.target.value })}
-                                        disabled={currentUserRole !== "ADMIN"}
-                                        placeholder="Nhập họ và tên..." />
-                                </div>
- 
-                                {/* Username */}
-                                <div className="um-field">
-                                    <label>Username <span>*</span></label>
-                                    <input type="text" className="um-input" value={formData.username}
-                                        onChange={e => setFormData({ ...formData, username: e.target.value })}
-                                        disabled={!!editingUser}
-                                        autoComplete="off"
-                                        placeholder="Nhập username..." />
-                                </div>
- 
-                                {/* Password blocks (unchanged logic) */}
-                                {!editingUser ? (
-                                    <div className="um-field-row">
-                                        <div className="um-field">
-                                            <label>Mật khẩu <span>*</span></label>
-                                            <input type="password" className="um-input" value={formData.password}
-                                                onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                                autoComplete="new-password" placeholder="Nhập mật khẩu..." />
-                                        </div>
-                                        <div className="um-field">
-                                            <label>Xác nhận mật khẩu <span>*</span></label>
-                                            <input type="password" className="um-input" value={formData.confirmPassword}
-                                                onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                                autoComplete="new-password" placeholder="Nhập lại mật khẩu..." />
-                                        </div>
-                                    </div>
-                                ) : editingUser.username === currentUsername ? (
-                                    <div className="um-field-row">
-                                        <div className="um-field">
-                                            <label>Mật khẩu cũ</label>
-                                            <input type="password" className="um-input" value={formData.oldPassword}
-                                                onChange={e => setFormData({ ...formData, oldPassword: e.target.value })}
-                                                autoComplete="new-password" placeholder="Nhập mật khẩu cũ..." />
-                                        </div>
-                                        <div className="um-field">
-                                            <label>Mật khẩu mới</label>
-                                            <input type="password" className="um-input" value={formData.password}
-                                                onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                                autoComplete="new-password" placeholder="Để trống nếu không đổi" />
-                                        </div>
-                                    </div>
-                                ) : currentUserRole === "ADMIN" ? (
-                                    <div className="um-reset-panel">
-                                        <div>
-                                            <div className="um-reset-label">Khôi phục mật khẩu</div>
-                                            <div className="um-reset-sub">Mật khẩu sẽ bị đặt lại thành <strong>123456</strong></div>
-                                        </div>
-                                        <button type="button" className="um-reset-btn"
-                                            onClick={() => {
-                                                setConfirmDialog({
-                                                    isOpen: true,
-                                                    title: "Khôi phục mật khẩu?",
-                                                    message: `Bạn có chắc muốn reset mật khẩu của ${editingUser.username} về 123456?`,
-                                                    onConfirm: async () => {
-                                                        try {
-                                                            const res = await fetch(`http://localhost:8080/api/users/${editingUser.userId}/reset-password`, {
-                                                                method: "PUT", headers: { Authorization: `Bearer ${token}` }
-                                                            });
-                                                            if (res.ok) {
-                                                                setMessage({ type: "success", text: "Đã reset mật khẩu về 123456" });
-                                                                setTimeout(() => setShowModal(false), 1000);
-                                                            } else {
-                                                                setMessage({ type: "error", text: "Lỗi khi reset mật khẩu!" });
-                                                            }
-                                                        } catch (err) { console.error(err); }
-                                                    }
-                                                });
-                                            }}>
-                                            Reset ngay
-                                        </button>
-                                    </div>
-                                ) : null}
- 
-                                {/* Role + Status */}
-                                <div className="um-field-row">
-                                    <div className="um-field">
-                                        <label>Phân quyền</label>
-                                        <div className="um-select-wrap">
-                                        <select className="um-select" value={formData.role}
-                                            onChange={e => setFormData({ ...formData, role: e.target.value })}
-                                            disabled={currentUserRole !== "ADMIN" || editingUser?.role === "ADMIN"}>
-                                            <option value="" disabled hidden>-- Chọn role --</option>
-                                            {editingUser?.role === "ADMIN" && <option value="ADMIN">ADMIN</option>}
-                                            <option value="MANAGER">MANAGER</option>
-                                            <option value="CASHIER">CASHIER</option>
-                                        </select>
-                                        <span className="um-select-arrow"><ChevronDown size={14} /></span>
-                                        </div>
-                                    </div>
-                                    <div className="um-field">
-                                        <label>Trạng thái</label>
-                                        <div className="um-select-wrap">
-                                        <select className="um-select" value={formData.status}
-                                            onChange={e => setFormData({ ...formData, status: e.target.value })}
-                                            disabled={currentUserRole !== "ADMIN" || editingUser?.role === "ADMIN"}>
-                                            <option value="" disabled hidden>-- Chọn trạng thái --</option>
-                                            <option value="ACTIVE">Hoạt động</option>
-                                            <option value="INACTIVE">Khóa</option>
-                                        </select>
-                                        <span className="um-select-arrow"><ChevronDown size={14} /></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
- 
-                            <div className="um-modal-foot">
-                                <button className="um-btn-cancel" onClick={() => setShowModal(false)}>Hủy bỏ</button>
-                                <button className="um-btn-save" onClick={handleSubmit} disabled={submitting}>
-                                    {submitting ? "Đang lưu..." : editingUser ? "Cập nhật" : "Thêm mới"}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
- 
-                {/* ── CONFIRM DIALOG ── */}
-                {confirmDialog.isOpen && (
-                    <div className="um-overlay" style={{ zIndex: 60 }}>
-                        <div className="um-confirm">
-                            <span className="um-confirm-icon">
-                                {confirmDialog.title.toLowerCase().includes("xóa") ? "🗑️" : "⚠️"}
-                            </span>
-                            <div className="um-confirm-title">{confirmDialog.title}</div>
-                            <div className="um-confirm-msg">{confirmDialog.message}</div>
-                            <div className="um-confirm-btns">
-                                <button className="um-confirm-cancel"
-                                    onClick={() => setConfirmDialog({ isOpen: false, title: "", message: "", onConfirm: null })}>
-                                    Hủy bỏ
-                                </button>
-                                <button
-                                    className={`um-confirm-ok ${confirmDialog.title.toLowerCase().includes("xóa") ? "danger" : "warn"}`}
-                                    onClick={() => {
-                                        confirmDialog.onConfirm();
-                                        setConfirmDialog({ isOpen: false, title: "", message: "", onConfirm: null });
-                                    }}>
-                                    Xác nhận
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
- 
-            </div>
+  };
+
+  const handleToggleStatus = async (user) => {
+    if (user.role === "ADMIN") return;
+    const newStatus = user.status === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+    setConfirmDialog({
+      isOpen: true,
+      title:
+        newStatus === "INACTIVE" ? "Khóa tài khoản?" : "Mở khóa tài khoản?",
+      message:
+        newStatus === "INACTIVE"
+          ? `Bạn có chắc muốn khóa tài khoản "${user.username}" không?`
+          : `Bạn có chắc muốn mở khóa tài khoản "${user.username}" không?`,
+      onConfirm: async () => {
+        try {
+          await fetch(`/api/users/${user.userId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              ...user,
+              password: undefined,
+              status: newStatus,
+            }),
+          });
+          fetchUsers();
+          setMessage({
+            type: "success",
+            text:
+              newStatus === "INACTIVE"
+                ? "Đã khóa tài khoản thành công!"
+                : "Đã mở khóa tài khoản thành công!",
+          });
+        } catch (err) {
+          console.error("Lỗi:", err);
+          setMessage({
+            type: "error",
+            text: "Có lỗi xảy ra khi cập nhật trạng thái!",
+          });
+        }
+      },
+    });
+  };
+  // ── END BACKEND ──────────────────────────────────────────────────────────
+
+  // computed stats
+  const visibleUsers =
+    currentUserRole === "ADMIN"
+      ? users
+      : currentUserRole === "MANAGER"
+        ? users.filter((u) => u.role !== "ADMIN")
+        : users.filter((u) => u.username === currentUsername);
+
+  const sortedUsers = [...visibleUsers].sort((a, b) => {
+    if (a.username === currentUsername) return -1;
+    if (b.username === currentUsername) return 1;
+    return 0;
+  });
+
+  const totalActive = visibleUsers.filter((u) => u.status === "ACTIVE").length;
+  const totalInactive = visibleUsers.filter(
+    (u) => u.status === "INACTIVE",
+  ).length;
+
+  // ── RENDER ──────────────────────────────────────────────────────────────
+  return (
+    <div className="um-root">
+      <style>{styles}</style>
+      <div className="um-page">
+        {/* HEADER */}
+        <div className="um-header">
+          <div className="um-header-left">
+            <span className="um-eyebrow">Hệ thống quản lý · Celeste House</span>
+            <h1 className="um-title">Quản lý tài khoản</h1>
+            <p className="um-subtitle">
+              Phân quyền và điều hành nhân sự hệ thống
+            </p>
+          </div>
+          {currentUserRole === "ADMIN" && (
+            <button className="um-add-btn" onClick={handleOpenAdd}>
+              <Plus size={14} /> Thêm tài khoản
+            </button>
+          )}
         </div>
-    );
+
+        {/* STATS */}
+        <div className="um-stats">
+          <div className="um-stat">
+            <div className="um-stat-icon">
+              <Users size={16} />
+            </div>
+            <div>
+              <div className="um-stat-num">{visibleUsers.length}</div>
+              <div className="um-stat-label">Tổng tài khoản</div>
+            </div>
+          </div>
+          <div className="um-stat">
+            <div
+              className="um-stat-icon"
+              style={{ background: "#ECFAF2", color: "#4A7C59" }}
+            >
+              <UserCheck size={16} />
+            </div>
+            <div>
+              <div className="um-stat-num">{totalActive}</div>
+              <div className="um-stat-label">Đang hoạt động</div>
+            </div>
+          </div>
+          <div className="um-stat">
+            <div
+              className="um-stat-icon"
+              style={{ background: "#F5ECEC", color: "#8B3A3A" }}
+            >
+              <UserX size={16} />
+            </div>
+            <div>
+              <div className="um-stat-num">{totalInactive}</div>
+              <div className="um-stat-label">Đã khóa</div>
+            </div>
+          </div>
+          <div className="um-stat">
+            <div className="um-stat-icon">
+              <Shield size={16} />
+            </div>
+            <div>
+              <div className="um-stat-num">
+                {visibleUsers.filter((u) => u.role === "MANAGER").length}
+              </div>
+              <div className="um-stat-label">Quản lý</div>
+            </div>
+          </div>
+          <div className="um-stat">
+            <div
+              className="um-stat-icon"
+              style={{ background: "#EEF2EE", color: "#4A6B50" }}
+            >
+              <UserCheck size={16} />
+            </div>
+            <div>
+              <div className="um-stat-num">
+                {visibleUsers.filter((u) => u.role === "CASHIER").length}
+              </div>
+              <div className="um-stat-label">Thu ngân</div>
+            </div>
+          </div>
+        </div>
+
+        {/* TABLE */}
+        <div className="um-table-wrap">
+          <table className="um-table">
+            <thead>
+              <tr>
+                <th>Nhân viên</th>
+                <th>Username</th>
+                <th className="center">Phân quyền</th>
+                <th className="center">Trạng thái</th>
+                <th className="center">Ngày tạo</th>
+                <th className="center">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan="6">
+                    <div className="um-empty">
+                      <span className="um-empty-icon">✦</span>Đang tải dữ
+                      liệu...
+                    </div>
+                  </td>
+                </tr>
+              ) : sortedUsers.length === 0 ? (
+                <tr>
+                  <td colSpan="6">
+                    <div className="um-empty">
+                      <span className="um-empty-icon">✦</span>Không có dữ liệu
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                sortedUsers.map((user) => (
+                  <tr
+                    key={user.userId}
+                    className={user.status === "INACTIVE" ? "inactive" : ""}
+                  >
+                    <td>
+                      <div className="um-avatar-cell">
+                        <div
+                          className={`um-avatar ${user.role === "ADMIN" ? "admin" : ""}`}
+                        >
+                          {user.role === "ADMIN" ? (
+                            <Crown size={14} />
+                          ) : (
+                            getInitials(user.fullName)
+                          )}
+                        </div>
+                        <div>
+                          <div className="um-fullname">
+                            {user.fullName || "—"}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span
+                        style={{
+                          fontSize: "0.82rem",
+                          color: "var(--muted)",
+                          fontFamily: "monospace",
+                          letterSpacing: "0.04em",
+                        }}
+                      >
+                        {user.username}
+                      </span>
+                    </td>
+                    <td className="center">
+                      <span className={`um-role ${roleClass(user.role)}`}>
+                        {roleLabel(user.role)}
+                      </span>
+                    </td>
+                    <td className="center">
+                      {user.role === "ADMIN" ? (
+                        <span
+                          className="um-status-btn active"
+                          style={{ cursor: "default" }}
+                        >
+                          <span className="um-status-dot" />
+                          Hoạt động
+                        </span>
+                      ) : (
+                        <button
+                          className={`um-status-btn ${user.status === "ACTIVE" ? "active" : "inactive"}`}
+                          onClick={() => handleToggleStatus(user)}
+                          disabled={currentUserRole !== "ADMIN"}
+                        >
+                          <span className="um-status-dot" />
+                          {user.status === "ACTIVE" ? "Hoạt động" : "Đã khóa"}
+                        </button>
+                      )}
+                    </td>
+                    <td className="center">
+                      <span className="um-date">
+                        {user.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString("vi-VN")
+                          : "—"}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="um-actions">
+                        {(currentUserRole === "ADMIN" ||
+                          user.username === currentUsername) && (
+                          <button
+                            className="um-action-btn edit"
+                            onClick={() => handleOpenEdit(user)}
+                            title="Chỉnh sửa"
+                          >
+                            <Edit size={14} />
+                          </button>
+                        )}
+                        {currentUserRole === "ADMIN" &&
+                          user.role !== "ADMIN" && (
+                            <button
+                              className="um-action-btn del"
+                              onClick={() => handleDelete(user.userId)}
+                              title="Xóa"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* ── MODAL ── */}
+        {showModal && (
+          <div className="um-overlay">
+            <div className="um-modal">
+              <div className="um-modal-head">
+                <div>
+                  <div className="um-modal-title-eyebrow">
+                    ✦ Celeste House · Hệ thống
+                  </div>
+                  <div className="um-modal-title">
+                    {editingUser ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
+                  </div>
+                </div>
+                <button
+                  className="um-modal-close"
+                  onClick={() => setShowModal(false)}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="um-modal-body">
+                {message.text && (
+                  <div className={`um-alert ${message.type}`}>
+                    {message.text}
+                  </div>
+                )}
+
+                {/* Họ tên */}
+                <div className="um-field">
+                  <label>
+                    Họ và tên <span>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="um-input"
+                    value={formData.fullName}
+                    onChange={(e) =>
+                      setFormData({ ...formData, fullName: e.target.value })
+                    }
+                    disabled={currentUserRole !== "ADMIN"}
+                    placeholder="Nhập họ và tên..."
+                  />
+                </div>
+
+                {/* Username */}
+                <div className="um-field">
+                  <label>
+                    Username <span>*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="um-input"
+                    value={formData.username}
+                    onChange={(e) =>
+                      setFormData({ ...formData, username: e.target.value })
+                    }
+                    disabled={!!editingUser}
+                    autoComplete="off"
+                    placeholder="Nhập username..."
+                  />
+                </div>
+
+                {/* Password blocks (unchanged logic) */}
+                {!editingUser ? (
+                  <div className="um-field-row">
+                    <div className="um-field">
+                      <label>
+                        Mật khẩu <span>*</span>
+                      </label>
+                      <input
+                        type="password"
+                        className="um-input"
+                        value={formData.password}
+                        onChange={(e) =>
+                          setFormData({ ...formData, password: e.target.value })
+                        }
+                        autoComplete="new-password"
+                        placeholder="Nhập mật khẩu..."
+                      />
+                    </div>
+                    <div className="um-field">
+                      <label>
+                        Xác nhận mật khẩu <span>*</span>
+                      </label>
+                      <input
+                        type="password"
+                        className="um-input"
+                        value={formData.confirmPassword}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            confirmPassword: e.target.value,
+                          })
+                        }
+                        autoComplete="new-password"
+                        placeholder="Nhập lại mật khẩu..."
+                      />
+                    </div>
+                  </div>
+                ) : editingUser.username === currentUsername ? (
+                  <div className="um-field-row">
+                    <div className="um-field">
+                      <label>Mật khẩu cũ</label>
+                      <input
+                        type="password"
+                        className="um-input"
+                        value={formData.oldPassword}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            oldPassword: e.target.value,
+                          })
+                        }
+                        autoComplete="new-password"
+                        placeholder="Nhập mật khẩu cũ..."
+                      />
+                    </div>
+                    <div className="um-field">
+                      <label>Mật khẩu mới</label>
+                      <input
+                        type="password"
+                        className="um-input"
+                        value={formData.password}
+                        onChange={(e) =>
+                          setFormData({ ...formData, password: e.target.value })
+                        }
+                        autoComplete="new-password"
+                        placeholder="Để trống nếu không đổi"
+                      />
+                    </div>
+                  </div>
+                ) : currentUserRole === "ADMIN" ? (
+                  <div className="um-reset-panel">
+                    <div>
+                      <div className="um-reset-label">Khôi phục mật khẩu</div>
+                      <div className="um-reset-sub">
+                        Mật khẩu sẽ bị đặt lại thành <strong>123456</strong>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="um-reset-btn"
+                      onClick={() => {
+                        setConfirmDialog({
+                          isOpen: true,
+                          title: "Khôi phục mật khẩu?",
+                          message: `Bạn có chắc muốn reset mật khẩu của ${editingUser.username} về 123456?`,
+                          onConfirm: async () => {
+                            try {
+                              const res = await fetch(
+                                `/api/users/${editingUser.userId}/reset-password`,
+                                {
+                                  method: "PUT",
+                                  headers: { Authorization: `Bearer ${token}` },
+                                },
+                              );
+                              if (res.ok) {
+                                setMessage({
+                                  type: "success",
+                                  text: "Đã reset mật khẩu về 123456",
+                                });
+                                setTimeout(() => setShowModal(false), 1000);
+                              } else {
+                                setMessage({
+                                  type: "error",
+                                  text: "Lỗi khi reset mật khẩu!",
+                                });
+                              }
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          },
+                        });
+                      }}
+                    >
+                      Reset ngay
+                    </button>
+                  </div>
+                ) : null}
+
+                {/* Role + Status */}
+                <div className="um-field-row">
+                  <div className="um-field">
+                    <label>Phân quyền</label>
+                    <div className="um-select-wrap">
+                      <select
+                        className="um-select"
+                        value={formData.role}
+                        onChange={(e) =>
+                          setFormData({ ...formData, role: e.target.value })
+                        }
+                        disabled={
+                          currentUserRole !== "ADMIN" ||
+                          editingUser?.role === "ADMIN"
+                        }
+                      >
+                        <option value="" disabled hidden>
+                          -- Chọn role --
+                        </option>
+                        {editingUser?.role === "ADMIN" && (
+                          <option value="ADMIN">ADMIN</option>
+                        )}
+                        <option value="MANAGER">MANAGER</option>
+                        <option value="CASHIER">CASHIER</option>
+                      </select>
+                      <span className="um-select-arrow">
+                        <ChevronDown size={14} />
+                      </span>
+                    </div>
+                  </div>
+                  <div className="um-field">
+                    <label>Trạng thái</label>
+                    <div className="um-select-wrap">
+                      <select
+                        className="um-select"
+                        value={formData.status}
+                        onChange={(e) =>
+                          setFormData({ ...formData, status: e.target.value })
+                        }
+                        disabled={
+                          currentUserRole !== "ADMIN" ||
+                          editingUser?.role === "ADMIN"
+                        }
+                      >
+                        <option value="" disabled hidden>
+                          -- Chọn trạng thái --
+                        </option>
+                        <option value="ACTIVE">Hoạt động</option>
+                        <option value="INACTIVE">Khóa</option>
+                      </select>
+                      <span className="um-select-arrow">
+                        <ChevronDown size={14} />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="um-modal-foot">
+                <button
+                  className="um-btn-cancel"
+                  onClick={() => setShowModal(false)}
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  className="um-btn-save"
+                  onClick={handleSubmit}
+                  disabled={submitting}
+                >
+                  {submitting
+                    ? "Đang lưu..."
+                    : editingUser
+                      ? "Cập nhật"
+                      : "Thêm mới"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── CONFIRM DIALOG ── */}
+        {confirmDialog.isOpen && (
+          <div className="um-overlay" style={{ zIndex: 60 }}>
+            <div className="um-confirm">
+              <span className="um-confirm-icon">
+                {confirmDialog.title.toLowerCase().includes("xóa")
+                  ? "🗑️"
+                  : "⚠️"}
+              </span>
+              <div className="um-confirm-title">{confirmDialog.title}</div>
+              <div className="um-confirm-msg">{confirmDialog.message}</div>
+              <div className="um-confirm-btns">
+                <button
+                  className="um-confirm-cancel"
+                  onClick={() =>
+                    setConfirmDialog({
+                      isOpen: false,
+                      title: "",
+                      message: "",
+                      onConfirm: null,
+                    })
+                  }
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  className={`um-confirm-ok ${confirmDialog.title.toLowerCase().includes("xóa") ? "danger" : "warn"}`}
+                  onClick={() => {
+                    confirmDialog.onConfirm();
+                    setConfirmDialog({
+                      isOpen: false,
+                      title: "",
+                      message: "",
+                      onConfirm: null,
+                    });
+                  }}
+                >
+                  Xác nhận
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

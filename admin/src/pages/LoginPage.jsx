@@ -1,53 +1,53 @@
 import React, { useState } from "react";
 import { login, forgotPassword } from "../services/auth";
- 
+
 export default function LoginPage() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
- 
-    const [forgotMode, setForgotMode] = useState(false);
-    const [forgotEmail, setForgotEmail] = useState("");
-    const [forgotLoading, setForgotLoading] = useState(false);
-    const [forgotMessage, setForgotMessage] = useState("");
- 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError("");
-        setLoading(true);
-        try {
-            const data = await login(username, password);
-            sessionStorage.setItem("token", data.token);
-            sessionStorage.setItem("role", data.role);
-            sessionStorage.setItem("fullName", data.fullName);
-            sessionStorage.setItem("username", username);
-            window.location.href = "/";
-        } catch (err) {
-            setError(err.message || "Đăng nhập thất bại!");
-        } finally {
-            setLoading(false);
-        }
-    };
- 
-    const handleForgotSubmit = async (e) => {
-        e.preventDefault();
-        setForgotMessage("");
-        setError("");
-        setForgotLoading(true);
-        try {
-            const res = await forgotPassword(forgotEmail);
-            setForgotMessage(res.message || "Đã gửi yêu cầu. Hãy kiểm tra email.");
-        } catch (err) {
-            setError(err.message || "Email không tồn tại trong hệ thống!");
-        } finally {
-            setForgotLoading(false);
-        }
-    };
- 
-    return (
-        <>
-            <style>{`
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [forgotMode, setForgotMode] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotMessage, setForgotMessage] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const data = await login(username, password);
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("role", data.role);
+      sessionStorage.setItem("fullName", data.fullName);
+      sessionStorage.setItem("username", username);
+      window.location.href = "/admin/";
+    } catch (err) {
+      setError(err.message || "Đăng nhập thất bại!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    setForgotMessage("");
+    setError("");
+    setForgotLoading(true);
+    try {
+      const res = await forgotPassword(forgotEmail);
+      setForgotMessage(res.message || "Đã gửi yêu cầu. Hãy kiểm tra email.");
+    } catch (err) {
+      setError(err.message || "Email không tồn tại trong hệ thống!");
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
  
                 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -398,168 +398,212 @@ export default function LoginPage() {
                     .lg-right::before { display: none; }
                 }
             `}</style>
- 
-            <div className="lg-root">
- 
-                {/* ── LEFT: Brand Panel ── */}
-                <div className="lg-left">
-                    <div className="lg-left-bg"></div>
-                    <div className="lg-grain"></div>
- 
-                    {/* Decorative rings */}
-                    <div className="lg-deco-ring" style={{ width: 500, height: 500, top: -120, right: -180 }}></div>
-                    <div className="lg-deco-ring" style={{ width: 300, height: 300, top: 40, right: -40 }}></div>
-                    <div className="lg-deco-ring" style={{ width: 200, height: 200, bottom: 140, left: -60 }}></div>
- 
-                    {/* Floating ornament top */}
-                    <div style={{ position: "absolute", top: 52, left: 56, zIndex: 2 }}>
-                        <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 13, color: "rgba(196,154,108,0.6)", letterSpacing: "0.3em", textTransform: "uppercase" }}>
-                            CELESTÉ
-                        </span>
-                    </div>
- 
-                    {/* Bottom content */}
-                    <div className="lg-left-content">
-                        <p className="lg-brand-label">
-                            <span className="lg-brand-dot"></span>
-                            Hệ thống quản lý nhà hàng
-                        </p>
- 
-                        <h2 className="lg-brand-name">
-                            Chào mừng<br />
-                            trở lại, <em>Chef</em>
-                        </h2>
- 
-                        <div className="lg-divider-line"></div>
- 
-                        <p className="lg-brand-desc">
-                            Quản lý bàn ăn, đặt chỗ và hóa đơn — mọi thứ trong tầm tay bạn, tinh tế và hiệu quả.
-                        </p>
- 
-                        <div className="lg-stats">
-                            <div className="lg-stat">
-                                <span className="lg-stat-num">24/7</span>
-                                <span className="lg-stat-label">Vận hành</span>
-                            </div>
-                            <div style={{ width: 1, background: "rgba(196,154,108,0.2)", alignSelf: "stretch" }}></div>
-                            <div className="lg-stat">
-                                <span className="lg-stat-num">Lê Văn Việt</span>
-                                <span className="lg-stat-label">Quận 9 · TP.HCM</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
- 
-                {/* ── RIGHT: Form Panel ── */}
-                <div className="lg-right">
-                    <div className="lg-form-wrap">
- 
-                        <p className="lg-form-eyebrow">✦ {forgotMode ? "Khôi phục tài khoản" : "Xác thực nhân viên"}</p>
-                        <h1 className="lg-form-title">
-                            {forgotMode ? "Quên mật khẩu?" : "Đăng nhập"}
-                        </h1>
-                        <p className="lg-form-sub">
-                            {forgotMode
-                                ? "Nhập email để nhận link khôi phục"
-                                : "Nhập thông tin để tiếp tục làm việc"}
-                        </p>
- 
-                        {/* Thông báo lỗi */}
-                        {error && (
-                            <div className="lg-error">
-                                <span style={{ fontSize: 15 }}>⚠</span>
-                                {error}
-                            </div>
-                        )}
- 
-                        {/* Thông báo thành công */}
-                        {forgotMessage && (
-                            <div className="lg-success">✓ {forgotMessage}</div>
-                        )}
- 
-                        {/* FORM ĐĂNG NHẬP */}
-                        {!forgotMode && (
-                            <form onSubmit={handleSubmit}>
-                                <div className="lg-field">
-                                    <label className="lg-label">Tên đăng nhập</label>
-                                    <input
-                                        type="text"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        autoComplete="off"
-                                        className="lg-input"
-                                        placeholder="Nhập username..."
-                                        required
-                                    />
-                                </div>
-                                <div className="lg-field">
-                                    <label className="lg-label">Mật khẩu</label>
-                                    <input
-                                        type="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        autoComplete="new-password"
-                                        className="lg-input"
-                                        placeholder="••••••••"
-                                        required
-                                    />
-                                </div>
-                                <button type="submit" disabled={loading} className="lg-btn-primary">
-                                    {loading ? "Đang xác thực..." : "Đăng nhập →"}
-                                </button>
-                            </form>
-                        )}
- 
-                        {/* FORM QUÊN MẬT KHẨU */}
-                        {forgotMode && (
-                            <form onSubmit={handleForgotSubmit}>
-                                <div className="lg-notice">
-                                    Tính năng này chỉ dành cho tài khoản <strong>Quản trị (Admin)</strong>.<br />
-                                    Nhân viên vui lòng liên hệ trực tiếp Admin để được cấp lại mật khẩu.
-                                </div>
-                                <div className="lg-field">
-                                    <label className="lg-label">Địa chỉ Email</label>
-                                    <input
-                                        type="email"
-                                        value={forgotEmail}
-                                        onChange={(e) => setForgotEmail(e.target.value)}
-                                        autoComplete="off"
-                                        className="lg-input"
-                                        placeholder="admin@gmail.com"
-                                        required
-                                    />
-                                </div>
-                                <button type="submit" disabled={forgotLoading} className="lg-btn-forgot">
-                                    {forgotLoading ? "Đang gửi..." : "Gửi link khôi phục →"}
-                                </button>
-                            </form>
-                        )}
- 
-                        <div className="lg-sep">✦</div>
- 
-                        {/* Switch mode */}
-                        <div className="lg-switch">
-                            {!forgotMode ? (
-                                <button
-                                    type="button"
-                                    className="lg-switch-btn"
-                                    onClick={() => { setForgotMode(true); setForgotEmail(""); setForgotMessage(""); setError(""); }}
-                                >
-                                    Quên mật khẩu?
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="lg-switch-btn"
-                                    onClick={() => { setForgotMode(false); setForgotMessage(""); setError(""); }}
-                                >
-                                    ← Quay lại đăng nhập
-                                </button>
-                            )}
-                        </div>
-                    </div>
-                </div>
+
+      <div className="lg-root">
+        {/* ── LEFT: Brand Panel ── */}
+        <div className="lg-left">
+          <div className="lg-left-bg"></div>
+          <div className="lg-grain"></div>
+
+          {/* Decorative rings */}
+          <div
+            className="lg-deco-ring"
+            style={{ width: 500, height: 500, top: -120, right: -180 }}
+          ></div>
+          <div
+            className="lg-deco-ring"
+            style={{ width: 300, height: 300, top: 40, right: -40 }}
+          ></div>
+          <div
+            className="lg-deco-ring"
+            style={{ width: 200, height: 200, bottom: 140, left: -60 }}
+          ></div>
+
+          {/* Floating ornament top */}
+          <div style={{ position: "absolute", top: 52, left: 56, zIndex: 2 }}>
+            <span
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: 13,
+                color: "rgba(196,154,108,0.6)",
+                letterSpacing: "0.3em",
+                textTransform: "uppercase",
+              }}
+            >
+              CELESTÉ
+            </span>
+          </div>
+
+          {/* Bottom content */}
+          <div className="lg-left-content">
+            <p className="lg-brand-label">
+              <span className="lg-brand-dot"></span>
+              Hệ thống quản lý nhà hàng
+            </p>
+
+            <h2 className="lg-brand-name">
+              Chào mừng
+              <br />
+              trở lại, <em>Chef</em>
+            </h2>
+
+            <div className="lg-divider-line"></div>
+
+            <p className="lg-brand-desc">
+              Quản lý bàn ăn, đặt chỗ và hóa đơn — mọi thứ trong tầm tay bạn,
+              tinh tế và hiệu quả.
+            </p>
+
+            <div className="lg-stats">
+              <div className="lg-stat">
+                <span className="lg-stat-num">24/7</span>
+                <span className="lg-stat-label">Vận hành</span>
+              </div>
+              <div
+                style={{
+                  width: 1,
+                  background: "rgba(196,154,108,0.2)",
+                  alignSelf: "stretch",
+                }}
+              ></div>
+              <div className="lg-stat">
+                <span className="lg-stat-num">Lê Văn Việt</span>
+                <span className="lg-stat-label">Quận 9 · TP.HCM</span>
+              </div>
             </div>
-        </>
-    );
+          </div>
+        </div>
+
+        {/* ── RIGHT: Form Panel ── */}
+        <div className="lg-right">
+          <div className="lg-form-wrap">
+            <p className="lg-form-eyebrow">
+              ✦ {forgotMode ? "Khôi phục tài khoản" : "Xác thực nhân viên"}
+            </p>
+            <h1 className="lg-form-title">
+              {forgotMode ? "Quên mật khẩu?" : "Đăng nhập"}
+            </h1>
+            <p className="lg-form-sub">
+              {forgotMode
+                ? "Nhập email để nhận link khôi phục"
+                : "Nhập thông tin để tiếp tục làm việc"}
+            </p>
+
+            {/* Thông báo lỗi */}
+            {error && (
+              <div className="lg-error">
+                <span style={{ fontSize: 15 }}>⚠</span>
+                {error}
+              </div>
+            )}
+
+            {/* Thông báo thành công */}
+            {forgotMessage && (
+              <div className="lg-success">✓ {forgotMessage}</div>
+            )}
+
+            {/* FORM ĐĂNG NHẬP */}
+            {!forgotMode && (
+              <form onSubmit={handleSubmit}>
+                <div className="lg-field">
+                  <label className="lg-label">Tên đăng nhập</label>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    autoComplete="off"
+                    className="lg-input"
+                    placeholder="Nhập username..."
+                    required
+                  />
+                </div>
+                <div className="lg-field">
+                  <label className="lg-label">Mật khẩu</label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="new-password"
+                    className="lg-input"
+                    placeholder="••••••••"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="lg-btn-primary"
+                >
+                  {loading ? "Đang xác thực..." : "Đăng nhập →"}
+                </button>
+              </form>
+            )}
+
+            {/* FORM QUÊN MẬT KHẨU */}
+            {forgotMode && (
+              <form onSubmit={handleForgotSubmit}>
+                <div className="lg-notice">
+                  Tính năng này chỉ dành cho tài khoản{" "}
+                  <strong>Quản trị (Admin)</strong>.<br />
+                  Nhân viên vui lòng liên hệ trực tiếp Admin để được cấp lại mật
+                  khẩu.
+                </div>
+                <div className="lg-field">
+                  <label className="lg-label">Địa chỉ Email</label>
+                  <input
+                    type="email"
+                    value={forgotEmail}
+                    onChange={(e) => setForgotEmail(e.target.value)}
+                    autoComplete="off"
+                    className="lg-input"
+                    placeholder="admin@gmail.com"
+                    required
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={forgotLoading}
+                  className="lg-btn-forgot"
+                >
+                  {forgotLoading ? "Đang gửi..." : "Gửi link khôi phục →"}
+                </button>
+              </form>
+            )}
+
+            <div className="lg-sep">✦</div>
+
+            {/* Switch mode */}
+            <div className="lg-switch">
+              {!forgotMode ? (
+                <button
+                  type="button"
+                  className="lg-switch-btn"
+                  onClick={() => {
+                    setForgotMode(true);
+                    setForgotEmail("");
+                    setForgotMessage("");
+                    setError("");
+                  }}
+                >
+                  Quên mật khẩu?
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="lg-switch-btn"
+                  onClick={() => {
+                    setForgotMode(false);
+                    setForgotMessage("");
+                    setError("");
+                  }}
+                >
+                  ← Quay lại đăng nhập
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }

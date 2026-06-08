@@ -1,4 +1,4 @@
-const BASE_URL = "https://celestehouse.me";
+const BASE_URL = "";
 
 export const apiFetch = async (path, options = {}) => {
   const token = sessionStorage.getItem("token");
@@ -13,7 +13,7 @@ export const apiFetch = async (path, options = {}) => {
 
   if (res.status === 401) {
     sessionStorage.clear();
-    window.location.href = "/login";
+    window.location.href = "/admin";
   }
 
   return res;

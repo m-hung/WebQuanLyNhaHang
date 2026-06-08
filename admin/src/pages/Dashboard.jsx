@@ -28,8 +28,8 @@ export default function DashBoard({
     setLoading(true);
     try {
       const [tablesRes, reservationsRes] = await Promise.all([
-        fetch("http://localhost:8080/api/tables"),
-        fetch("http://localhost:8080/api/reservations"),
+        fetch("/api/tables"),
+        fetch("/api/reservations"),
       ]);
 
       const parseSafely = async (res) => {
@@ -37,10 +37,10 @@ export default function DashBoard({
           // try to parse error body for debugging
           let text = "";
           try {
-              text = await res.text();
-            } catch {
-              /* ignore */
-            }
+            text = await res.text();
+          } catch {
+            /* ignore */
+          }
           throw new Error(`${res.status} ${res.statusText} ${text}`);
         }
         const data = await res.json();
@@ -168,7 +168,7 @@ export default function DashBoard({
 
     try {
       // Gọi API complete reservation
-      await fetch(`http://localhost:8080/api/reservations/${resId}/complete`, {
+      await fetch(`/api/reservations/${resId}/complete`, {
         method: "PUT",
       });
 
@@ -190,7 +190,7 @@ export default function DashBoard({
 
     try {
       // Gọi API cancel reservation
-      await fetch(`http://localhost:8080/api/reservations/${resId}/cancel`, {
+      await fetch(`/api/reservations/${resId}/cancel`, {
         method: "PUT",
       });
 

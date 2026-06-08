@@ -26,7 +26,7 @@ export default function App() {
 
   // Tự động tải hóa đơn "Đang phục vụ" khi mở web hoặc F5
   useEffect(() => {
-    fetch("http://localhost:8080/api/orders")
+    fetch("/api/orders")
       .then((res) => res.json())
       .then((data) => {
         setAllOrders(data);
@@ -158,55 +158,55 @@ export default function App() {
   // ... (giữ nguyên phần khai báo state và useEffect ở trên của bạn)
 
   return (
-      <BrowserRouter>
-        <Routes>
-          {/* Route đăng nhập không cần bảo vệ */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
+    <BrowserRouter>
+      <Routes>
+        {/* Route đăng nhập không cần bảo vệ */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
-          {/* Mọi route khác (/*) sẽ được bọc bởi ProtectedRoute */}
-          <Route
-              path="/*"
-              element={
-                <ProtectedRoute>
-                  {/* Bê nguyên khối giao diện cũ của bạn vào đây */}
-                  <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-                    <Sidebar setPage={setPage} />
-                    <main className="flex-1 p-4 md:p-8 overflow-auto">
-                      {renderPage()}
-                    </main>
+        {/* Mọi route khác (/*) sẽ được bọc bởi ProtectedRoute */}
+        <Route
+          path="/*"
+          element={
+            <ProtectedRoute>
+              {/* Bê nguyên khối giao diện cũ của bạn vào đây */}
+              <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
+                <Sidebar setPage={setPage} />
+                <main className="flex-1 p-4 md:p-8 overflow-auto">
+                  {renderPage()}
+                </main>
 
-                    {/* Thông báo Toast */}
-                    {toastMessage && (
-                        <div className="fixed top-4 right-4 z-50 bg-[#63b365] text-white px-4 py-3 rounded shadow-lg flex items-center gap-3 animate-fade-in-down">
-                          <div className="bg-white/20 rounded-full p-1">
-                            <svg
-                                className="w-5 h-5 text-white"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                              <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="3"
-                                  d="M5 13l4 4L19 7"
-                              ></path>
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="font-bold text-sm leading-tight">
-                              Thông báo
-                            </p>
-                            <p className="text-sm">{toastMessage}</p>
-                          </div>
-                        </div>
-                    )}
+                {/* Thông báo Toast */}
+                {toastMessage && (
+                  <div className="fixed top-4 right-4 z-50 bg-[#63b365] text-white px-4 py-3 rounded shadow-lg flex items-center gap-3 animate-fade-in-down">
+                    <div className="bg-white/20 rounded-full p-1">
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="3"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm leading-tight">
+                        Thông báo
+                      </p>
+                      <p className="text-sm">{toastMessage}</p>
+                    </div>
                   </div>
-                </ProtectedRoute>
-              }
-          />
-        </Routes>
-      </BrowserRouter>
+                )}
+              </div>
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }

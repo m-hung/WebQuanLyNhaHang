@@ -1,14 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FolderPlus, Layers, Globe, Eye, Edit2, Trash2, Sparkles, X, Utensils, Tag, Image, EyeOff, Search } from "lucide-react";
+import {
+  FolderPlus,
+  Layers,
+  Globe,
+  Eye,
+  Edit2,
+  Trash2,
+  Sparkles,
+  X,
+  Utensils,
+  Tag,
+  Image,
+  EyeOff,
+  Search,
+} from "lucide-react";
 
-const API_URL = "http://localhost:8080/api/menu-items";
-const CAT_URL = "http://localhost:8080/api/categories";
+const API_URL = "/api/menu-items";
+const CAT_URL = "/api/categories";
 
 const emptyForm = {
-  nameVi: "", nameEn: "",
-  descriptionVi: "", descriptionEn: "",
-  isAvailable: true, category: null,
-  price: "", discount: "", imageUrl: ""
+  nameVi: "",
+  nameEn: "",
+  descriptionVi: "",
+  descriptionEn: "",
+  isAvailable: true,
+  category: null,
+  price: "",
+  discount: "",
+  imageUrl: "",
 };
 
 export default function Foods() {
@@ -27,7 +46,10 @@ export default function Foods() {
     return (
       (food.nameVi && food.nameVi.toLowerCase().includes(q)) ||
       (food.nameEn && food.nameEn.toLowerCase().includes(q)) ||
-      (food.category && (food.category.nameVi || food.category.name || "").toLowerCase().includes(q))
+      (food.category &&
+        (food.category.nameVi || food.category.name || "")
+          .toLowerCase()
+          .includes(q))
     );
   });
 
@@ -45,7 +67,7 @@ export default function Foods() {
     try {
       const res = await fetch(CAT_URL);
       const data = await res.json();
-      setCategories(data.filter(c => c.active));
+      setCategories(data.filter((c) => c.active));
     } catch (e) {
       console.error("Lỗi load danh mục:", e);
     }
@@ -73,7 +95,7 @@ export default function Foods() {
       category: food.category || null,
       price: food.price ? String(food.price) : "",
       discount: food.discount ? String(food.discount) : "",
-      imageUrl: food.imageUrl || ""
+      imageUrl: food.imageUrl || "",
     });
     setEditingId(food.itemId);
     setLangTab("vi");
@@ -91,24 +113,40 @@ export default function Foods() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result;
-        setFormData(prev => ({ ...prev, imageUrl: base64String }));
+        setFormData((prev) => ({ ...prev, imageUrl: base64String }));
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const blockInvalidChar = (e) => ['e', 'E', '-', '+'].includes(e.key) && e.preventDefault();
+  const blockInvalidChar = (e) =>
+    ["e", "E", "-", "+"].includes(e.key) && e.preventDefault();
 
   const handleSave = async () => {
-    if (!formData.nameVi.trim()) { alert("Vui lòng nhập tên món ăn (Tiếng Việt)"); return; }
-    if (!formData.nameEn.trim()) { alert("Please enter item name (English)"); return; }
-    if (!formData.price) { alert("Vui lòng nhập giá món ăn"); return; }
+    if (!formData.nameVi.trim()) {
+      alert("Vui lòng nhập tên món ăn (Tiếng Việt)");
+      return;
+    }
+    if (!formData.nameEn.trim()) {
+      alert("Please enter item name (English)");
+      return;
+    }
+    if (!formData.price) {
+      alert("Vui lòng nhập giá món ăn");
+      return;
+    }
 
     const priceNum = parseFloat(formData.price) || 0;
     const discountNum = parseFloat(formData.discount) || 0;
 
-    if (priceNum < 0 || discountNum < 0) { alert("Giá tiền không được để số âm!"); return; }
-    if (discountNum > priceNum) { alert("Giá giảm không được lớn hơn giá niêm yết!"); return; }
+    if (priceNum < 0 || discountNum < 0) {
+      alert("Giá tiền không được để số âm!");
+      return;
+    }
+    if (discountNum > priceNum) {
+      alert("Giá giảm không được lớn hơn giá niêm yết!");
+      return;
+    }
 
     const payload = {
       nameVi: formData.nameVi.trim(),
@@ -119,7 +157,9 @@ export default function Foods() {
       discount: discountNum,
       imageUrl: formData.imageUrl,
       isAvailable: formData.isAvailable,
-      category: formData.category ? { categoryId: formData.category.categoryId } : null
+      category: formData.category
+        ? { categoryId: formData.category.categoryId }
+        : null,
     };
 
     const method = editingId ? "PUT" : "POST";
@@ -129,7 +169,7 @@ export default function Foods() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
         setIsModalOpen(false);
@@ -165,13 +205,13 @@ export default function Foods() {
       discount: food.discount,
       imageUrl: food.imageUrl,
       isAvailable: !food.isAvailable,
-      category: food.category ? { categoryId: food.category.categoryId } : null
+      category: food.category ? { categoryId: food.category.categoryId } : null,
     };
     try {
       await fetch(`${API_URL}/${food.itemId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
       fetchFoods();
     } catch (e) {
@@ -181,7 +221,6 @@ export default function Foods() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 bg-[#FAF8F5] min-h-screen text-[#332A21] font-sans antialiased flex-1">
-      
       {/* TÍCH HỢP HIỆU ỨNG ĐỘNG CHO THẺ MÓN ĂN */}
       <style>{`
         @keyframes foodSlideIn {
@@ -212,9 +251,12 @@ export default function Foods() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-5">
           <div>
             <span className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[#C49A6C] flex items-center gap-1.5">
-              <Sparkles size={12} className="text-[#C49A6C]" /> Tinh hoa ẩm thực thượng hạng
+              <Sparkles size={12} className="text-[#C49A6C]" /> Tinh hoa ẩm thực
+              thượng hạng
             </span>
-            <h1 className="text-2xl sm:text-3xl font-medium text-[#1A130E] tracking-wide mt-1.5">Quản lý món ăn</h1>
+            <h1 className="text-2xl sm:text-3xl font-medium text-[#1A130E] tracking-wide mt-1.5">
+              Quản lý món ăn
+            </h1>
           </div>
           <button
             onClick={handleOpenModal}
@@ -227,7 +269,10 @@ export default function Foods() {
 
         {/* Row 2: Search bar */}
         <div className="relative">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A39688] pointer-events-none" />
+          <Search
+            size={16}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A39688] pointer-events-none"
+          />
           <input
             type="text"
             value={searchQuery}
@@ -246,7 +291,11 @@ export default function Foods() {
         </div>
         {searchQuery && (
           <p className="mt-2 text-xs text-[#A39688] font-medium">
-            Tìm thấy <span className="text-[#E07A5F] font-bold">{filteredFoods.length}</span> / {foods.length} món ăn
+            Tìm thấy{" "}
+            <span className="text-[#E07A5F] font-bold">
+              {filteredFoods.length}
+            </span>{" "}
+            / {foods.length} món ăn
           </p>
         )}
       </div>
@@ -259,23 +308,31 @@ export default function Foods() {
               key={food.itemId}
               style={{ animationDelay: `${index * 40}ms` }}
               className={`animate-food-card food-premium-shadow bg-white rounded-[32px] border border-[#EFEBE4] overflow-hidden flex flex-col justify-between transition-all duration-300 hover:-translate-y-2 relative
-                ${!food.isAvailable ? 'opacity-60 grayscale bg-slate-50' : ''}`}
+                ${!food.isAvailable ? "opacity-60 grayscale bg-slate-50" : ""}`}
             >
               {/* Ảnh bìa món ăn với tỉ lệ vàng cao cấp */}
               <div className="w-full h-48 bg-[#FAF8F5] relative overflow-hidden border-b border-[#EFEBE4]">
                 {food.imageUrl ? (
-                  <img src={food.imageUrl} alt={food.nameVi} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <img
+                    src={food.imageUrl}
+                    alt={food.nameVi}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center text-[#B5A89A] gap-1">
                     <Image size={28} className="stroke-1" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Chưa gắn ảnh</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">
+                      Chưa gắn ảnh
+                    </span>
                   </div>
                 )}
 
                 {/* Badge Danh mục lơ lửng trên góc ảnh */}
                 <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-md text-[#726456] border border-[#EFEBE4] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm flex items-center gap-1">
                   <Tag size={10} className="text-[#C49A6C]" />
-                  {food.category ? (food.category.nameVi || food.category.name) : "N/A"}
+                  {food.category
+                    ? food.category.nameVi || food.category.name
+                    : "N/A"}
                 </span>
 
                 {/* Khung trạng thái Ẩn/Hiện */}
@@ -291,10 +348,15 @@ export default function Foods() {
               {/* Phần thân thông tin */}
               <div className="p-6 flex-1 flex flex-col justify-between">
                 <div>
-                  <h3 className="text-xl font-medium text-[#1A130E] tracking-wide line-clamp-1">{food.nameVi}</h3>
-                  <p className="text-xs text-[#C49A6C] font-semibold italic mt-0.5 tracking-wide">{food.nameEn}</p>
+                  <h3 className="text-xl font-medium text-[#1A130E] tracking-wide line-clamp-1">
+                    {food.nameVi}
+                  </h3>
+                  <p className="text-xs text-[#C49A6C] font-semibold italic mt-0.5 tracking-wide">
+                    {food.nameEn}
+                  </p>
                   <p className="text-xs text-[#726456] font-medium mt-3 line-clamp-2 leading-relaxed bg-[#FAF8F5] p-3 rounded-xl border border-[#EFEBE4]/50">
-                    {food.descriptionVi || "Không có mô tả chi tiết cho món ăn này."}
+                    {food.descriptionVi ||
+                      "Không có mô tả chi tiết cho món ăn này."}
                   </p>
                 </div>
 
@@ -303,10 +365,15 @@ export default function Foods() {
                   <div>
                     {food.discount && parseFloat(food.discount) > 0 ? (
                       <div className="space-y-0.5">
-                        <span className="text-[9px] font-bold text-rose-500 uppercase tracking-wider bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded">Giảm ưu đãi</span>
+                        <span className="text-[9px] font-bold text-rose-500 uppercase tracking-wider bg-rose-50 border border-rose-100 px-1.5 py-0.5 rounded">
+                          Giảm ưu đãi
+                        </span>
                         <div className="flex items-baseline gap-2">
                           <span className="text-lg font-extrabold text-[#E07A5F]">
-                            {(Number(food.price) - Number(food.discount)).toLocaleString("vi-VN")}đ
+                            {(
+                              Number(food.price) - Number(food.discount)
+                            ).toLocaleString("vi-VN")}
+                            đ
                           </span>
                           <span className="text-xs text-[#A39688] line-through font-medium">
                             {Number(food.price).toLocaleString("vi-VN")}đ
@@ -315,9 +382,13 @@ export default function Foods() {
                       </div>
                     ) : (
                       <div className="space-y-0.5">
-                        <span className="text-[9px] font-bold text-[#A39688] uppercase tracking-wider block">Giá tiêu chuẩn</span>
+                        <span className="text-[9px] font-bold text-[#A39688] uppercase tracking-wider block">
+                          Giá tiêu chuẩn
+                        </span>
                         <span className="text-lg font-extrabold text-[#1A130E]">
-                          {food.price ? Number(food.price).toLocaleString("vi-VN") + "đ" : "-"}
+                          {food.price
+                            ? Number(food.price).toLocaleString("vi-VN") + "đ"
+                            : "-"}
                         </span>
                       </div>
                     )}
@@ -335,12 +406,18 @@ export default function Foods() {
                     <button
                       onClick={() => toggleAvailable(food)}
                       className={`p-2.5 rounded-xl border transition-all duration-300
-                        ${food.isAvailable 
-                          ? 'bg-white border-[#E8E3DA] text-[#A39688] hover:bg-[#FEF6E5] hover:text-[#D4A359] hover:border-[#F5E0BA]' 
-                          : 'bg-[#E6F4EA] border-[#A7F3D0] text-[#059669] hover:bg-[#059669] hover:text-white'}`}
+                        ${
+                          food.isAvailable
+                            ? "bg-white border-[#E8E3DA] text-[#A39688] hover:bg-[#FEF6E5] hover:text-[#D4A359] hover:border-[#F5E0BA]"
+                            : "bg-[#E6F4EA] border-[#A7F3D0] text-[#059669] hover:bg-[#059669] hover:text-white"
+                        }`}
                       title={food.isAvailable ? "Tạm ẩn món" : "Hiển thị món"}
                     >
-                      {food.isAvailable ? <EyeOff size={14} /> : <Eye size={14} />}
+                      {food.isAvailable ? (
+                        <EyeOff size={14} />
+                      ) : (
+                        <Eye size={14} />
+                      )}
                     </button>
                     <button
                       onClick={() => handleDelete(food.itemId)}
@@ -366,10 +443,12 @@ export default function Foods() {
       {/* --- PHẦN 3: MODAL LỚN FORM THÊM/SỬA SANG TRỌNG HOÀNG GIA --- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 animate-fade-in">
-          <div className="absolute inset-0 bg-[#1A130E]/40 backdrop-blur-md" onClick={() => setIsModalOpen(false)}></div>
-          
+          <div
+            className="absolute inset-0 bg-[#1A130E]/40 backdrop-blur-md"
+            onClick={() => setIsModalOpen(false)}
+          ></div>
+
           <div className="relative bg-white rounded-[28px] sm:rounded-[40px] shadow-2xl w-full max-w-5xl overflow-hidden flex flex-col max-h-[95vh] sm:max-h-[90vh] border border-[#ECE7E0] animate-modal-scale">
-            
             {/* Header Modal */}
             <div className="flex justify-between items-center px-4 sm:px-6 py-4 sm:py-5 border-b border-[#EFEBE4] bg-white">
               <div className="flex items-center gap-2">
@@ -390,7 +469,6 @@ export default function Foods() {
             <div className="p-4 sm:p-8 bg-[#FAF8F5]/60 grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-8 overflow-y-auto custom-scrollbar">
               <div className="lg:col-span-2 space-y-6">
                 <div className="bg-white p-4 sm:p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs space-y-5 relative overflow-hidden">
-                  
                   {/* Thanh Đa ngôn ngữ */}
                   <div className="flex bg-[#FAF8F5] p-1 rounded-2xl border border-[#EFEBE4] mb-4">
                     <button
@@ -413,22 +491,32 @@ export default function Foods() {
                     <>
                       <div>
                         <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">
-                          Tên món ăn (Tiếng Việt) <span className="text-rose-500">*</span>
+                          Tên món ăn (Tiếng Việt){" "}
+                          <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
                           value={formData.nameVi}
-                          onChange={(e) => setFormData({ ...formData, nameVi: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({ ...formData, nameVi: e.target.value })
+                          }
                           className="w-full bg-[#FAF8F5] border border-[#EFEBE4] rounded-2xl p-3.5 outline-none font-semibold text-sm text-[#1A130E] focus:bg-white focus:border-[#E07A5F] focus:ring-4 focus:ring-[#E07A5F]/5 transition-all"
                           placeholder="VD: Thăn Bò Mỹ Áp Chảo..."
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">Mô tả hương vị (Tiếng Việt)</label>
+                        <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">
+                          Mô tả hương vị (Tiếng Việt)
+                        </label>
                         <textarea
                           rows="3"
                           value={formData.descriptionVi}
-                          onChange={(e) => setFormData({ ...formData, descriptionVi: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              descriptionVi: e.target.value,
+                            })
+                          }
                           className="w-full bg-[#FAF8F5] border border-[#EFEBE4] rounded-2xl p-3.5 outline-none font-medium text-sm text-[#1A130E] focus:bg-white focus:border-[#E07A5F] focus:ring-4 focus:ring-[#E07A5F]/5 transition-all"
                           placeholder="Thành phần cốt lõi, nước sốt đi kèm..."
                         />
@@ -438,22 +526,32 @@ export default function Foods() {
                     <>
                       <div>
                         <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">
-                          Item Name (English) <span className="text-rose-500">*</span>
+                          Item Name (English){" "}
+                          <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
                           value={formData.nameEn}
-                          onChange={(e) => setFormData({ ...formData, nameEn: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({ ...formData, nameEn: e.target.value })
+                          }
                           className="w-full bg-[#FAF8F5] border border-[#EFEBE4] rounded-2xl p-3.5 outline-none font-semibold text-sm text-[#1A130E] focus:bg-white focus:border-[#E07A5F] focus:ring-4 focus:ring-[#E07A5F]/5 transition-all"
                           placeholder="E.g: Pan-Seared Beef Tenderloin..."
                         />
                       </div>
                       <div>
-                        <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">Taste Profile Description (English)</label>
+                        <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">
+                          Taste Profile Description (English)
+                        </label>
                         <textarea
                           rows="3"
                           value={formData.descriptionEn}
-                          onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value })}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              descriptionEn: e.target.value,
+                            })
+                          }
                           className="w-full bg-[#FAF8F5] border border-[#EFEBE4] rounded-2xl p-3.5 outline-none font-medium text-sm text-[#1A130E] focus:bg-white focus:border-[#E07A5F] focus:ring-4 focus:ring-[#E07A5F]/5 transition-all"
                           placeholder="Core ingredients, signature sauces..."
                         />
@@ -464,18 +562,33 @@ export default function Foods() {
                   {/* Bản xem trước nhãn nhỏ */}
                   {(formData.nameVi || formData.nameEn) && (
                     <div className="flex flex-wrap gap-2 pt-1 text-[10px] font-bold uppercase tracking-wide">
-                      {formData.nameVi && <span className="bg-[#FCEEEB] text-[#E07A5F] border border-[#F7D2C9] px-3 py-1 rounded-full">🇲🇳 {formData.nameVi}</span>}
-                      {formData.nameEn && <span className="bg-[#FAF8F5] text-[#726456] border border-[#EFEBE4] px-3 py-1 rounded-full">🇬🇧 {formData.nameEn}</span>}
+                      {formData.nameVi && (
+                        <span className="bg-[#FCEEEB] text-[#E07A5F] border border-[#F7D2C9] px-3 py-1 rounded-full">
+                          🇲🇳 {formData.nameVi}
+                        </span>
+                      )}
+                      {formData.nameEn && (
+                        <span className="bg-[#FAF8F5] text-[#726456] border border-[#EFEBE4] px-3 py-1 rounded-full">
+                          🇬🇧 {formData.nameEn}
+                        </span>
+                      )}
                     </div>
                   )}
 
                   {/* Trạng thái và Danh mục */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
                     <div>
-                      <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">Điều hành phục vụ</label>
+                      <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">
+                        Điều hành phục vụ
+                      </label>
                       <select
                         value={formData.isAvailable ? "true" : "false"}
-                        onChange={(e) => setFormData({ ...formData, isAvailable: e.target.value === "true" })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            isAvailable: e.target.value === "true",
+                          })
+                        }
                         className="w-full bg-[#FAF8F5] border border-[#EFEBE4] rounded-2xl p-3.5 outline-none font-semibold text-sm text-[#1A130E] focus:bg-white focus:border-[#E07A5F] cursor-pointer transition-all"
                       >
                         <option value="true">Hiển thị phục vụ ngay</option>
@@ -483,19 +596,26 @@ export default function Foods() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">Danh mục thực đơn</label>
+                      <label className="block text-[10px] font-bold text-[#726456] mb-2 uppercase tracking-widest">
+                        Danh mục thực đơn
+                      </label>
                       <select
-                        value={formData.category ? formData.category.categoryId : ""}
+                        value={
+                          formData.category ? formData.category.categoryId : ""
+                        }
                         onChange={(e) => {
-                          const cat = categories.find(c => String(c.categoryId) === e.target.value);
+                          const cat = categories.find(
+                            (c) => String(c.categoryId) === e.target.value,
+                          );
                           setFormData({ ...formData, category: cat || null });
                         }}
                         className="w-full bg-[#FAF8F5] border border-[#EFEBE4] rounded-2xl p-3.5 outline-none font-semibold text-sm text-[#1A130E] focus:bg-white focus:border-[#E07A5F] cursor-pointer transition-all"
                       >
                         <option value="">-- Chọn nhóm thực đơn --</option>
-                        {categories.map(cat => (
+                        {categories.map((cat) => (
                           <option key={cat.categoryId} value={cat.categoryId}>
-                            {cat.nameVi || cat.name}{cat.nameEn ? ` / ${cat.nameEn}` : ""}
+                            {cat.nameVi || cat.name}
+                            {cat.nameEn ? ` / ${cat.nameEn}` : ""}
                           </option>
                         ))}
                       </select>
@@ -503,7 +623,10 @@ export default function Foods() {
                   </div>
                 </div>
 
-                <button onClick={handleSave} className="w-full bg-gradient-to-r from-[#1A130E] to-[#332A21] text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:opacity-95 shadow-md active:scale-95 transition-all">
+                <button
+                  onClick={handleSave}
+                  className="w-full bg-gradient-to-r from-[#1A130E] to-[#332A21] text-white px-8 py-3.5 rounded-2xl font-bold text-xs uppercase tracking-widest hover:opacity-95 shadow-md active:scale-95 transition-all"
+                >
                   {editingId ? "Cập nhật thực đơn" : "Đưa vào danh sách món ăn"}
                 </button>
               </div>
@@ -511,24 +634,39 @@ export default function Foods() {
               {/* Cột phải thông tin giá & hình ảnh */}
               <div className="lg:col-span-1 space-y-6">
                 <div className="bg-white p-4 sm:p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs">
-                  <h3 className="text-xs font-bold text-[#A39688] mb-4 uppercase tracking-widest border-b border-[#EFEBE4] pb-2">Định giá tài chính</h3>
+                  <h3 className="text-xs font-bold text-[#A39688] mb-4 uppercase tracking-widest border-b border-[#EFEBE4] pb-2">
+                    Định giá tài chính
+                  </h3>
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-[10px] font-bold text-[#726456] mb-1.5 uppercase">Giá niêm yết (VNĐ) <span className="text-rose-500">*</span></label>
+                      <label className="block text-[10px] font-bold text-[#726456] mb-1.5 uppercase">
+                        Giá niêm yết (VNĐ){" "}
+                        <span className="text-rose-500">*</span>
+                      </label>
                       <input
-                        type="number" min="0" onKeyDown={blockInvalidChar}
+                        type="number"
+                        min="0"
+                        onKeyDown={blockInvalidChar}
                         value={formData.price}
-                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, price: e.target.value })
+                        }
                         className="w-full bg-[#FAF8F5] border border-[#EFEBE4] rounded-xl p-3 font-extrabold text-base text-[#1A130E] outline-none focus:bg-white focus:border-[#E07A5F] transition-all"
                         placeholder="0"
                       />
                     </div>
                     <div>
-                      <label className="block text-[10px] font-bold text-[#E07A5F] mb-1.5 uppercase">Khấu trừ giảm giá (VNĐ)</label>
+                      <label className="block text-[10px] font-bold text-[#E07A5F] mb-1.5 uppercase">
+                        Khấu trừ giảm giá (VNĐ)
+                      </label>
                       <input
-                        type="number" min="0" onKeyDown={blockInvalidChar}
+                        type="number"
+                        min="0"
+                        onKeyDown={blockInvalidChar}
                         value={formData.discount}
-                        onChange={(e) => setFormData({ ...formData, discount: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, discount: e.target.value })
+                        }
                         className="w-full bg-[#FFF8F6] border border-[#FADCD5] rounded-xl p-3 font-extrabold text-base text-[#E07A5F] outline-none focus:bg-white focus:border-[#E07A5F] transition-all"
                         placeholder="0"
                       />
@@ -537,27 +675,45 @@ export default function Foods() {
                 </div>
 
                 <div className="bg-white p-4 sm:p-7 rounded-[28px] border border-[#EFEBE4] shadow-xs relative overflow-hidden">
-                  <h3 className="text-xs font-bold text-[#A39688] mb-4 uppercase tracking-widest border-b border-[#EFEBE4] pb-2">Tư liệu hình ảnh</h3>
-                  <div 
-                    className="border-2 border-dashed border-[#EFEBE4] hover:border-[#C49A6C] rounded-2xl p-6 text-center bg-[#FAF8F5] hover:bg-white cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[140px]" 
+                  <h3 className="text-xs font-bold text-[#A39688] mb-4 uppercase tracking-widest border-b border-[#EFEBE4] pb-2">
+                    Tư liệu hình ảnh
+                  </h3>
+                  <div
+                    className="border-2 border-dashed border-[#EFEBE4] hover:border-[#C49A6C] rounded-2xl p-6 text-center bg-[#FAF8F5] hover:bg-white cursor-pointer transition-all duration-300 flex flex-col items-center justify-center min-h-[140px]"
                     onClick={() => fileInputRef.current.click()}
                   >
                     {formData.imageUrl ? (
-                      <img src={formData.imageUrl} alt="Preview" className="w-full h-32 object-cover rounded-xl shadow-sm" />
+                      <img
+                        src={formData.imageUrl}
+                        alt="Preview"
+                        className="w-full h-32 object-cover rounded-xl shadow-sm"
+                      />
                     ) : (
                       <div className="flex flex-col items-center gap-1.5 text-[#B5A89A]">
                         <Image size={24} className="stroke-1" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Tải tệp ảnh</span>
+                        <span className="text-[10px] font-bold uppercase tracking-wider">
+                          Tải tệp ảnh
+                        </span>
                       </div>
                     )}
-                    <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleFileChange} />
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                    />
                   </div>
                   <div className="mt-4 pt-4 border-t border-[#EFEBE4]">
-                    <label className="block text-[10px] font-bold text-[#726456] mb-1.5 uppercase">Hoặc liên kết URL hình ảnh</label>
+                    <label className="block text-[10px] font-bold text-[#726456] mb-1.5 uppercase">
+                      Hoặc liên kết URL hình ảnh
+                    </label>
                     <input
                       type="text"
                       value={formData.imageUrl}
-                      onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, imageUrl: e.target.value })
+                      }
                       className="w-full bg-[#FAF8F5] border border-[#EFEBE4] rounded-xl p-2.5 text-xs outline-none focus:bg-white focus:border-[#E07A5F] transition-all"
                       placeholder="https://images.unsplash/..."
                     />
