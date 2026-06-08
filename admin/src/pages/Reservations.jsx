@@ -843,7 +843,7 @@ export default function Reservations() {
   // ── STATS ──────────────────────────────────────────────────────────────────
   const totalActive = reservations.filter((r) => r.status === "ACTIVE").length;
   const totalCompleted = reservations.filter(
-    (r) => r.status === "COMPLETED",
+    (r) => r.status === "COMPLETED" || r.status === "PENDING",
   ).length;
   const totalCancelled = reservations.filter(
     (r) => r.status === "CANCELLED",
