@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Users,
   Clock,
@@ -74,6 +74,52 @@ export default function DashBoard({
     fetchData();
   }, []);
 
+  // ── AUTO-COMPLETE: tự động chuyển ACTIVE → COMPLETED khi đến giờ hẹn ───
+  const reservationsRef = useRef(reservations);
+  useEffect(() => {
+    reservationsRef.current = reservations;
+  }, [reservations]);
+
+  useEffect(() => {
+    const autoComplete = async () => {
+      const now = new Date();
+      const overdueActives = reservationsRef.current.filter(
+        (r) =>
+          r.status === "ACTIVE" &&
+          r.reservationTime &&
+          new Date(r.reservationTime) <= now,
+      );
+      if (overdueActives.length === 0) return;
+
+      const results = await Promise.allSettled(
+        overdueActives.map((r) =>
+          fetch(`/api/reservations/${r.reservationId}/complete`, {
+            method: "PUT",
+          }).then((res) => (res.ok ? res.json() : null)),
+        ),
+      );
+
+      const completed = results
+        .filter((r) => r.status === "fulfilled" && r.value)
+        .map((r) => r.value);
+
+      if (completed.length > 0) {
+        setReservations((prev) =>
+          prev.map((r) => {
+            const updated = completed.find(
+              (c) => c.reservationId === r.reservationId,
+            );
+            return updated ? updated : r;
+          }),
+        );
+      }
+    };
+
+    autoComplete();
+    const timer = setInterval(autoComplete, 30000);
+    return () => clearInterval(timer);
+  }, []);
+
   const invoiceByTableId = invoices.reduce((map, invoice) => {
     if (invoice.tableId) map[invoice.tableId] = invoice;
     return map;
@@ -114,10 +160,12 @@ export default function DashBoard({
     const tableReservations = reservationsByTableId[table.tableId] || [];
     return tableReservations.filter((item) => {
       const reservationDate = new Date(item.reservationTime);
+      // Chỉ đếm reservation hôm nay VÀ chưa qua giờ hẹn
       return (
         reservationDate.getFullYear() === today.getFullYear() &&
         reservationDate.getMonth() === today.getMonth() &&
-        reservationDate.getDate() === today.getDate()
+        reservationDate.getDate() === today.getDate() &&
+        reservationDate > today
       );
     }).length;
   };
@@ -504,3 +552,4 @@ export default function DashBoard({
     </div>
   );
 }
+ 

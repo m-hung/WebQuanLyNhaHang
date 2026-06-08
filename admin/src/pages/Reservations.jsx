@@ -776,10 +776,15 @@ export default function Reservations() {
   };
 
   // ── AUTO-COMPLETE: tự động hoàn thành khi đến giờ hẹn ────────────────────
+  const reservationsRef = useRef(reservations);
+  useEffect(() => {
+    reservationsRef.current = reservations;
+  }, [reservations]);
+
   useEffect(() => {
     const autoComplete = async () => {
       const now = new Date();
-      const overdueActives = reservations.filter(
+      const overdueActives = reservationsRef.current.filter(
         (r) =>
           r.status === "ACTIVE" &&
           r.reservationTime &&
@@ -811,11 +816,11 @@ export default function Reservations() {
       }
     };
 
-    // Chạy ngay khi data load xong, rồi mỗi 60 giây
+    // Chạy ngay khi component mount, rồi mỗi 30 giây
     autoComplete();
-    const timer = setInterval(autoComplete, 60000);
+    const timer = setInterval(autoComplete, 30000);
     return () => clearInterval(timer);
-  }, [reservations.length]); // re-subscribe khi số lượng reservation thay đổi
+  }, []); // chỉ mount 1 lần, dùng ref để đọc data mới nhất
 
   // ── CONFIRM ACTION ─────────────────────────────────────────────────────────
   const openConfirmModal = (id, type) =>
