@@ -21,29 +21,36 @@ document.addEventListener("DOMContentLoaded", () => {
     "vi";
 
   // Đọc thông tin đặt bàn từ localStorage
-  const name = localStorage.getItem("bk_name") || "—";
-  const datetime = localStorage.getItem("bk_datetime") || "—";
+  const name =
+    params.get("customerName") || localStorage.getItem("bk_name") || "—";
 
-  // Format tên bàn theo ngôn ngữ hiện tại
-  const tNum = localStorage.getItem("bk_table_num");
-  const tCap = localStorage.getItem("bk_table_cap");
-  let table;
-  if (tNum && tCap) {
-    table =
-      currentLang === "en"
-        ? `Table ${tNum} (Capacity: ${tCap})`
-        : `Bàn ${tNum} (Sức chứa: ${tCap})`;
-  } else {
-    // Fallback: parse từ bk_table nếu có dạng 'Table X (Capacity: Y)'
-    const rawTable = localStorage.getItem("bk_table") || "—";
-    const match = rawTable.match(/(\d+)[^:]*:\s*(\d+)/);
-    if (match) {
+  // Format tên bàn (Lấy từ URL trước, nếu ko có mới mò LocalStorage)
+  // ── SỬA LẠI ĐOẠN FORMAT TÊN BÀN TỪ DÒNG 28 TRỞ ĐI ──
+
+  // Format tên bàn (Ưu tiên lấy từ URL trước)
+  const backendTable = params.get("tableName");
+  let table = backendTable; // Gán thẳng luôn nếu Backend có trả về
+
+  // Nếu URL không có (chạy test local), mới mò vào LocalStorage
+  if (!table) {
+    const tNum = localStorage.getItem("bk_table_num");
+    const tCap = localStorage.getItem("bk_table_cap");
+    if (tNum && tCap) {
       table =
         currentLang === "en"
-          ? `Table ${match[1]} (Capacity: ${match[2]})`
-          : `Bàn ${match[1]} (Sức chứa: ${match[2]})`;
+          ? `Table ${tNum} (Capacity: ${tCap})`
+          : `Bàn ${tNum} (Sức chứa: ${tCap})`;
     } else {
-      table = rawTable;
+      const rawTable = localStorage.getItem("bk_table") || "—";
+      const match = rawTable.match(/(\d+)[^:]*:\s*(\d+)/);
+      if (match) {
+        table =
+          currentLang === "en"
+            ? `Table ${match[1]} (Capacity: ${match[2]})`
+            : `Bàn ${match[1]} (Sức chứa: ${match[2]})`;
+      } else {
+        table = rawTable;
+      }
     }
   }
 

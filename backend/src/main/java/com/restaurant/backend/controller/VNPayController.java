@@ -59,12 +59,17 @@ public class VNPayController {
         String responseCode = params.get("vnp_ResponseCode");
         String orderId = params.get("vnp_TxnRef");
 
+        String customerName = "—";
+        String tableName = "—";
+
         if (validSignature && "00".equals(responseCode)) {
             try {
                 // 1. Lấy thông tin khách hàng đang "treo" trong RAM
                 VNPayCreateRequest pending = BookingCache.get(orderId);
                 
                 if (pending != null) {
+                    customerName = pending.getCustomerName(); 
+                    tableName = pending.getTableId();
                     // 2. Thanh toán OK -> Lưu MỚI vào Database
                     reservationService.createNewReservationAfterPayment(pending, params.get("vnp_TransactionNo"));
                     
@@ -86,6 +91,11 @@ public class VNPayController {
                 redirectUrl.append(URLEncoder.encode(k, StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(v, StandardCharsets.UTF_8)).append("&");
             } catch (Exception ignored) {}
         });
+
+        try {
+            redirectUrl.append("customerName=").append(URLEncoder.encode(customerName, StandardCharsets.UTF_8)).append("&");
+            redirectUrl.append("tableName=").append(URLEncoder.encode(tableName, StandardCharsets.UTF_8));
+        } catch (Exception ignored) {}
 
         response.sendRedirect(redirectUrl.toString());
     }
