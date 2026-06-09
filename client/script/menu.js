@@ -1,4 +1,3 @@
-// === ĐOẠN TỰ ĐỘNG ĐỔI URL API LINH HOẠT ===
 const IS_LOCAL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 // Điền link Render thật của bạn vào chỗ trống phía dưới
 const BACKEND_BASE = IS_LOCAL ? "http://localhost:8080" : "https://webquanlynhahang.onrender.com"; 
@@ -48,25 +47,62 @@ document.addEventListener("DOMContentLoaded", async () => {
         : "Bạn đang tìm món ăn nào?";
   }
 
+  // Hiển thị trạng thái đang chờ server wake up
+  function showWakingUp() {
+    menuGrid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:#aaa;">
+        <div style="font-size:2rem;margin-bottom:16px;">⏳</div>
+        <p style="margin:0 0 8px;font-size:1rem;">
+          ${getCurrentLang() === "en" ? "Server is waking up, please wait..." : "Server đang khởi động, vui lòng chờ..."}
+        </p>
+        <p style="margin:0;font-size:0.85rem;opacity:0.6;">
+          ${getCurrentLang() === "en" ? "This may take up to 60 seconds" : "Có thể mất đến 60 giây"}
+        </p>
+      </div>`;
+  }
+
+  // Fetch có retry: thử lại tối đa maxRetries lần, mỗi lần cách nhau delayMs
+  async function fetchWithRetry(url, maxRetries = 8, delayMs = 7000) {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch (e) {
+        console.warn(`Lần thử ${attempt}/${maxRetries} thất bại:`, e.message);
+        if (attempt < maxRetries) {
+          await new Promise((r) => setTimeout(r, delayMs));
+        } else {
+          throw e;
+        }
+      }
+    }
+  }
+
   async function fetchCategories() {
     try {
-      const res = await fetch(CAT_URL);
-      const data = await res.json();
+      const data = await fetchWithRetry(CAT_URL);
       allCategories = data.filter((c) => c.active);
       renderFilterTabs();
     } catch (e) {
       console.error("Loi load danh muc:", e);
+      menuGrid.innerHTML = `<p style="grid-column:1/-1;text-align:center;padding:40px;color:#e57373;">
+        ${getCurrentLang() === "en" ? "Failed to connect to server. Please reload the page." : "Không thể kết nối server. Vui lòng tải lại trang."}
+      </p>`;
     }
   }
 
   async function fetchFoods() {
     try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
+      showWakingUp();
+      const data = await fetchWithRetry(API_URL);
       allFoods = data.filter((f) => f.isAvailable);
       renderMenu();
     } catch (e) {
       console.error("Loi load mon an:", e);
+      menuGrid.innerHTML = `<p style="grid-column:1/-1;text-align:center;padding:40px;color:#e57373;">
+        ${getCurrentLang() === "en" ? "Failed to load menu. Please reload the page." : "Không thể tải thực đơn. Vui lòng tải lại trang."}
+      </p>`;
     }
   }
 
