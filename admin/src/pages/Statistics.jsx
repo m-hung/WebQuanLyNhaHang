@@ -182,12 +182,11 @@ export default function Statistics({ invoices = [] }) {
     };
   }, [invoices, currentDate]);
 
+  // Hàm render thứ hạng (đã sửa để đồng đều)
   const renderRank = (rank) => {
-    if (rank === 1) return "🥇 1";
-    if (rank === 2) return "🥈 2";
-    if (rank === 3) return "🥉 3";
-    return <span className="pl-2 text-gray-500">{rank}</span>;
-  };
+  // Dùng inline-block, w-6 và text-center để cột số canh giữa thẳng hàng với nhau, bao gồm cả số 10
+  return <span className="text-gray-500 inline-block w-6 text-center">{rank}</span>;
+};
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -320,10 +319,15 @@ export default function Statistics({ invoices = [] }) {
 
                 {/* ÉP MỐC TRỤC Y VÀO ĐÂY BẰNG THUỘC TÍNH DOMAIN */}
                 <YAxis
+                  width={75}
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: "#9ca3af", fontSize: 12 }}
-                  domain={[0, stats.yAxisMax]}
+                  domain={[0, "dataMax + 20000"]}
+                  tickFormatter={(value) => {
+                    if (value === 0) return "0";
+                    return new Intl.NumberFormat("vi-VN").format(value);
+                  }}
                 />
 
                 <Tooltip
