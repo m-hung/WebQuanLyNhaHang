@@ -26,7 +26,7 @@ export default function App() {
 
   // Tự động tải hóa đơn "Đang phục vụ" khi mở web hoặc F5
   useEffect(() => {
-    fetch("http://localhost:8080/api/orders")
+    fetch("/api/orders")
       .then((res) => res.json())
       .then((data) => {
         setAllOrders(data);
