@@ -21,7 +21,7 @@ VALUES
     (2, NOW(), 'Nguyễn Khánh Hưng', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'MANAGER', 'ACTIVE', 'KhanhHung'),
     (3, NOW(), 'Thái Trần Minh Hưng', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'CASHIER', 'ACTIVE', 'MinhHung'),
     (4, NOW(), 'Nguyễn Tiến Hưng', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'CASHIER', 'ACTIVE', 'TienHung'),
-    (5, NOW(), 'Nguyễn Gia Huy', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'CASHIER', 'ACTIVE', 'GiaHuy')
+    (5, NOW(), 'Cao Nguyễn Gia Huy', '$2a$12$/owPlCOfqbwAtsfW6IFY1uCBKruvGHvPRQnWrythTf2EIsQH/gP9O', NULL, 'CASHIER', 'ACTIVE', 'GiaHuy')
 ON DUPLICATE KEY UPDATE
     full_name = VALUES(full_name),
     password = VALUES(password),

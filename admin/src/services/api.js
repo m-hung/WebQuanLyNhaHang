@@ -1,8 +1,8 @@
 const BASE_URL = "http://localhost:8080";
 
-export const apiFetch = async (path, options = {}) => {
+export const fetch = async (path, options = {}) => {
   const token = sessionStorage.getItem("token");
-  const res = await fetch(`${BASE_URL}${path}`, {
+  const res = await window.fetch(`${BASE_URL}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",

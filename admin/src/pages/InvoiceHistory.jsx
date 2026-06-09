@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { fetch } from "../services/api";
 import {
   Search,
   X,

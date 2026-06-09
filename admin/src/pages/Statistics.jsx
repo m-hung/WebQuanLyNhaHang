@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo, useEffect, useRef } from "react";
+import { fetch } from "../services/api";
 import {
   ChevronLeft, ChevronRight, TrendingUp, Sparkles,
 } from "lucide-react";
