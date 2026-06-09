@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import {
   Calendar,
@@ -935,61 +934,6 @@ export default function Reservations() {
           </div>
         </div>
  
-        {/* Stats chips */}
-        <div
-          style={{ display: "flex", gap: 10, marginTop: 18, flexWrap: "wrap" }}
-        >
-          <span className="stat-chip">
-            <span
-              style={{
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: "#C49A6C",
-                display: "inline-block",
-              }}
-            ></span>
-            {totalActive} đang chờ
-          </span>
-          <span
-            className="stat-chip"
-            style={{
-              background: "rgba(40,160,80,0.07)",
-              color: "#1A8040",
-              borderColor: "rgba(40,160,80,0.2)",
-            }}
-          >
-            <span
-              style={{
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: "#28A050",
-                display: "inline-block",
-              }}
-            ></span>
-            {totalCompleted} hoàn thành
-          </span>
-          <span
-            className="stat-chip"
-            style={{
-              background: "rgba(220,60,60,0.06)",
-              color: "#C03030",
-              borderColor: "rgba(220,60,60,0.2)",
-            }}
-          >
-            <span
-              style={{
-                width: 7,
-                height: 7,
-                borderRadius: "50%",
-                background: "#DC3C3C",
-                display: "inline-block",
-              }}
-            ></span>
-            {totalCancelled} đã hủy
-          </span>
-        </div>
       </div>
  
       {/* ── FILTER BAR ─────────────────────────────────────────────────────── */}
