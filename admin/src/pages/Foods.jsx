@@ -477,7 +477,7 @@ export default function Foods() {
                       className={`flex-1 py-2 text-xs font-bold uppercase tracking-wide flex items-center justify-center gap-2 rounded-xl transition-all duration-300
                         ${langTab === "vi" ? "bg-white text-[#E07A5F] shadow-sm border border-[#FADCD5]" : "text-[#A39688] hover:text-[#1A130E]"}`}
                     >
-                      <span>🇲🇳 Tiếng Việt</span>
+                      <span>🇻🇳 Tiếng Việt</span>
                     </button>
                     <button
                       onClick={() => setLangTab("en")}
@@ -565,7 +565,7 @@ export default function Foods() {
                     <div className="flex flex-wrap gap-2 pt-1 text-[10px] font-bold uppercase tracking-wide">
                       {formData.nameVi && (
                         <span className="bg-[#FCEEEB] text-[#E07A5F] border border-[#F7D2C9] px-3 py-1 rounded-full">
-                          🇲🇳 {formData.nameVi}
+                          🇻🇳 {formData.nameVi}
                         </span>
                       )}
                       {formData.nameEn && (
