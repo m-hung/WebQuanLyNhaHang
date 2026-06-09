@@ -3,6 +3,7 @@ package com.restaurant.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final JavaMailSender mailSender;
 
+    @Async
     public void sendPasswordResetEmail(String to, String resetLink, String fullName) {
         String subject = "Yêu cầu đặt lại mật khẩu - Celesté House";
         String text = "Xin chào,\n\n" +
@@ -23,7 +25,7 @@ public class EmailService {
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
-        message.setFrom("no-reply@restaurant-management.local");
+        message.setFrom("celestehousecontact@gmail.com");
 
         mailSender.send(message);
         System.out.println("Đã gửi email đặt lại mật khẩu tới: " + to);

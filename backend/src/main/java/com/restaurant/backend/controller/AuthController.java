@@ -75,13 +75,7 @@ public class AuthController {
         passwordResetTokenRepository.save(prt);
 
         String resetLink = "http://localhost:5173/reset-password?token=" + token;
-
-        try {
-            emailService.sendPasswordResetEmail(email, resetLink, user.getFullName());
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Lỗi khi gửi email: " + e.getMessage());
-        }
-
+        emailService.sendPasswordResetEmail(email, resetLink, user.getFullName());
         return ResponseEntity.ok(Map.of("message", "Đã gửi link khôi phục mật khẩu. Vui lòng kiểm tra hộp thư!"));
     }
 

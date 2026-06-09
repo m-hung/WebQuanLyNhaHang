@@ -26,6 +26,6 @@ ON DUPLICATE KEY UPDATE
     full_name = VALUES(full_name),
     password = VALUES(password),
     role = VALUES(role),
-    status = VALUES(status);
-
+    status = VALUES(status),
+    email = VALUES(email);
 ALTER TABLE `users` AUTO_INCREMENT = 2;
