@@ -1097,11 +1097,6 @@ export default function Reservations() {
                               Đã hủy
                             </span>
                           )}
-                          {item.status === "COMPLETED" && (
-                            <span className="badge badge-completed">
-                              Hoàn thành
-                            </span>
-                          )}
                           {item.status === "ACTIVE" && (
                             <span className="badge badge-active">Đang chờ</span>
                           )}
@@ -1289,9 +1284,6 @@ export default function Reservations() {
                   <div style={{ flexShrink: 0 }}>
                     {item.status === "CANCELLED" && (
                       <span className="badge badge-cancelled">Đã hủy</span>
-                    )}
-                    {item.status === "COMPLETED" && (
-                      <span className="badge badge-completed">Hoàn thành</span>
                     )}
                     {item.status === "ACTIVE" && (
                       <span className="badge badge-active">Đang chờ</span>
