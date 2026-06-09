@@ -1,3 +1,9 @@
+// =============================================
+// CELESTÉ HOUSE — payment-result.js
+// File: client/script/payment-result.js
+// Nhiệm vụ: Xử lý hiển thị kết quả từ cổng VNPay
+// =============================================
+
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
 
@@ -26,9 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sessionStorage.getItem("bk_email") ||
     localStorage.getItem("bk_email") ||
     "";
-
-  // Format tên bàn (Lấy từ URL trước, nếu ko có mới mò LocalStorage)
-  // ── SỬA LẠI ĐOẠN FORMAT TÊN BÀN TỪ DÒNG 28 TRỞ ĐI ──
 
   // Format tên bàn (Ưu tiên lấy từ URL trước)
   const backendTable = params.get("tableName");
@@ -59,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Format dữ liệu hiển thị ──
   const amountDisplay = amount ? parseInt(amount) / 100 : 0;
-  // Giữ định dạng gốc VND cho cả 2 ngôn ngữ theo logic ban đầu của bạn
   const finalAmount = amountDisplay.toLocaleString("vi-VN") + " ₫";
 
   const payDateFormatted = payDate
@@ -68,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
     : "—";
 
   // ── Render theo kết quả ──
-  // Lấy datetime & guests (cần truyền vào renderSuccess để tránh lỗi scope)
   const datetime =
     params.get("datetime") || localStorage.getItem("bk_datetime") || "—";
   const guests =
@@ -109,7 +110,6 @@ function renderSuccess({
   datetime,
   guests,
 }) {
-  // Progress: bước 4 thành công
   const step4Num = document.getElementById("step-4-num");
   if (step4Num)
     step4Num.innerHTML =
@@ -118,7 +118,6 @@ function renderSuccess({
   const step4 = document.getElementById("step-4");
   if (step4) step4.className = "step done";
 
-  // Icon thành công
   const iconEl = document.getElementById("result-icon-symbol");
   if (iconEl) {
     iconEl.textContent = "check_circle";
@@ -126,13 +125,11 @@ function renderSuccess({
     iconEl.parentElement.classList.add("success");
   }
 
-  // Xóa bỏ thuộc tính data-i18n tạm thời trên Tiêu đề để tránh bị i18n.js ghi đè lại thành "Đang xử lý"
   const titleEl = document.getElementById("result-title");
   const subtitleEl = document.getElementById("result-subtitle");
   if (titleEl) titleEl.removeAttribute("data-i18n");
   if (subtitleEl) subtitleEl.removeAttribute("data-i18n");
 
-  // Cập nhật nội dung Text dựa theo ngôn ngữ đang chọn
   if (currentLang === "en") {
     if (titleEl) titleEl.textContent = "Payment Successful!";
     if (subtitleEl)
@@ -145,7 +142,6 @@ function renderSuccess({
         'Cảm ơn quý khách đã lựa chọn <strong style="color:var(--gold)">Celesté House</strong>.<br>Xác nhận đã được gửi qua email & SMS.';
   }
 
-  // Gán dữ liệu vào bảng chi tiết
   if (document.getElementById("r-txn-ref"))
     document.getElementById("r-txn-ref").textContent =
       transactionNo || txnRef || "—";
@@ -155,7 +151,6 @@ function renderSuccess({
     document.getElementById("r-amount").textContent = amountFormatted;
   if (document.getElementById("r-bank"))
     document.getElementById("r-bank").textContent = bankCode || "—";
-  // Sửa dòng 102 từ localStorage thành biến payDateFormatted đã format ở trên
   if (document.getElementById("r-time"))
     document.getElementById("r-time").textContent = payDateFormatted;
   if (document.getElementById("r-name"))
@@ -177,7 +172,6 @@ function renderSuccess({
     amount: amountFormatted,
   });
 
-  // Tạo các nút chức năng đồng bộ theo ngôn ngữ
   const actionsEl = document.getElementById("result-actions");
   if (actionsEl) {
     actionsEl.style.display = "flex";
@@ -357,7 +351,7 @@ function renderFailure(code, txnRef, currentLang) {
 
 function sendConfirmationEmail(params) {
   if (!params.customer_email) {
-    console.warn("[EmailJS] Không có email khách hàng, bỏ qua.");
+    console.warn("[EmailJS] Không có email khách hàng, bỏ quan.");
     return;
   }
   emailjs

@@ -1,5 +1,11 @@
-const API_URL = "http://localhost:8080/api/menu-items";
-const CAT_URL = "http://localhost:8080/api/categories";
+// === ĐOẠN TỰ ĐỘNG ĐỔI URL API LINH HOẠT ===
+const IS_LOCAL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+// Điền link Render thật của bạn vào chỗ trống phía dưới
+const BACKEND_BASE = IS_LOCAL ? "http://localhost:8080" : "https://webquanlynhahang.onrender.com"; 
+
+const API_URL = `${BACKEND_BASE}/api/menu-items`;
+const CAT_URL = `${BACKEND_BASE}/api/categories`;
+// ===========================================
 
 // langChanged event được dispatch từ i18n.js sau khi applyLanguage() hoàn tất
 

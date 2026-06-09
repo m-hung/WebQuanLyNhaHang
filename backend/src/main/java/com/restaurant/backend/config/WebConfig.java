@@ -10,7 +10,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("*")   // ← đổi thành allowedOriginPatterns
+                .allowedOrigins(
+                    "http://localhost:5173",          // Admin chạy ở local (Vite)
+                    "http://127.0.0.1:5500",          // Client chạy ở local (Live Server VS Code nếu có)
+                    "https://celestehouse.vercel.app", // Link thật của trang Client sau này
+                    "https://celestehouse-admin.vercel.app"   // Link thật của trang Admin sau này
+                )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);       // ← thêm dòng này

@@ -83,9 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   custEmail.addEventListener("change", (e) => {
-  const val = e.target.value.trim();
-  if (val) localStorage.setItem("bk_email", val);
-});
+    const val = e.target.value.trim();
+    if (val) localStorage.setItem("bk_email", val);
+  });
 
   // === 3. LOGIC XỬ LÝ GỐC CỦA BẠN ===
 
@@ -129,8 +129,18 @@ document.addEventListener("DOMContentLoaded", () => {
       currentLng === "en" ? "Querying..." : "Đang truy vấn SQL...";
 
     try {
-      const url = `http://localhost:8080/api/tables/available?datetime=${encodeURIComponent(datetimeParam)}&guests=${requestedGuests}`;
-      const response = await fetch(url);
+      // === ĐOẠN THAY ĐỔI CỦA BẠN Ở ĐÂY ===
+      // Tự động kiểm tra: Nếu đang chạy trên web thật (Vercel) thì lấy link Render, nếu ở local thì dùng localhost
+      const BACKEND_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+          ? "http://localhost:8080"
+          : "https://webquanlynhahang.onrender.com"; // <-- BẠN THAY BẰNG LINK RENDER THẬT CỦA BẠN VÀO ĐÂY
+
+      const url = `${BACKEND_URL}/api/tables/available?datetime=${encodeURIComponent(datetimeParam)}&guests=${requestedGuests}`;
+      // ===================================
+
+      const response = await window.fetch(url); // Dùng window.fetch gốc tránh trùng tên hàm fetch tùy biến
       if (!response.ok) throw new Error("Kết nối thất bại");
 
       const availableTables = await response.json();

@@ -5,7 +5,16 @@
 // lấy URL thanh toán VNPay, redirect sang cổng
 // =============================================
 
-const API_BASE = "http://localhost:8080/api";
+// === TỰ ĐỘNG ĐỔI URL API LINH HOẠT ===
+const IS_LOCAL =
+  window.location.hostname === "localhost" ||
+  window.location.hostname === "127.0.0.1";
+// Điền link Render thật của bạn vào chỗ trống phía dưới
+const BACKEND_BASE = IS_LOCAL
+  ? "http://localhost:8080"
+  : "https://webquanlynhahang.onrender.com";
+
+const API_BASE = `${BACKEND_BASE}/api`;
 const AMOUNT = 210000; // VNĐ — khớp với giá hiển thị trong HTML
 
 // ── Sinh orderId duy nhất cho mỗi lần đặt ──
@@ -71,7 +80,7 @@ async function initiateVNPay() {
   };
 
   try {
-    const res = await fetch(`${API_BASE}/payment/vnpay-create`, {
+    const res = await window.fetch(`${API_BASE}/payment/vnpay-create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -106,5 +115,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof applyLanguage === "function") {
     const savedLng = localStorage.getItem("selected_language") || "vi";
     applyLanguage(savedLng);
+  }
+
+  // Lắng nghe sự kiện click nút thanh toán nếu có
+  const btnVNPay = document.getElementById("btn-vnpay");
+  if (btnVNPay) {
+    btnVNPay.addEventListener("click", initiateVNPay);
   }
 });
