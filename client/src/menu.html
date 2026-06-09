@@ -23,7 +23,7 @@
     <!-- ── NAV ── -->
     <header class="menu-hero">
       <nav id="main-nav">
-        <div class="logo">CELESTÉ HOUSE</div>
+        <div class="logo">CELESTÉ</div>
         <button class="menu-toggle" id="mobile-menu">
           <span class="material-symbols-outlined">menu</span>
         </button>
@@ -170,8 +170,10 @@
 
     <!-- ── MENU DATA SCRIPT (giữ nguyên logic từ menu.js gốc) ── -->
     <script>
-      const API_URL = "http://localhost:8080/api/menu-items";
-      const CAT_URL = "http://localhost:8080/api/categories";
+      const IS_LOCAL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+      const BACKEND_BASE = IS_LOCAL ? "http://localhost:8080" : "https://webquanlynhahang.onrender.com";
+      const API_URL = `${BACKEND_BASE}/api/menu-items`;
+      const CAT_URL = `${BACKEND_BASE}/api/categories`;
 
       document.addEventListener("DOMContentLoaded", async () => {
         const menuGrid = document.getElementById("main-menu-grid");
@@ -279,10 +281,41 @@
           return Number(price).toLocaleString("vi-VN") + " ₫";
         }
 
+        // Tự động thử lại khi Render đang wake up (free tier)
+        async function fetchWithRetry(url, maxRetries = 8, delayMs = 7000) {
+          for (let attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+              const res = await fetch(url);
+              if (!res.ok) throw new Error(`HTTP ${res.status}`);
+              return await res.json();
+            } catch (e) {
+              console.warn(`Thử lần ${attempt}/${maxRetries}:`, e.message);
+              if (attempt < maxRetries) {
+                await new Promise((r) => setTimeout(r, delayMs));
+              } else {
+                throw e;
+              }
+            }
+          }
+        }
+
+        function showWakingUp() {
+          const isEn = getCurrentLang() === "en";
+          menuGrid.innerHTML = `
+            <div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+              <div style="font-size:2.5rem;margin-bottom:16px;">⏳</div>
+              <p style="margin:0 0 8px;font-size:1rem;color:#ccc;">
+                ${isEn ? "Server is waking up, please wait…" : "Server đang khởi động, vui lòng chờ…"}
+              </p>
+              <p style="margin:0;font-size:0.82rem;opacity:0.5;">
+                ${isEn ? "This may take up to 60 seconds" : "Quá trình này có thể mất đến 60 giây"}
+              </p>
+            </div>`;
+        }
+
         async function fetchCategories() {
           try {
-            const res = await fetch(CAT_URL);
-            const data = await res.json();
+            const data = await fetchWithRetry(CAT_URL);
             allCategories = data.filter((c) => c.active);
           } catch (e) {
             console.error("Lỗi load danh mục:", e);
@@ -291,16 +324,24 @@
         }
 
         async function fetchFoods() {
+          showWakingUp();
           try {
-            const res = await fetch(API_URL);
-            const data = await res.json();
+            const data = await fetchWithRetry(API_URL);
             allFoods = data.filter((f) => f.isAvailable);
           } catch (e) {
             console.error("Lỗi load món ăn:", e);
             allFoods = [];
+            const isEn = getCurrentLang() === "en";
+            menuGrid.innerHTML = `<div class="empty-msg" style="grid-column:1/-1;text-align:center;padding:40px;color:#e57373;">
+              <p>${isEn ? "Cannot connect to server. Please reload the page." : "Không thể kết nối server. Vui lòng tải lại trang."}</p>
+              <button onclick="location.reload()" style="margin-top:12px;padding:8px 20px;background:#b8860b;color:#fff;border:none;border-radius:4px;cursor:pointer;">
+                ${isEn ? "Reload" : "Tải lại"}
+              </button>
+            </div>`;
+            return;
           }
           renderMenu();
-          renderFilterList(); // cập nhật lại count sau khi có data
+          renderFilterList();
         }
 
         function renderFilterList() {
