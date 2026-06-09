@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       currentLng === "en" ? "Querying..." : "Đang truy vấn SQL...";
 
     try {
-      const url = `https://celestehouse.me/api/tables/available?datetime=${encodeURIComponent(datetimeParam)}&guests=${requestedGuests}`;
+      const url = `http://localhost:8080/api/tables/available?datetime=${encodeURIComponent(datetimeParam)}&guests=${requestedGuests}`;
       const response = await fetch(url);
       if (!response.ok) throw new Error("Kết nối thất bại");
 

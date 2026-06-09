@@ -5,7 +5,7 @@
 // lấy URL thanh toán VNPay, redirect sang cổng
 // =============================================
 
-const API_BASE = "https://celestehouse.me/api";
+const API_BASE = "http://localhost:8080/api";
 const AMOUNT = 210000; // VNĐ — khớp với giá hiển thị trong HTML
 
 // ── Sinh orderId duy nhất cho mỗi lần đặt ──

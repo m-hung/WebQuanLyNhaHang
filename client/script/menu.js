@@ -1,5 +1,5 @@
-const API_URL = "https://celestehouse.me/api/menu-items";
-const CAT_URL = "https://celestehouse.me/api/categories";
+const API_URL = "http://localhost:8080/api/menu-items";
+const CAT_URL = "http://localhost:8080/api/categories";
 
 // langChanged event được dispatch từ i18n.js sau khi applyLanguage() hoàn tất
 

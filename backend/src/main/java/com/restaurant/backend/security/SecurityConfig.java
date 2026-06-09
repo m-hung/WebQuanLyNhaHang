@@ -49,8 +49,8 @@ public class SecurityConfig {
             "http://localhost:5500",   // Web khách HTML
             "http://127.0.0.1:5500",   // Web khách HTML (alternate)
             "http://localhost:63342",
-            "https://celestehouse.me",        // 🚀 THÊM DOMAIN CHÍNH THỨC (CLIENT)
-            "https://celestehouse.me/admin/"
+            "http://localhost:8080",        // 🚀 THÊM DOMAIN CHÍNH THỨC (CLIENT)
+            "http://localhost:8080/admin/"
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
