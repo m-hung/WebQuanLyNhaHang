@@ -1,8 +1,3 @@
-// =============================================
-// CELESTÉ HOUSE — payment-result.js
-// File: client/script/payment-result.js
-// =============================================
-
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
 
@@ -20,9 +15,17 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.getItem("language") ||
     "vi";
 
-  // Đọc thông tin đặt bàn từ localStorage
+  // Đọc thông tin đặt bàn: ưu tiên URL param → sessionStorage → localStorage
   const name =
-    params.get("customerName") || localStorage.getItem("bk_name") || "—";
+    params.get("customerName") || localStorage.getItem("bk_name") || sessionStorage.getItem("bk_name") || "—";
+
+  // Email: đọc từ URL param trước (an toàn nhất, không bị Tracking Prevention chặn)
+  const customerEmail =
+    params.get("email") ||
+    params.get("customerEmail") ||
+    sessionStorage.getItem("bk_email") ||
+    localStorage.getItem("bk_email") ||
+    "";
 
   // Format tên bàn (Lấy từ URL trước, nếu ko có mới mò LocalStorage)
   // ── SỬA LẠI ĐOẠN FORMAT TÊN BÀN TỪ DÒNG 28 TRỞ ĐI ──
@@ -65,6 +68,12 @@ document.addEventListener("DOMContentLoaded", () => {
     : "—";
 
   // ── Render theo kết quả ──
+  // Lấy datetime & guests (cần truyền vào renderSuccess để tránh lỗi scope)
+  const datetime =
+    params.get("datetime") || localStorage.getItem("bk_datetime") || "—";
+  const guests =
+    params.get("guests") || localStorage.getItem("bk_guests") || "—";
+
   if (responseCode === "00") {
     renderSuccess({
       txnRef,
@@ -75,6 +84,9 @@ document.addEventListener("DOMContentLoaded", () => {
       name,
       table,
       currentLang,
+      customerEmail,
+      datetime,
+      guests,
     });
   } else {
     renderFailure(responseCode, txnRef, currentLang);
@@ -93,6 +105,9 @@ function renderSuccess({
   name,
   table,
   currentLang,
+  customerEmail,
+  datetime,
+  guests,
 }) {
   // Progress: bước 4 thành công
   const step4Num = document.getElementById("step-4-num");
@@ -154,10 +169,10 @@ function renderSuccess({
   // Gửi email xác nhận cho khách
   sendConfirmationEmail({
     customer_name: name,
-    customer_email: localStorage.getItem("bk_email") || "",
+    customer_email: customerEmail,
     table: table,
-    datetime: localStorage.getItem("bk_datetime") || "—",
-    guests: localStorage.getItem("bk_guests") || "—",
+    datetime: datetime,
+    guests: guests,
     transaction_no: transactionNo || txnRef || "—",
     amount: amountFormatted,
   });
@@ -242,11 +257,11 @@ function renderSuccess({
                         </div>
                         <div class="info-row">
                             <span class="info-label">Số lượng khách</span>
-                            <span class="info-value">${localStorage.getItem("bk_guests") || "—"} Người</span>
+                            <span class="info-value">${guests} Người</span>
                         </div>
                         <div class="info-row">
                             <span class="info-label">Lịch hẹn</span>
-                            <span class="info-value">${localStorage.getItem("bk_datetime") || "—"}</span>
+                            <span class="info-value">${datetime}</span>
                         </div>
                     </div>
                     <div class="deposit-block">

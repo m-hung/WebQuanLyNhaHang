@@ -57,44 +57,58 @@ public class VNPayController {
         boolean validSignature = vnPayService.verifyReturn(paramsCopy);
 
         String responseCode = params.get("vnp_ResponseCode");
-        String orderId = params.get("vnp_TxnRef");
+        String orderId      = params.get("vnp_TxnRef");
 
-        String customerName = "—";
-        String tableName = "—";
+        // Lấy thông tin từ BookingCache TRƯỚC khi xóa
+        String customerName  = "—";
+        String tableName     = "—";
+        String customerEmail = "";
+        String datetime      = "—";
+        String guests        = "—";
+
+        VNPayCreateRequest pending = BookingCache.get(orderId);
+        if (pending != null) {
+            customerName  = pending.getCustomerName()    != null ? pending.getCustomerName()    : "—";
+            tableName     = pending.getTableId()         != null ? pending.getTableId()          : "—";
+            customerEmail = pending.getEmail()           != null ? pending.getEmail()            : "";
+            datetime      = pending.getReservationTime() != null ? pending.getReservationTime()  : "—";
+            guests        = pending.getGuestCount() > 0
+                                ? String.valueOf(pending.getGuestCount()) : "—";
+        }
 
         if (validSignature && "00".equals(responseCode)) {
             try {
-                // 1. Lấy thông tin khách hàng đang "treo" trong RAM
-                VNPayCreateRequest pending = BookingCache.get(orderId);
-                
                 if (pending != null) {
-                    customerName = pending.getCustomerName(); 
-                    tableName = pending.getTableId();
-                    // 2. Thanh toán OK -> Lưu MỚI vào Database
+                    // Thanh toán OK -> Lưu vào Database
                     reservationService.createNewReservationAfterPayment(pending, params.get("vnp_TransactionNo"));
-                    
-                    // 3. Xóa khỏi RAM sau khi đã lưu DB thành công
+                    // Xóa khỏi RAM sau khi đã lưu DB thành công
                     BookingCache.remove(orderId);
                 }
             } catch (Exception e) {
                 System.err.println("Lỗi lưu DB sau thanh toán: " + e.getMessage());
             }
         } else {
-            // Thanh toán thất bại hoặc hủy -> Xóa luôn trong RAM, DB không có gì
+            // Thanh toán thất bại hoặc hủy -> Xóa luôn trong RAM
             BookingCache.remove(orderId);
         }
 
-        // Redirect về Frontend kết quả
-        StringBuilder redirectUrl = new StringBuilder("http://localhost:8080/src/payment-result.html?");
+        // Redirect về Frontend, append đầy đủ thông tin cho payment-result.js
+        StringBuilder redirectUrl = new StringBuilder("http://localhost:5500/client/src/payment-result.html?");
         params.forEach((k, v) -> {
             try {
-                redirectUrl.append(URLEncoder.encode(k, StandardCharsets.UTF_8)).append("=").append(URLEncoder.encode(v, StandardCharsets.UTF_8)).append("&");
+                redirectUrl.append(URLEncoder.encode(k, StandardCharsets.UTF_8))
+                           .append("=")
+                           .append(URLEncoder.encode(v, StandardCharsets.UTF_8))
+                           .append("&");
             } catch (Exception ignored) {}
         });
 
         try {
-            redirectUrl.append("customerName=").append(URLEncoder.encode(customerName, StandardCharsets.UTF_8)).append("&");
-            redirectUrl.append("tableName=").append(URLEncoder.encode(tableName, StandardCharsets.UTF_8));
+            redirectUrl.append("customerName=") .append(URLEncoder.encode(customerName,  StandardCharsets.UTF_8)).append("&");
+            redirectUrl.append("tableName=")    .append(URLEncoder.encode(tableName,     StandardCharsets.UTF_8)).append("&");
+            redirectUrl.append("email=")        .append(URLEncoder.encode(customerEmail, StandardCharsets.UTF_8)).append("&");
+            redirectUrl.append("datetime=")     .append(URLEncoder.encode(datetime,      StandardCharsets.UTF_8)).append("&");
+            redirectUrl.append("guests=")       .append(URLEncoder.encode(guests,        StandardCharsets.UTF_8));
         } catch (Exception ignored) {}
 
         response.sendRedirect(redirectUrl.toString());

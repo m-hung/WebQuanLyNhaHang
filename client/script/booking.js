@@ -82,6 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.value = "";
     }
   });
+  custEmail.addEventListener("change", (e) => {
+  const val = e.target.value.trim();
+  if (val) localStorage.setItem("bk_email", val);
+});
 
   // === 3. LOGIC XỬ LÝ GỐC CỦA BẠN ===
 
@@ -193,6 +197,10 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("bk_table_num", selectedTableNum || "");
       localStorage.setItem("bk_table_cap", selectedTableCap || "");
 
+      // SessionStorage: backup de tranh Tracking Prevention chan localStorage
+      sessionStorage.setItem("bk_email", custEmail.value);
+      sessionStorage.setItem("bk_name", custName.value);
+
       const dtObj = new Date(fullReservationTime);
       const localeStr = currentLng === "en" ? "en-US" : "vi-VN";
       const datetimeDisplay = dtObj.toLocaleString(localeStr, {
@@ -207,9 +215,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const params = new URLSearchParams({
         name: custName.value,
         phone: custPhone.value,
+        email: custEmail.value,
         datetime: datetimeDisplay,
         guests: bookGuests.value,
         table: selectedTableName,
+        tableNum: selectedTableNum || "",
+        tableCap: selectedTableCap || "",
+        orderId: orderId,
       });
       window.location.href = `./payment.html?${params.toString()}`;
     });
