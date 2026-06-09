@@ -75,7 +75,9 @@ public class AuthController {
         passwordResetTokenRepository.save(prt);
 
         String resetLink = "http://localhost:5173/reset-password?token=" + token;
-        emailService.sendPasswordResetEmail(email, resetLink, user.getFullName());
+        new Thread(() ->
+                emailService.sendPasswordResetEmail(email, resetLink, user.getFullName())
+        ).start();
         return ResponseEntity.ok(Map.of("message", "Đã gửi link khôi phục mật khẩu. Vui lòng kiểm tra hộp thư!"));
     }
 
