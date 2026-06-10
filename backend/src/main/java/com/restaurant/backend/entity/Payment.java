@@ -31,4 +31,6 @@ public class Payment {
     protected void onCreate() {
         if (this.paymentTime == null) {
             this.paymentTime = LocalDateTime.now();
+        }
+    }
 }

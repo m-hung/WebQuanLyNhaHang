@@ -18,36 +18,34 @@ import {
 } from "recharts";
 
 export default function Statistics({ invoices = [] }) {
-  // STATE LƯU TRỮ NGÀY PHỤC VỤ CHO VIỆC CHUYỂN ĐỔI TUẦN (Mặc định là ngày hiện tại của máy)
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // Hàm lùi lại 1 tuần
   const handlePrevWeek = () => {
     const prev = new Date(currentDate);
     prev.setDate(currentDate.getDate() - 7);
     setCurrentDate(prev);
   };
 
-  // Hàm tiến lên 1 tuần
   const handleNextWeek = () => {
     const next = new Date(currentDate);
     next.setDate(currentDate.getDate() + 7);
     setCurrentDate(next);
   };
 
-  // HÀM TÍNH TOÁN DỮ LIỆU THỐNG KÊ
   const stats = useMemo(() => {
-    const now = new Date(); // Luôn lấy giờ thực tế máy tính cho ô thống kê Tổng Quan và Tháng
+    const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 
-    // Xác định Thứ 2 của tuần đang được lựa chọn (phụ thuộc vào currentDate)
+    // Xác định Tháng và Năm của "tuần đang xem" để lấy mốc doanh thu cao nhất
+    const viewedMonth = currentDate.getMonth();
+    const viewedYear = currentDate.getFullYear();
+
     const dayOfWeek = currentDate.getDay() === 0 ? 6 : currentDate.getDay() - 1;
     const startOfWeek = new Date(currentDate);
     startOfWeek.setHours(0, 0, 0, 0);
     startOfWeek.setDate(currentDate.getDate() - dayOfWeek);
 
-    // Tạo mẫu cấu trúc biểu đồ 7 ngày của tuần đang chọn
     const weeklyData = Array.from({ length: 7 }).map((_, i) => {
       const d = new Date(startOfWeek);
       d.setDate(startOfWeek.getDate() + i);
@@ -63,11 +61,11 @@ export default function Statistics({ invoices = [] }) {
     let monthlyOrders = 0;
     let monthlyRevenue = 0;
     const dishMap = {};
+    const monthlyDailyRevenues = {}; // Dùng để gom doanh thu tất cả các ngày trong THÁNG ĐANG XEM
 
     invoices.forEach((order) => {
       if (!order.orderDate) return;
 
-      // Chấp nhận các trạng thái đã thanh toán thành công (Bảo toàn tiếng Anh lẫn tiếng Việt)
       const isPaid =
         order.status === "Paid" ||
         order.status === "Completed" ||
@@ -87,7 +85,17 @@ export default function Statistics({ invoices = [] }) {
 
       const amount = Number(order.totalAmount) || 0;
 
-      // 1. Tính toán số liệu Tổng Quan cố định theo giờ thực tế trên máy tính của bạn
+      // ---- TÍNH DOANH THU MỖI NGÀY TRONG THÁNG ĐANG XEM ----
+      if (
+        invoiceDate.getMonth() === viewedMonth &&
+        invoiceDate.getFullYear() === viewedYear
+      ) {
+        const dayKey = invoiceDate.getDate(); // Lấy ngày từ 1-31
+        if (!monthlyDailyRevenues[dayKey]) monthlyDailyRevenues[dayKey] = 0;
+        monthlyDailyRevenues[dayKey] += amount;
+      }
+
+      // ---- Tổng quan (Giờ thực tế) ----
       if (invoiceDate.toDateString() === now.toDateString()) {
         todayOrders++;
         todayRevenue += amount;
@@ -100,7 +108,6 @@ export default function Statistics({ invoices = [] }) {
         monthlyOrders++;
         monthlyRevenue += amount;
 
-        // 2. ĐÃ SỬA: Lấy chính xác tên món, số lượng và thành tiền từ Entity OrderItem gốc
         const items = order.orderItems || [];
         items.forEach((item) => {
           const dishName =
@@ -108,7 +115,6 @@ export default function Statistics({ invoices = [] }) {
           if (!dishMap[dishName]) {
             dishMap[dishName] = { name: dishName, qty: 0, revenue: 0 };
           }
-          // Ưu tiên đọc trường 'quantity' và trường 'subtotal' từ Java gửi sang
           const qty = Number(item.quantity) || Number(item.qty) || 0;
           const subtotal =
             Number(item.subtotal) ||
@@ -119,7 +125,7 @@ export default function Statistics({ invoices = [] }) {
         });
       }
 
-      // 3. Tính doanh thu đổ vào 7 cột tuần đang chọn
+      // ---- Doanh thu Tuần ----
       const dateOnly = new Date(invoiceDate);
       dateOnly.setHours(0, 0, 0, 0);
 
@@ -131,7 +137,16 @@ export default function Statistics({ invoices = [] }) {
       }
     });
 
-    // Sắp xếp danh sách món ăn phổ biến theo số lượng bán ra giảm dần
+    // ---- LỌC MỐC TRỤC Y: Lấy ngày có doanh thu cao nhất của tháng ----
+    const maxDailyRevenue =
+      Object.values(monthlyDailyRevenues).length > 0
+        ? Math.max(...Object.values(monthlyDailyRevenues))
+        : 0;
+
+    // Tăng mốc max lên 10% để cột không đụng nóc biểu đồ. Nếu tháng chưa có doanh thu thì ép mốc 100k
+    const yAxisMax =
+      maxDailyRevenue > 0 ? Math.ceil(maxDailyRevenue * 1.1) : 100000;
+
     const topDishes = Object.values(dishMap)
       .sort((a, b) => b.qty - a.qty)
       .slice(0, 10)
@@ -151,7 +166,6 @@ export default function Statistics({ invoices = [] }) {
       });
     }
 
-    // Định dạng chuỗi hiển thị khoảng thời gian tuần (ví dụ: "18/05 - 24/05")
     const endOfWeekDate = new Date(startOfWeek);
     endOfWeekDate.setDate(startOfWeek.getDate() + 6);
     const weekLabel = `${String(startOfWeek.getDate()).padStart(2, "0")}/${String(startOfWeek.getMonth() + 1).padStart(2, "0")} - ${String(endOfWeekDate.getDate()).padStart(2, "0")}/${String(endOfWeekDate.getMonth() + 1).padStart(2, "0")}`;
@@ -164,8 +178,9 @@ export default function Statistics({ invoices = [] }) {
       weeklyData: weeklyData.map((d) => ({ name: d.name, revenue: d.revenue })),
       topDishes,
       weekLabel,
+      yAxisMax, // Trả về mốc cao nhất để truyền xuống biểu đồ
     };
-  }, [invoices, currentDate]); // Sẽ chạy lại tính toán khi danh sách hóa đơn hoặc ngày chọn thay đổi
+  }, [invoices, currentDate]);
 
   const renderRank = (rank) => {
     if (rank === 1) return "🥇 1";
@@ -192,7 +207,6 @@ export default function Statistics({ invoices = [] }) {
     <div className="p-4 md:p-6 bg-gray-50 min-h-full">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Tổng quan</h1>
 
-      {/* === PHẦN 1: 4 Ô THỐNG KÊ === */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
           <div className="p-3 bg-emerald-100 text-emerald-600 rounded-lg">
@@ -251,9 +265,7 @@ export default function Statistics({ invoices = [] }) {
         </div>
       </div>
 
-      {/* === PHẦN 2: BIỂU ĐỒ VÀ DANH SÁCH MÓN ĂN === */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* CỘT TRÁI: BIỂU ĐỒ DOANH THU CÓ NÚT BẤM CHUYỂN TUẦN */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 lg:col-span-2 flex flex-col h-[420px]">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div>
@@ -263,7 +275,6 @@ export default function Statistics({ invoices = [] }) {
               </p>
             </div>
 
-            {/* CỤM NÚT DI CHUYỂN QUA LẠI GIỮA CÁC TUẦN */}
             <div className="flex items-center gap-1.5 self-end sm:self-auto bg-gray-100 p-1 rounded-lg border border-gray-200 shadow-sm">
               <button
                 onClick={handlePrevWeek}
@@ -306,11 +317,15 @@ export default function Statistics({ invoices = [] }) {
                   tick={{ fill: "#9ca3af", fontSize: 12 }}
                   dy={10}
                 />
+
+                {/* ÉP MỐC TRỤC Y VÀO ĐÂY BẰNG THUỘC TÍNH DOMAIN */}
                 <YAxis
                   axisLine={false}
                   tickLine={false}
                   tick={{ fill: "#9ca3af", fontSize: 12 }}
+                  domain={[0, stats.yAxisMax]}
                 />
+
                 <Tooltip
                   content={<CustomTooltip />}
                   cursor={{ fill: "#f9fafb" }}
@@ -326,11 +341,10 @@ export default function Statistics({ invoices = [] }) {
           </div>
         </div>
 
-        {/* CỘT PHẢI: BẢNG MÓN ĂN PHỔ BIẾN */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col h-[420px] overflow-hidden">
           <div className="p-5 border-b border-gray-100 bg-white">
             <h2 className="font-bold text-gray-800">
-              Món ăn phổ biến theo tháng
+              Món ăn phổ biến (Tháng này)
             </h2>
           </div>
           <div className="flex-1 overflow-y-auto p-2">
