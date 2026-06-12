@@ -1,23 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 export default function Checkout({ setPage, invoice, onPaymentSuccess }) {
   // Quản lý State cho các ô input
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
-  const [currentTime, setCurrentTime] = useState("");
 
   const [paymentMethod, setPaymentMethod] = useState("Cash");
 
-  // Lấy thời gian hiện tại khi mở trang thanh toán
-  useEffect(() => {
+  // Lấy thời gian hiện tại gộp thẳng vào useState, không dùng useEffect nữa
+  const [currentTime] = useState(() => {
     const now = new Date();
     // Format thời gian theo kiểu Việt Nam: HH:MM - DD/MM/YYYY
-    const formattedTime =
+    return (
       now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) +
       " - " +
-      now.toLocaleDateString("vi-VN");
-    setCurrentTime(formattedTime);
-  }, []);
+      now.toLocaleDateString("vi-VN")
+    );
+  });
 
   // Điều kiện để mở khóa nút thanh toán (Phải nhập đủ tên và sđt)
   const isFormValid = customerName.trim() !== "" && customerPhone.trim() !== "";
